@@ -212,7 +212,7 @@ var _hmt = _hmt || [];
 </aside>
 
             
-            <section id="main"><article id="post-correctly-use-GET-and-POST-method-to-send-requests" class="article article-type-post" itemscope itemprop="blogPost" data-id="cjyfigx6d0003noffmp3quayt">
+            <section id="main"><article id="post-correctly-use-GET-and-POST-method-to-send-requests" class="article article-type-post" itemscope itemprop="blogPost" data-id="cjyfiphl400019kffw8fyxx2s">
     <div class="article-inner">
         
         
@@ -386,40 +386,46 @@ var _hmt = _hmt || [];
 
     <div class="bdsharebuttonbox" 
     data-url="http://blog.wuhongbin.com/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html" 
-    data-id="cjyfigx6d0003noffmp3quayt"  
+    data-id="cjyfiphl400019kffw8fyxx2s"  
     data-title="正确的使用GET与POST方法发送请求"
     data-description="正确的使用GET与POST方法">
     <a data-cmd="more"><i class="fa fa-share" style="margin-right: 5px"></i>Share</a>
 </div>
 <script>
+    
+    if (window.location.protocol === 'https') {
 
-    var bdshare = document.querySelector(".bdsharebuttonbox");
+        var bdshare = document.querySelector(".bdsharebuttonbox");
 
-    var url = bdshare.getAttribute('data-url');
-    //var encodedUrl = encodeURIComponent(url);
-    //var url = window.location.href;
-    //var url = window.location.host + decodeURIComponent(window.location.pathname)
-    var id = bdshare.getAttribute('data-id');
-    var title = bdshare.getAttribute('data-title');
-    var description = bdshare.getAttribute('data-description');
+        var url = bdshare.getAttribute('data-url');
+        //var encodedUrl = encodeURIComponent(url);
+        //var url = window.location.href;
+        //var url = window.location.host + decodeURIComponent(window.location.pathname)
+        var id = bdshare.getAttribute('data-id');
+        var title = bdshare.getAttribute('data-title');
+        var description = bdshare.getAttribute('data-description');
 
-    window._bd_share_config = {
-        "common":{
-            "bdUrl": url,
-            "bdDesc": description,
-            "bdText": title,
-            "bdPic":"",
-            "bdSnsKey":{},
-            "bdMini":"2",
-            "bdMiniList":false,
-            "bdStyle":"0",
-            "bdSize":"16"
-        },
-        "share":{
-            "bdSize":16
-        }
-    };
-    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        window._bd_share_config = {
+            "common":{
+                "bdUrl": url,
+                "bdDesc": description,
+                "bdText": title,
+                "bdPic":"",
+                "bdSnsKey":{},
+                "bdMini":"2",
+                "bdMiniList":false,
+                "bdStyle":"0",
+                "bdSize":"16"
+            },
+            "share":{
+                "bdSize":16
+            }
+        };
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    } else {
+        $('.bdsharebuttonbox').hide()
+    }
+
 
 </script>
 <style>

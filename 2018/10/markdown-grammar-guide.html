@@ -214,7 +214,7 @@ var _hmt = _hmt || [];
 </aside>
 
             
-            <section id="main"><article id="post-markdown-grammar-guide" class="article article-type-post" itemscope itemprop="blogPost" data-id="cjyfigx6a0002noff2etrjztq">
+            <section id="main"><article id="post-markdown-grammar-guide" class="article article-type-post" itemscope itemprop="blogPost" data-id="cjyfiphl600029kffm4e5cwlq">
     <div class="article-inner">
         
         
@@ -361,40 +361,46 @@ _   底线
 
     <div class="bdsharebuttonbox" 
     data-url="http://blog.wuhongbin.com/2018/10/markdown-grammar-guide.html" 
-    data-id="cjyfigx6a0002noff2etrjztq"  
+    data-id="cjyfiphl600029kffm4e5cwlq"  
     data-title="Markdown 语法指南"
     data-description="Markdown 语法指南">
     <a data-cmd="more"><i class="fa fa-share" style="margin-right: 5px"></i>Share</a>
 </div>
 <script>
+    
+    if (window.location.protocol === 'https') {
 
-    var bdshare = document.querySelector(".bdsharebuttonbox");
+        var bdshare = document.querySelector(".bdsharebuttonbox");
 
-    var url = bdshare.getAttribute('data-url');
-    //var encodedUrl = encodeURIComponent(url);
-    //var url = window.location.href;
-    //var url = window.location.host + decodeURIComponent(window.location.pathname)
-    var id = bdshare.getAttribute('data-id');
-    var title = bdshare.getAttribute('data-title');
-    var description = bdshare.getAttribute('data-description');
+        var url = bdshare.getAttribute('data-url');
+        //var encodedUrl = encodeURIComponent(url);
+        //var url = window.location.href;
+        //var url = window.location.host + decodeURIComponent(window.location.pathname)
+        var id = bdshare.getAttribute('data-id');
+        var title = bdshare.getAttribute('data-title');
+        var description = bdshare.getAttribute('data-description');
 
-    window._bd_share_config = {
-        "common":{
-            "bdUrl": url,
-            "bdDesc": description,
-            "bdText": title,
-            "bdPic":"",
-            "bdSnsKey":{},
-            "bdMini":"2",
-            "bdMiniList":false,
-            "bdStyle":"0",
-            "bdSize":"16"
-        },
-        "share":{
-            "bdSize":16
-        }
-    };
-    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        window._bd_share_config = {
+            "common":{
+                "bdUrl": url,
+                "bdDesc": description,
+                "bdText": title,
+                "bdPic":"",
+                "bdSnsKey":{},
+                "bdMini":"2",
+                "bdMiniList":false,
+                "bdStyle":"0",
+                "bdSize":"16"
+            },
+            "share":{
+                "bdSize":16
+            }
+        };
+        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    } else {
+        $('.bdsharebuttonbox').hide()
+    }
+
 
 </script>
 <style>
