@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>正确的使用GET与POST方法发送请求 | TA圣堂米拉娜</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="正确的使用GET与POST方法">
+<meta name="keywords" content="HTTP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正确的使用GET与POST方法发送请求">
+<meta property="og:url" content="http://blog.wuhongbin.com/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html">
+<meta property="og:site_name" content="TA圣堂米拉娜">
+<meta property="og:description" content="正确的使用GET与POST方法">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-10-08T11:22:56.119Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="正确的使用GET与POST方法发送请求">
+<meta name="twitter:description" content="正确的使用GET与POST方法">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.ico" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="/libs/highlight/github.css">
+    <script src="/libs/highlight/highlight.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-127105097-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?fa59de63d3320a45f6aa672138d2e55c";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">TA圣堂米拉娜</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.jpg" />
+            <h2 id="name">圣堂</h2>
+            <h3 id="title">前端攻城师</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>北京, 中国</span>
+            <a id="follow" target="_blank" href="https://gitee.com/qq8697">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                3
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                1
+                <span>tag</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://steamcommunity.com/profiles/76561198386205036/" target="_blank" title="steam" class=tooltip>
+                            <i class="fa fa-steam"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-correctly-use-GET-and-POST-method-to-send-requests" class="article article-type-post" itemscope itemprop="blogPost" data-id="cjyfigx6d0003noffmp3quayt">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            正确的使用GET与POST方法发送请求
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html">
+            <time datetime="2018-09-18T07:10:35.000Z" itemprop="datePublished">2018-09-18</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/HTTP/">HTTP</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/HTTP/GET-POST/">GET & POST</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/HTTP/">HTTP</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <ol>
+<li><p>GET请求 -&gt; <strong>url上的参数需要转义</strong></p>
+<pre><code> function ajax (url, data) {
+     let args = []
+     for (key in data) {
+         args.push(`${ encodeURIComponent(key) } = ${ encodeURIComponent(data[key]) }`)
+     }
+     let query = args.join(&#39;&amp;&#39;)
+     url += ~url.indexOf(&#39;?&#39;) ? `&amp;${query}` : `?${query}`
+
+     let xhr = new XMLHttpRequest()
+     xhr.open(&quot;GET&quot;, url)
+     xhr.send()
+ }
+</code></pre></li>
+</ol>
+<a id="more"></a>
+<ol start="2">
+<li><p>GET请求url参数上 <code>key/value</code> 对中的 <strong><code>value</code></strong> 除了简单类型的变量还可能<strong>是数组或者对象</strong>，需要做判断与处理：</p>
+<ol>
+<li><p>对象的话使用 <code>encodeURIComponent</code> 会变成对 <code>&quot;[object Object]&quot;</code> 的转义：</p>
+<pre><code> encodeURIComponent(&quot;[object Object]&quot;) === encodeURIComponent({page:5})
+ // true &quot;%5Bobject%20Object%5D&quot;
+</code></pre></li>
+<li>数组 <ol>
+<li><code>{ids: [1,2,3]}</code> -&gt; <code>ids[0]=1&amp;ids[1]=2&amp;ids[2]=3</code></li>
+</ol>
+</li>
+<li>对象 <ol>
+<li><code>{user: {name: &#39;sj&#39;, age: 23}} -&gt; user[name]=&#39;sj&#39;&amp;user[age]=23</code></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>POST请求 -&gt; 参数在请求体中</p>
+<ol>
+<li>//（url上也可以，因为一般的web框架的POST请求都会收到url和请求体，取决于后端如何处理）</li>
+<li><p>默认的mime类型为 <strong><code>text/plain</code></strong> ，请求参数在 <strong><code>Request Payload</code></strong> 下以 <code>key=value</code> 并由 <code>&amp;</code> 连接形式显示 -&gt; 并不是按照字段分行显示</p>
+<pre><code> // 控制台下发送POST请求
+ let xhr = new XMLHttpRequest()
+ xhr.open(&quot;POST&quot;, &quot;/&quot;)
+ xhr.send(&quot;name=&#39;sj&#39;&amp;age=23&quot;)
+
+ // 查看请求信息
+ Request Headers
+ Content-Type: text/pain;charset=UTF-8
+
+ Request Payload
+ name=&#39;sj&#39;&amp;age=23
+</code></pre></li>
+<li><p>设置 <code>Content-Type</code> 为 <strong><code>&quot;application/x-www-form-urlencoded&quot;</code></strong> -&gt; 请求参数在 <strong><code>Form Data</code></strong> 下按照字段分行显示</p>
+<pre><code> // 控制台下发送POST请求
+ let xhr = new XMLHttpRequest()
+ xhr.open(&quot;POST&quot;, &quot;/&quot;)
+ xhr.setRequestHeader(&quot;Content-type&quot;, &quot;application/x-www-form-urlencoded&quot;);
+ xhr.send(&quot;name=sj&amp;age=23&quot;)
+
+ // 查看请求信息
+ Request Headers
+ Content-Type: application/x-www-form-urlencoded
+
+ Form Data
+ name=&#39;sj&#39;
+ age=23
+</code></pre></li>
+<li><p>// 以上send（发送）的是字符串，如果是object呢？-&gt; 如下，实际上调用了 <code>Object</code> 的 <code>toString</code> 方法 -&gt; 所以，<strong>send的数据需要转换成字符串</strong>。</p>
+<pre><code> // 控制台下发送POST请求
+ let xhr = new XMLHttpRequest()
+ xhr.open(&quot;POST&quot;, &quot;/&quot;)
+ xhr.send({name: &#39;sj&#39;, age: 23})
+
+ // 查看请求信息
+ Request Payload
+ [object Object]
+</code></pre></li>
+<li><p>想要使用<strong>json格式</strong>发送请求，需要指定 <code>Content-Type</code> 为 <strong><code>application/json</code></strong>，然后send的数据要 <code>stringify</code>一下</p>
+<pre><code> // 构造json数据
+ let data = {name: &#39;sj&#39;, age: 23}
+
+ // 控制台下发送POST请求
+ let xhr = new XMLHttpRequest()
+ xhr.open(&quot;POST&quot;, &quot;/&quot;)
+ xhr.setRequestHeader(&quot;Content-type&quot;, &quot;application/json&quot;)
+ xhr.send(JSON.stringify(data))
+
+ // 查看请求信息
+ Content-type:application/json
+ Request Payload
+ {&quot;name&quot;:&quot;sj&quot;,&quot;age&quot;:23}
+</code></pre></li>
+<li><p>mime类型 <strong><code>multipart/form-data</code></strong>，通常用于<strong>文件上传</strong>，如下所示，<code>Request Payload</code> 下字段和字段之间用随机字符串隔开，内容不需要转义（仍然是中文“圣剑”），因为内容很大的话，转义需要时间</p>
+<pre><code> // 构造表单
+ let formData = new FormData()
+ formData.append(&#39;name&#39;, &#39;圣剑&#39;)
+ formData.append(&#39;age&#39;, 23)     // 数字23会被立即转换成字符串 &quot;23&quot;
+
+ // 上传文件
+ // formData.append(&quot;file&quot;, input.files[0])
+
+ // 控制台下发送POST请求
+ let xhr = new XMLHttpRequest();
+ xhr.open(&quot;POST&quot;, &quot;/&quot;)
+ xhr.send(formData)
+
+ // 查看请求信息
+ multipart/form-data; boundary=----WebKitFormBoundarywUtUVlMY3HJnC3E3
+
+ Request Payload
+ ------WebKitFormBoundarywUtUVlMY3HJnC3E3
+ Content-Disposition: form-data; name=&quot;name&quot;
+
+ 圣剑
+
+ ------WebKitFormBoundarywUtUVlMY3HJnC3E3
+ Content-Disposition: form-data; name=&quot;age&quot;
+
+ 23
+</code></pre></li>
+</ol>
+</li>
+</ol>
+
+        
+        </div>
+        <footer class="article-footer">
+            
+                <div class="share-container">
+
+
+    <div class="bdsharebuttonbox" 
+    data-url="http://blog.wuhongbin.com/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html" 
+    data-id="cjyfigx6d0003noffmp3quayt"  
+    data-title="正确的使用GET与POST方法发送请求"
+    data-description="正确的使用GET与POST方法">
+    <a data-cmd="more"><i class="fa fa-share" style="margin-right: 5px"></i>Share</a>
+</div>
+<script>
+
+    var bdshare = document.querySelector(".bdsharebuttonbox");
+
+    var url = bdshare.getAttribute('data-url');
+    //var encodedUrl = encodeURIComponent(url);
+    //var url = window.location.href;
+    //var url = window.location.host + decodeURIComponent(window.location.pathname)
+    var id = bdshare.getAttribute('data-id');
+    var title = bdshare.getAttribute('data-title');
+    var description = bdshare.getAttribute('data-description');
+
+    window._bd_share_config = {
+        "common":{
+            "bdUrl": url,
+            "bdDesc": description,
+            "bdText": title,
+            "bdPic":"",
+            "bdSnsKey":{},
+            "bdMini":"2",
+            "bdMiniList":false,
+            "bdStyle":"0",
+            "bdSize":"16"
+        },
+        "share":{
+            "bdSize":16
+        }
+    };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+
+</script>
+<style>
+    .bdshare-button-style0-16 a,
+    .bdshare-button-style0-16 .bds_more {
+        background-image: none;
+    }
+</style>
+
+
+</div>
+
+
+            
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/10/hello-templar.html" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    你好，圣堂
+                
+            </div>
+        </a>
+    
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">    <div id="valine-thread"></div>
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <script>
+        new Valine({
+            el: '#valine-thread' ,
+            notify:false,
+            verify:false,
+            app_id: 'xIUWTw3eV1WAotjbFwGrIKMe-gzGzoHsz',
+            app_key: 'xSc2rEN1LKKnuh9N60iOBNdU',
+            placeholder: '评论的时候，留下在Gravatar注册时所使用的邮箱即可显示头像',
+            visitor: true
+        });
+        
+        document.querySelector("#valine-thread .info").style.display='none'
+    </script>
+
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/10/markdown-grammar-guide.html" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2018/10/markdown-grammar-guide.html" class="title">Markdown 语法指南</a></p>
+                            <p class="item-date"><time datetime="2018-10-24T07:10:35.000Z" itemprop="datePublished">2018-10-24</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/10/hello-templar.html" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/avatar.jpg)" alt="你好，圣堂" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2018/10/hello-templar.html" class="title">你好，圣堂</a></p>
+                            <p class="item-date"><time datetime="2018-10-08T11:19:28.000Z" itemprop="datePublished">2018-10-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/HTTP/">HTTP</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/HTTP/GET-POST/">GET & POST</a></p>
+                            <p class="item-title"><a href="/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html" class="title">正确的使用GET与POST方法发送请求</a></p>
+                            <p class="item-date"><time datetime="2018-09-18T07:10:35.000Z" itemprop="datePublished">2018-09-18</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://nav.wuhongbin.com">前端导航</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://code.wuhongbin.com">代码碎片</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2019 TA圣堂米拉娜<br>
+            秘密已经泄露，战斗一触即发！
+        </div>
+    </div>
+</footer>
+    </div>
+    
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>

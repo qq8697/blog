@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>你好，圣堂 | TA圣堂米拉娜</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="你好，圣堂">
+<meta name="keywords" content="前端 博客 圣堂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你好，圣堂">
+<meta property="og:url" content="http://blog.wuhongbin.com/2018/10/hello-templar.html">
+<meta property="og:site_name" content="TA圣堂米拉娜">
+<meta property="og:description" content="你好，圣堂">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.wuhongbin.com/images/avatar.jpg">
+<meta property="og:updated_time" content="2018-10-08T11:59:58.109Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="你好，圣堂">
+<meta name="twitter:description" content="你好，圣堂">
+<meta name="twitter:image" content="http://blog.wuhongbin.com/images/avatar.jpg">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.ico" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="/libs/highlight/github.css">
+    <script src="/libs/highlight/highlight.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-127105097-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?fa59de63d3320a45f6aa672138d2e55c";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">TA圣堂米拉娜</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.jpg" />
+            <h2 id="name">圣堂</h2>
+            <h3 id="title">前端攻城师</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>北京, 中国</span>
+            <a id="follow" target="_blank" href="https://gitee.com/qq8697">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                3
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                1
+                <span>tag</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://steamcommunity.com/profiles/76561198386205036/" target="_blank" title="steam" class=tooltip>
+                            <i class="fa fa-steam"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-hello-templar" class="article article-type-post" itemscope itemprop="blogPost" data-id="cjyfigx620000noff6kga6psa">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            你好，圣堂
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2018/10/hello-templar.html">
+            <time datetime="2018-10-08T11:19:28.000Z" itemprop="datePublished">2018-10-08</time>
+        </a>
+    </div>
+
+
+                        
+                        
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <blockquote>
+<p>秘密已经泄露，战斗一触即发！</p>
+</blockquote>
+<h3 id="为什么要写博客"><a href="#为什么要写博客" class="headerlink" title="为什么要写博客"></a>为什么要写博客</h3><p>Q：为什么要写博客？<br>A：尝试 坚持做一件事情  </p>
+<p>Q：为什么要写博客？<br>A：学会 组织语言  </p>
+<a id="more"></a>
+<p>Q：为什么要写博客？<br>A：完成 一个小工程  </p>
+<p>Q：为什么要写博客？<br>A：找到 自我和朋友  </p>
+<h3 id="博客写什么"><a href="#博客写什么" class="headerlink" title="博客写什么"></a>博客写什么</h3><p>学习、旅行、工作、爱好…</p>
+<h3 id="博客站的实现方案"><a href="#博客站的实现方案" class="headerlink" title="博客站的实现方案"></a>博客站的实现方案</h3><p>有以下两种常见选择：  </p>
+<ol>
+<li>使用公共平台，自己负责写文章，如CSDN、掘金、简书等以及爬取CSDN文章的各种网站。</li>
+<li>不想受制于平台，博客形式和文章内容均由个人完成，有以下两种方案：<ul>
+<li>动态网站，写一套前台用于展示，写一套后台管理内容，使用数据库存储数据。</li>
+<li>静态网站，服务器下是真实存在的静态文件，也有以下两种方案：<ul>
+<li>前端异步加载 <code>.md</code> 文件，再渲染为 <code>DOM</code> 内容插入 <code>html</code> 中，-&gt; <a href="http://mark2web.wuhongbin.com" target="_blank" rel="noopener">mark2web</a> 站的实现方式。</li>
+<li>前端请求获取 <code>.html</code> 文件，<code>.html</code> 文件是由 <code>.md</code> 文件在项目部署前编译生成的 -&gt; 本站的实现方式。  </li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>（默认使用 <a href="https://www.appinn.com/markdown/" target="_blank" rel="noopener"><code>markdown</code></a> 语法编辑文章内容，而不是使用富文本（RTF(Rich Text Format)））<br>使用公共平台还是自己编程实现，我选择后者，自己动手丰衣足食；为什么不选择动态网站的方案？因为额外需要后台管理系统+数据库+服务器，有些小题大做了，静态站点直接扔到 <a href="https://pages.github.com/" target="_blank" rel="noopener">github pages</a> 托管就可以了。</p>
+<h3 id="构成博客站的轮子"><a href="#构成博客站的轮子" class="headerlink" title="构成博客站的轮子"></a>构成博客站的轮子</h3><ul>
+<li>域名的购买、备案 -&gt; <a href="https://wanwang.aliyun.com/?utm_content=se_1000301943" target="_blank" rel="noopener">阿里云 - 万网</a></li>
+<li>域名解析 -&gt; <a href="https://www.dnspod.cn/" target="_blank" rel="noopener">DNSPOD</a></li>
+<li><a href="https://pages.github.com/" target="_blank" rel="noopener">github pages</a> 托管、自定义域名（CNAME）</li>
+<li>静态网站生成器 -&gt; <a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">hexo</a></li>
+<li>站内搜索 -&gt; <a href="https://www.npmjs.com/package/hexo-generator-json-content" target="_blank" rel="noopener">hexo-generator-json-content</a></li>
+<li>JavaScript库 -&gt; <a href="https://jquery.com/" target="_blank" rel="noopener">jQuery</a></li>
+<li>JavaScript模板引擎 -&gt; <a href="https://ejs.bootcss.com/" target="_blank" rel="noopener">ejs</a></li>
+<li><code>.md</code> 文件渲染为 <code>DOM</code> 结构 -&gt; <a href="https://www.npmjs.com/package/marked" target="_blank" rel="noopener">marked</a></li>
+<li>代码高亮 -&gt; <a href="https://highlightjs.org/" target="_blank" rel="noopener">highlightjs</a></li>
+<li>字体图标 -&gt; <a href="http://fontawesome.io" target="_blank" rel="noopener">Font Awesome</a></li>
+<li>页面分享 -&gt; <a href="http://www.bshare.cn/" target="_blank" rel="noopener">百度分享 - bshare</a></li>
+<li>文章评论 -&gt; <a href="https://valine.js.org/" target="_blank" rel="noopener">valine</a></li>
+<li>图片画廊 -&gt; <a href="https://sachinchoolur.github.io/lightgallery.js/" target="_blank" rel="noopener">lightgallery.js</a> </li>
+<li>数据分析 -&gt; <a href="https://analytics.google.com/analytics/web/" target="_blank" rel="noopener">谷歌分析</a> &amp; <a href="https://tongji.baidu.com/web/welcome/login" target="_blank" rel="noopener">百度统计</a></li>
+</ul>
+<h3 id="Templar-Assassin"><a href="#Templar-Assassin" class="headerlink" title="Templar Assassin"></a>Templar Assassin</h3><p><img src="/images/ta00.jpg" alt=""></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            
+                <div class="share-container">
+
+
+    <div class="bdsharebuttonbox" 
+    data-url="http://blog.wuhongbin.com/2018/10/hello-templar.html" 
+    data-id="cjyfigx620000noff6kga6psa"  
+    data-title="你好，圣堂"
+    data-description="你好，圣堂">
+    <a data-cmd="more"><i class="fa fa-share" style="margin-right: 5px"></i>Share</a>
+</div>
+<script>
+
+    var bdshare = document.querySelector(".bdsharebuttonbox");
+
+    var url = bdshare.getAttribute('data-url');
+    //var encodedUrl = encodeURIComponent(url);
+    //var url = window.location.href;
+    //var url = window.location.host + decodeURIComponent(window.location.pathname)
+    var id = bdshare.getAttribute('data-id');
+    var title = bdshare.getAttribute('data-title');
+    var description = bdshare.getAttribute('data-description');
+
+    window._bd_share_config = {
+        "common":{
+            "bdUrl": url,
+            "bdDesc": description,
+            "bdText": title,
+            "bdPic":"",
+            "bdSnsKey":{},
+            "bdMini":"2",
+            "bdMiniList":false,
+            "bdStyle":"0",
+            "bdSize":"16"
+        },
+        "share":{
+            "bdSize":16
+        }
+    };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+
+</script>
+<style>
+    .bdshare-button-style0-16 a,
+    .bdshare-button-style0-16 .bds_more {
+        background-image: none;
+    }
+</style>
+
+
+</div>
+
+
+            
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/10/markdown-grammar-guide.html" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    Markdown 语法指南
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">正确的使用GET与POST方法发送请求</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">    <div id="valine-thread"></div>
+
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <script>
+        new Valine({
+            el: '#valine-thread' ,
+            notify:false,
+            verify:false,
+            app_id: 'xIUWTw3eV1WAotjbFwGrIKMe-gzGzoHsz',
+            app_key: 'xSc2rEN1LKKnuh9N60iOBNdU',
+            placeholder: '评论的时候，留下在Gravatar注册时所使用的邮箱即可显示头像',
+            visitor: true
+        });
+        
+        document.querySelector("#valine-thread .info").style.display='none'
+    </script>
+
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/10/markdown-grammar-guide.html" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2018/10/markdown-grammar-guide.html" class="title">Markdown 语法指南</a></p>
+                            <p class="item-date"><time datetime="2018-10-24T07:10:35.000Z" itemprop="datePublished">2018-10-24</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/10/hello-templar.html" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/avatar.jpg)" alt="你好，圣堂" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2018/10/hello-templar.html" class="title">你好，圣堂</a></p>
+                            <p class="item-date"><time datetime="2018-10-08T11:19:28.000Z" itemprop="datePublished">2018-10-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/HTTP/">HTTP</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/HTTP/GET-POST/">GET & POST</a></p>
+                            <p class="item-title"><a href="/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html" class="title">正确的使用GET与POST方法发送请求</a></p>
+                            <p class="item-date"><time datetime="2018-09-18T07:10:35.000Z" itemprop="datePublished">2018-09-18</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/">HTTP</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://nav.wuhongbin.com">前端导航</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://code.wuhongbin.com">代码碎片</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2019 TA圣堂米拉娜<br>
+            秘密已经泄露，战斗一触即发！
+        </div>
+    </div>
+</footer>
+    </div>
+    
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>
