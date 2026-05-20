@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8">
 
-<title>TA圣堂米拉娜</title>
+<title>为什么新的代码更改叫 Pull Request？ | TA圣堂米拉娜</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <meta name="description" content="前端 博客 圣堂">
 <meta name="keywords" content="前端 博客 圣堂">
-<meta property="og:type" content="website">
-<meta property="og:title" content="TA圣堂米拉娜">
-<meta property="og:url" content="https://qq8697.github.io/blog/categories/HTTP/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为什么新的代码更改叫 Pull Request？ | TA圣堂米拉娜">
+<meta property="og:url" content="https://qq8697.github.io/blog/2026/05/why-pull-request-name.html">
 <meta property="og:site_name" content="TA圣堂米拉娜">
 <meta property="og:description" content="前端 博客 圣堂">
 <meta property="og:locale" content="zh-CN">
 
 <meta property="og:image" content="/blog/css/images/avatar.jpg">
-<meta property="og:updated_time" content="">
+<meta property="og:updated_time" content="2026-05-20T07:09:00.989Z">
 
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TA圣堂米拉娜">
+<meta name="twitter:title" content="为什么新的代码更改叫 Pull Request？ | TA圣堂米拉娜">
 <meta name="twitter:description" content="前端 博客 圣堂">
 
 <meta name="twitter:image" content="/blog/css/images/avatar.jpg">
@@ -182,27 +182,185 @@ var _hmt = _hmt || [];
 </aside>
 
             <section id="main">
-    <article class="article article-type-post">
+    <article id="post-why-pull-request-name" class="article article-type-post" itemscope itemprop="blogPost">
         <div class="article-inner">
             <header class="article-header">
                 <h1 class="article-title" itemprop="name">
-                    category: HTTP
+                    为什么新的代码更改叫 Pull Request？
                 </h1>
+                <div class="article-meta">
+                    <div class="article-date">
+                        <i class="fa fa-calendar"></i>
+                        <a href="/blog/2026/05/why-pull-request-name.html">
+                            <time datetime="2026-05-20T02:00:00.000Z" itemprop="datePublished">2026-05-20</time>
+                        </a>
+                    </div>
+                    
+                    <div class="article-category">
+                        <i class="fa fa-folder"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><i class="fa fa-angle-right"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a>
+                        
+                    </div>
+                    
+                    
+                    <div class="article-tag">
+                        <i class="fa fa-tag"></i>
+                        
+                            <a class="tag-link" href="/blog/tags/Git/">Git</a>
+                        
+                            <a class="tag-link" href="/blog/tags/GitHub/">GitHub</a>
+                        
+                            <a class="tag-link" href="/blog/tags/Pull-Request/">Pull Request</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/">版本控制</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/">代码协作</a>
+                        
+                    </div>
+                    
+                </div>
             </header>
             <div class="article-entry" itemprop="articleBody">
-                
-                <ul class="layout-wrap-inner list-categories">
-                    
-                        <li>
-                            <a href="/blog/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html">正确的使用GET与POST方法发送请求</a>
-                            <span class="archive-article-date">2018-09-18</span>
-                        </li>
-                    
-                </ul>
-                
+                <p>在 GitHub、GitLab 等平台上，每当我们要向项目提交代码变更时，操作的对象叫 <strong>Pull Request（PR）</strong>。  这个名字乍看有点反直觉——明明是我”推送”代码，为什么叫”拉取请求”？</p>
+<hr>
+<h2 id="一句话解释"><a href="#一句话解释" class="headerlink" title="一句话解释"></a>一句话解释</h2><blockquote>
+<p><strong>Pull Request 的意思是：我请求你（项目维护者）从我的仓库里”拉取”我刚刚推送的代码变更。</strong></p>
+</blockquote>
+<hr>
+<h2 id="为什么不是-“Push-Request”？"><a href="#为什么不是-“Push-Request”？" class="headerlink" title="为什么不是 “Push Request”？"></a>为什么不是 “Push Request”？</h2><p>我们先用一张图看懂 Git 协作的基本模型：</p>
+<p><img src="/blog/images/Gemini_Generated_Image_fnavp4fnavp4fnav.png" alt="Git 协作模型示意图"></p>
+<blockquote>
+<p><em>图中展示了 Fork、Clone、Push、Pull Request、Merge 的基本流向</em></p>
+</blockquote>
+<h3 id="关键点拆解"><a href="#关键点拆解" class="headerlink" title="关键点拆解"></a>关键点拆解</h3><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>动作</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>普通开发者</td>
+<td>Fork + Clone + Push（到自己的远程仓库）</td>
+<td>只有自己仓库的写权限</td>
+</tr>
+<tr>
+<td>项目维护者</td>
+<td>Pull（从你的仓库拉取） + Merge</td>
+<td>拥有主仓库的写权限</td>
+</tr>
+</tbody></table>
+<p><strong>Pull Request 的本质是一个”请求”</strong>：</p>
+<blockquote>
+<p>“我无权直接改主仓库，请你（维护者）执行 <code>git pull</code> 把我的改动合进去。”</p>
+</blockquote>
+<p>如果把”拉取请求”改成 <strong>“推送请求（Push Request）”</strong>，语义会变成：  </p>
+<blockquote>
+<p>“请求获得直接向主仓库推送的权限”  </p>
+</blockquote>
+<p>但这并不是代码评审流程的真实情况。</p>
+<hr>
+<h2 id="一次完整-Pull-Request-的动作拆解"><a href="#一次完整-Pull-Request-的动作拆解" class="headerlink" title="一次完整 Pull Request 的动作拆解"></a>一次完整 Pull Request 的动作拆解</h2><p>下面这张图展示了从本地修改到 PR 合并的全过程：</p>
+<p><img src="/blog/images/Gemini_Generated_Image_on38eqon38eqon38.png" alt="PR 工作流程图"></p>
+<h3 id="分步说明"><a href="#分步说明" class="headerlink" title="分步说明"></a>分步说明</h3><ol>
+<li><strong>Fork</strong> 主仓库 → 获得自己的远程副本  </li>
+<li><strong>Clone</strong> 到本地 → 创建分支并写代码  </li>
+<li><strong>Push</strong> → 把新分支推送到<strong>自己的远程仓库</strong>  </li>
+<li>打开 GitHub → 点击 <strong>New Pull Request</strong>  </li>
+<li>系统自动比较：  <ul>
+<li>基础分支：主仓库的 <code>main</code>  </li>
+<li>对比分支：你仓库的 <code>feature-x</code></li>
+</ul>
+</li>
+<li>你发出请求 → 维护者看到 <strong>“有人请求我拉取他的代码”</strong>  </li>
+<li>维护者执行合并（<code>git pull</code> 或点击 Merge）</li>
+</ol>
+<hr>
+<h2 id="为什么这个命名是合理的？"><a href="#为什么这个命名是合理的？" class="headerlink" title="为什么这个命名是合理的？"></a>为什么这个命名是合理的？</h2><h3 id="从-Git-命令角度理解"><a href="#从-Git-命令角度理解" class="headerlink" title="从 Git 命令角度理解"></a>从 Git 命令角度理解</h3><p>如果维护者在命令行手动合并一个 PR，他会这样做：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout main</span><br><span class="line">git pull https://github.com/你的用户名/你的仓库.git feature-x</span><br></pre></td></tr></table></figure>
+
+<p>你看，动作正是 pull——拉取别人的远程分支到自己的本地仓库。</p>
+<p>因此，Pull Request 准确描述了维护者将要执行的操作，而不是贡献者的动作。</p>
+
             </div>
+            <footer class="article-footer">
+                <div class="share-container">
+                    <div class="bdsharebuttonbox" 
+                        data-url="https://qq8697.github.io/blog/2026/05/why-pull-request-name.html"
+                        data-id="cmpdopkau00008kvc6g1i510u"
+                        data-title="为什么新的代码更改叫 Pull Request？"
+                        data-description="为什么新的代码更改叫 Pull Request？">
+                        <a data-cmd="more"><i class="fa fa-share" style="margin-right: 5px"></i>Share</a>
+                    </div>
+                    <script>
+                    if (window.location.protocol === 'https') {
+                        var bdshare = document.querySelector(".bdsharebuttonbox");
+                        var url = bdshare.getAttribute('data-url');
+                        var id = bdshare.getAttribute('data-id');
+                        var title = bdshare.getAttribute('data-title');
+                        var description = bdshare.getAttribute('data-description');
+                        window._bd_share_config = {
+                            "common":{
+                                "bdUrl": url,
+                                "bdDesc": description,
+                                "bdText": title,
+                                "bdPic":"",
+                                "bdSnsKey":{},
+                                "bdMini":"2",
+                                "bdMiniList":false,
+                                "bdStyle":"0",
+                                "bdSize":"16"
+                            },
+                            "share":{"bdSize":16}
+                        };
+                        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                    } else {
+                        document.querySelector('.bdsharebuttonbox').style.display = 'none';
+                    }
+                    </script>
+                    <style>
+                        .bdshare-button-style0-16 a,
+                        .bdshare-button-style0-16 .bds_more {
+                            background-image: none;
+                        }
+                    </style>
+                </div>
+            </footer>
         </div>
+        <nav id="article-nav">
+            
+            
+                <a href="/blog/2026/05/my-three-bicycles.html" id="article-nav-older" class="article-nav-link-wrap">
+                    <strong class="article-nav-caption">Older</strong>
+                    <div class="article-nav-title">我的三辆自行车 — 从入门公路到碳纤维电变再到折叠车</div>
+                </a>
+            
+        </nav>
     </article>
+
+    <!-- Valine Comments -->
+    
+    <section id="comments">
+        <div id="valine-thread"></div>
+        <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+        <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+        <script>
+            new Valine({
+                el: '#valine-thread',
+                notify: false,
+                verify: false,
+                app_id: 'xIUWTw3eV1WAotjbFwGrIKMe-gzGzoHsz',
+                app_key: 'xSc2rEN1LKKnuh9N60iOBNdU',
+                placeholder: '评论的时候，留下在Gravatar注册时所使用的邮箱即可显示头像',
+                visitor: true
+            });
+            document.querySelector("#valine-thread .info").style.display='none'
+        </script>
+    </section>
     
 </section>
 
