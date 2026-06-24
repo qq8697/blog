@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: frontend_style
+title: Hexo Light 主题风格与视觉规范
+scope: []
+source_files:
+    - css/style.css
+    - index.html
+    - libs/highlight/github.css
+    - libs/font-awesome/css/font-awesome.min.css
+    - js/main.js
+depends_on: []
+related_to: []

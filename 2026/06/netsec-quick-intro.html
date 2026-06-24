@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+
+<title>网络安全业务快速入门 | TA圣堂米拉娜</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="description" content="前端 博客 圣堂">
+<meta name="keywords" content="前端 博客 圣堂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全业务快速入门 | TA圣堂米拉娜">
+<meta property="og:url" content="https://qq8697.github.io/blog/2026/06/netsec-quick-intro.html">
+<meta property="og:site_name" content="TA圣堂米拉娜">
+<meta property="og:description" content="前端 博客 圣堂">
+<meta property="og:locale" content="zh-CN">
+
+<meta property="og:image" content="/blog/css/images/avatar.jpg">
+<meta property="og:updated_time" content="2026-06-24T03:07:35.095Z">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络安全业务快速入门 | TA圣堂米拉娜">
+<meta name="twitter:description" content="前端 博客 圣堂">
+
+<meta name="twitter:image" content="/blog/css/images/avatar.jpg">
+
+
+<link rel="icon" href="/blog/css/images/favicon.ico" />
+
+<link rel="stylesheet" href="/blog/libs/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/blog/libs/open-sans/styles.css">
+<link rel="stylesheet" href="/blog/libs/source-code-pro/styles.css">
+<link rel="stylesheet" href="/blog/css/style.css">
+<script src="/blog/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<!-- Code highlight -->
+<link rel="stylesheet" href="/blog/libs/highlight/github.css">
+<script src="/blog/libs/highlight/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- Light Gallery -->
+<link rel="stylesheet" href="/blog/libs/lightgallery/css/lightgallery.min.css">
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-127105097-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?fa59de63d3320a45f6aa672138d2e55c";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/blog/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">TA圣堂米拉娜</span>
+            </a>
+            <nav id="main-nav">
+                <a class="main-nav-link" href="/blog/">Home</a>
+                <a class="main-nav-link" href="/blog/archives">Archives</a>
+                <a class="main-nav-link" href="/blog/categories">Categories</a>
+                <a class="main-nav-link" href="/blog/tags">Tags</a>
+                <a class="main-nav-link" href="/blog/about">About</a>
+            </nav>
+            <nav id="sub-nav">
+                <div class="profile" id="profile-nav">
+                    <a id="profile-anchor" href="javascript:;">
+                        <img class="avatar" src="/blog/css/images/avatar.jpg" />
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                </div>
+            </nav>
+            <div id="search-form-wrap">
+                <form class="search-form">
+                    <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+                    <button type="submit" class="search-form-submit"></button>
+                </form>
+                <div class="ins-search">
+                    <div class="ins-search-mask"></div>
+                    <div class="ins-search-container">
+                        <div class="ins-input-wrapper">
+                            <input type="text" class="ins-search-input" placeholder="Type something..." />
+                            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+                        </div>
+                        <div class="ins-section-wrapper">
+                            <div class="ins-section-container"></div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                (function (window) {
+                    var INSIGHT_CONFIG = {
+                        TRANSLATION: {
+                            POSTS: 'Posts',
+                            PAGES: 'Pages',
+                            CATEGORIES: 'Categories',
+                            TAGS: 'Tags',
+                            UNTITLED: '(Untitled)',
+                        },
+                        ROOT_URL: '/blog/',
+                        CONTENT_URL: '/blog/content.json',
+                    };
+                    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+                })(window);
+                </script>
+                <script src="/blog/js/insight.js"></script>
+            </div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                <td><a class="main-nav-link" href="/blog/">Home</a></td>
+                <td><a class="main-nav-link" href="/blog/archives">Archives</a></td>
+                <td><a class="main-nav-link" href="/blog/categories">Categories</a></td>
+                <td><a class="main-nav-link" href="/blog/tags">Tags</a></td>
+                <td><a class="main-nav-link" href="/blog/about">About</a></td>
+                <td>
+                    <div class="search-form">
+                        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            <aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/blog/css/images/avatar.jpg" />
+            <h2 id="name">圣堂</h2>
+            <h3 id="title">前端攻城师</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>北京, 中国</span>
+            <a id="follow" target="_blank" href="https://gitee.com/qq8697">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                7
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                24
+                <span>tag</span>
+            </div>
+        </div>
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                        
+                        <td>
+                            <a href="https://steamcommunity.com/profiles/76561198386205036/" target="_blank" title="steam" class=tooltip>
+                                <i class="fa fa-steam"></i>
+                            </a>
+                        </td>
+                        
+                    
+                </tr>
+            </table>
+        </div>
+    </div>
+</aside>
+
+            <section id="main">
+    <article id="post-netsec-quick-intro" class="article article-type-post" itemscope itemprop="blogPost">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 class="article-title" itemprop="name">
+                    网络安全业务快速入门
+                </h1>
+                <div class="article-meta">
+                    <div class="article-date">
+                        <i class="fa fa-calendar"></i>
+                        <a href="/blog/2026/06/netsec-quick-intro.html">
+                            <time datetime="2026-06-24T02:00:00.000Z" itemprop="datePublished">2026-06-24</time>
+                        </a>
+                    </div>
+                    
+                    <div class="article-category">
+                        <i class="fa fa-folder"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><i class="fa fa-angle-right"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a>
+                        
+                    </div>
+                    
+                    
+                    <div class="article-tag">
+                        <i class="fa fa-tag"></i>
+                        
+                            <a class="tag-link" href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">漏洞挖掘</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/">红蓝对抗</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/">安全运营</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">应急响应</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/">威胁情报</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E5%85%A5%E8%A1%8C%E6%8C%87%E5%8D%97/">入行指南</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E7%BD%91%E5%AE%89%E5%85%A5%E9%97%A8/">网安入门</a>
+                        
+                    </div>
+                    
+                </div>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                <p>想入门网络安全，但被各种名词搞晕了？渗透测试、代码审计、漏洞挖掘、红蓝对抗、SOC……它们到底有什么区别？各自具体干什么？彼此之间又是什么关系？</p>
+<p>这篇文章帮你理清网安行业的业务全貌，每个业务都配有详细的工作流程拆解。</p>
+<hr>
+<h2 id="一、网络安全业务全景图"><a href="#一、网络安全业务全景图" class="headerlink" title="一、网络安全业务全景图"></a>一、网络安全业务全景图</h2><p>按视角划分为四大板块：</p>
+<p><img src="/blog/images/Gemini_Generated_Image_xmrm6gxmrm6gxmrm.png" alt="网络安全业务全景图"></p>
+<h3 id="1-攻击视角-—-红队技术"><a href="#1-攻击视角-—-红队技术" class="headerlink" title="1. 攻击视角 — 红队技术"></a>1. 攻击视角 — 红队技术</h3><table>
+<thead>
+<tr>
+<th>业务</th>
+<th>简介</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>渗透测试</strong></td>
+<td>模拟黑客攻击，对目标系统进行受控测试，发现并验证安全漏洞</td>
+</tr>
+<tr>
+<td><strong>代码审计</strong></td>
+<td>审查源代码中的安全缺陷（SQL注入、XSS、反序列化等），白盒视角</td>
+</tr>
+<tr>
+<td><strong>漏洞挖掘</strong></td>
+<td>研究软件&#x2F;系统，发现未知漏洞（0day），聚焦前沿攻防</td>
+</tr>
+<tr>
+<td><strong>红蓝对抗</strong></td>
+<td>渗透测试的升级版，模拟真实APT攻击，实战化演练</td>
+</tr>
+<tr>
+<td><strong>安全众测&#x2F;Bug Bounty</strong></td>
+<td>通过众包平台邀请白帽子对产品进行测试，按漏洞付费</td>
+</tr>
+</tbody></table>
+<h3 id="2-防御视角-—-蓝队技术"><a href="#2-防御视角-—-蓝队技术" class="headerlink" title="2. 防御视角 — 蓝队技术"></a>2. 防御视角 — 蓝队技术</h3><table>
+<thead>
+<tr>
+<th>业务</th>
+<th>简介</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>安全运维&#x2F;安全运营(SOC)</strong></td>
+<td>7×24小时监控日志、告警分析、日常安全巡检</td>
+</tr>
+<tr>
+<td><strong>应急响应</strong></td>
+<td>安全事件发生后的紧急处置——止损、根除、溯源、恢复</td>
+</tr>
+<tr>
+<td><strong>威胁情报</strong></td>
+<td>收集、分析攻击者TTPs、IOC等情报，为防御提供预警</td>
+</tr>
+<tr>
+<td><strong>日志分析&#x2F;SIEM&#x2F;态势感知</strong></td>
+<td>大数据+规则引擎，从海量日志中发现异常行为</td>
+</tr>
+</tbody></table>
+<h3 id="3-合规与管理视角"><a href="#3-合规与管理视角" class="headerlink" title="3. 合规与管理视角"></a>3. 合规与管理视角</h3><table>
+<thead>
+<tr>
+<th>业务</th>
+<th>简介</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>等保测评</strong></td>
+<td>网络安全等级保护测评，国家合规要求</td>
+</tr>
+<tr>
+<td><strong>风险评估</strong></td>
+<td>识别资产→分析威胁→评估脆弱性→计算风险值</td>
+</tr>
+<tr>
+<td><strong>安全咨询&#x2F;方案设计</strong></td>
+<td>为企业设计安全架构、制定安全策略</td>
+</tr>
+</tbody></table>
+<h3 id="4-开发安全视角"><a href="#4-开发安全视角" class="headerlink" title="4. 开发安全视角"></a>4. 开发安全视角</h3><table>
+<thead>
+<tr>
+<th>业务</th>
+<th>简介</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SDL &#x2F; 安全开发</strong></td>
+<td>在软件开发生命周期的每个阶段嵌入安全活动</td>
+</tr>
+<tr>
+<td><strong>DevSecOps</strong></td>
+<td>将安全自动化融入CI&#x2F;CD流水线</td>
+</tr>
+</tbody></table>
+<p>按技术方向分为以下领域：</p>
+<h3 id="1-细分专业领域"><a href="#1-细分专业领域" class="headerlink" title="1. 细分专业领域"></a>1. 细分专业领域</h3><table>
+<thead>
+<tr>
+<th>领域</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>APP安全</td>
+<td>Android&#x2F;iOS 应用逆向、加壳脱壳、协议分析</td>
+</tr>
+<tr>
+<td>IoT&#x2F;车联网安全</td>
+<td>智能设备固件分析、通信协议漏洞</td>
+</tr>
+<tr>
+<td>云安全</td>
+<td>容器安全(K8s)、云原生安全、云上配置审计</td>
+</tr>
+<tr>
+<td>工控安全</td>
+<td>SCADA、PLC等工业控制系统安全</td>
+</tr>
+<tr>
+<td>数据安全</td>
+<td>数据分类分级、脱敏、防泄露(DLP)</td>
+</tr>
+<tr>
+<td>密码安全</td>
+<td>密码算法实现审计、TLS配置、密钥管理</td>
+</tr>
+<tr>
+<td>AI安全</td>
+<td>对抗样本、模型投毒、提示词注入</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、各业务之间的关系"><a href="#二、各业务之间的关系" class="headerlink" title="二、各业务之间的关系"></a>二、各业务之间的关系</h2><p>用一张关联图来说明：</p>
+<p><img src="/blog/images/Gemini_Generated_Image_3dho7l3dho7l3dho.png" alt="网络安全业务全景图"></p>
+<p><strong>核心关系总结：</strong></p>
+<ol>
+<li><strong>渗透测试 ↔ 代码审计</strong>：互补关系。渗透是黑盒（从外攻击），审计是白盒（从内审查），两者结合覆盖更全面</li>
+<li><strong>渗透测试 → 漏洞挖掘</strong>：进阶关系。渗透测试做多了会发现工具扫不到的东西，就进入了漏洞挖掘领域</li>
+<li><strong>渗透测试 → 红蓝对抗</strong>：升级关系。红蓝对抗比渗透测试范围更广（不限单个系统）、时间更长、对抗更真实</li>
+<li><strong>漏洞挖掘 → 渗透测试&#x2F;红蓝对抗</strong>：支撑关系。挖掘出的0day作为武器库供实战使用</li>
+<li><strong>SOC&#x2F;应急响应&#x2F;威胁情报</strong>：三者是日常运行铁三角——SOC看家、应急响应救火、威胁情报预警</li>
+<li><strong>等保测评</strong>：包含了渗透测试+代码审计+风险评估，是合规驱动的综合测评</li>
+<li><strong>SDL&#x2F;DevSecOps</strong>：将安全左移到开发阶段，从源头减少漏洞</li>
+</ol>
+<hr>
+<h2 id="三、各业务具体工作流程（详细拆解）"><a href="#三、各业务具体工作流程（详细拆解）" class="headerlink" title="三、各业务具体工作流程（详细拆解）"></a>三、各业务具体工作流程（详细拆解）</h2><hr>
+<h3 id="3-1-渗透测试流程（PTES标准-—-7大阶段）"><a href="#3-1-渗透测试流程（PTES标准-—-7大阶段）" class="headerlink" title="3.1 渗透测试流程（PTES标准 — 7大阶段）"></a>3.1 渗透测试流程（PTES标准 — 7大阶段）</h3><p>渗透测试遵循 PTES（Penetration Testing Execution Standard）技术标准，包括7个核心阶段，通常在 <strong>1~4周</strong> 内完成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">前期交互 → 信息收集 → 威胁建模 → 漏洞分析 → 渗透攻击 → 后渗透利用 → 报告撰写</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="阶段一：前期交互（Pre-engagement）"><a href="#阶段一：前期交互（Pre-engagement）" class="headerlink" title="阶段一：前期交互（Pre-engagement）"></a>阶段一：前期交互（Pre-engagement）</h4><p><strong>目标</strong>：明确测试边界，白纸黑字签授权。</p>
+<table>
+<thead>
+<tr>
+<th>子事项</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>确定测试范围</td>
+<td>哪些IP段、域名、子网、外网&#x2F;内网？哪些系统、API、APP？</td>
+</tr>
+<tr>
+<td>确定测试规则</td>
+<td>测试时间窗口（避开业务高峰）、是否允许提权、能否修改&#x2F;上传数据、能否社工&#x2F;钓鱼</td>
+</tr>
+<tr>
+<td>确定测试类型</td>
+<td>黑盒（零知识，模拟外部真实攻击）、白盒（全知识，内部审计视角）、灰盒（部分知识，最常见）</td>
+</tr>
+<tr>
+<td>签署授权书</td>
+<td>法律保障——这是「合法渗透」和「非法入侵」的分界线</td>
+</tr>
+<tr>
+<td>确认联系人</td>
+<td>24小时紧急联系方式——一旦搞出故障能立刻沟通</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段二：信息收集（Information-Gathering）"><a href="#阶段二：信息收集（Information-Gathering）" class="headerlink" title="阶段二：信息收集（Information Gathering）"></a>阶段二：信息收集（Information Gathering）</h4><p><strong>目标</strong>：尽可能多地获取目标相关信息，攻击面越大，成功率越高。</p>
+<p><strong>（1）被动信息收集（不直接接触目标，利用公开资源）</strong></p>
+<table>
+<thead>
+<tr>
+<th>子项</th>
+<th>具体操作</th>
+<th>工具&#x2F;平台</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WHOIS查询</td>
+<td>查域名注册信息、注册邮箱、DNS服务器</td>
+<td>whois命令行、站长工具</td>
+</tr>
+<tr>
+<td>DNS信息</td>
+<td>查A&#x2F;CNAME&#x2F;MX&#x2F;TXT&#x2F;NS记录，发现关联域名</td>
+<td>dig, nslookup, dnsdumpster.com</td>
+</tr>
+<tr>
+<td>子域名挖掘</td>
+<td>爆破二级&#x2F;三级域名，证书透明度(CT)日志查询</td>
+<td>Subfinder, OneForAll, crt.sh</td>
+</tr>
+<tr>
+<td>搜索引擎侦查</td>
+<td>Google Hacking（site&#x2F;inurl&#x2F;intitle&#x2F;filetype），GitHub搜寻泄露的密码&#x2F;配置&#x2F;源码</td>
+<td>Google Dork, GitHub Search</td>
+</tr>
+<tr>
+<td>网络空间测绘</td>
+<td>在互联网资产搜索引擎中检索目标暴露面</td>
+<td>Shodan, Fofa, ZoomEye, Censys</td>
+</tr>
+<tr>
+<td>社工信息收集</td>
+<td>领英&#x2F;脉脉查员工信息（可用于钓鱼）、天眼查&#x2F;企查查查企业架构</td>
+<td>社交媒体、企业信息平台</td>
+</tr>
+<tr>
+<td>历史数据</td>
+<td>Wayback Machine查看网站历史页面、历史漏洞公告</td>
+<td>archive.org, exploit-db</td>
+</tr>
+<tr>
+<td>JS&#x2F;前端信息泄露</td>
+<td>从JS文件中提取API端点、隐藏路径、AccessKey等</td>
+<td>LinkFinder, JSFinder, 手工审查</td>
+</tr>
+</tbody></table>
+<p><strong>（2）主动信息收集（直接与目标交互，会留下痕迹）</strong></p>
+<table>
+<thead>
+<tr>
+<th>子项</th>
+<th>具体操作</th>
+<th>工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主机发现</td>
+<td>探测哪些IP存活（ICMP&#x2F;ARP&#x2F;TCP ACK等多种方式）</td>
+<td>Nmap -sn, fping</td>
+</tr>
+<tr>
+<td>端口扫描</td>
+<td>扫描开放端口，识别运行的服务（SYN扫描隐蔽，Connect扫描稳定）</td>
+<td>Nmap -sS&#x2F;sT, Masscan（高速）</td>
+</tr>
+<tr>
+<td>服务&#x2F;版本识别</td>
+<td>识别端口上运行的具体服务及版本号</td>
+<td>Nmap -sV</td>
+</tr>
+<tr>
+<td>操作系统识别</td>
+<td>通过TCP&#x2F;IP协议栈指纹判断目标操作系统</td>
+<td>Nmap -O, p0f</td>
+</tr>
+<tr>
+<td>Web指纹识别</td>
+<td>识别CMS（WordPress&#x2F;DedeCMS等）、Web框架（Spring&#x2F;Flask等）、中间件（Tomcat&#x2F;Nginx等）</td>
+<td>WhatWeb, Wappalyzer, EHole</td>
+</tr>
+<tr>
+<td>目录&#x2F;文件扫描</td>
+<td>扫描Web目录和敏感文件（后台入口、备份文件、配置文件、.git泄露等）</td>
+<td>dirsearch, gobuster, ffuf</td>
+</tr>
+<tr>
+<td>CDN识别与绕过</td>
+<td>判断目标是否使用CDN，如使用了则通过多地Ping、DNS历史等找到真实IP</td>
+<td>多地Ping, DNSDB, 证书查询</td>
+</tr>
+</tbody></table>
+<p><strong>常见产出物</strong>：资产清单（IP、域名、端口）、网络拓扑草图、Web站点列表、员工邮箱列表</p>
+<hr>
+<h4 id="阶段三：威胁建模（Threat-Modeling）"><a href="#阶段三：威胁建模（Threat-Modeling）" class="headerlink" title="阶段三：威胁建模（Threat Modeling）"></a>阶段三：威胁建模（Threat Modeling）</h4><p><strong>目标</strong>：基于收集到的信息，分析可能的攻击面，确定”从哪里下手”。</p>
+<table>
+<thead>
+<tr>
+<th>子项</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>攻击面分析</td>
+<td>哪些端口暴露在外？哪些服务有公开漏洞？哪些Web入口可控？</td>
+</tr>
+<tr>
+<td>业务逻辑分析</td>
+<td>Web应用有哪些功能模块（登录&#x2F;注册&#x2F;上传&#x2F;支付等），每个功能点可能存在什么安全问题？</td>
+</tr>
+<tr>
+<td>权限边界分析</td>
+<td>内网&#x2F;外网边界在哪？DMZ区与核心区的网络隔离情况？</td>
+</tr>
+<tr>
+<td>攻击路径规划</td>
+<td>画出一到多条攻击链：入口点 → 初始突破 → 提权 → 横向移动 → 抵达核心目标</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段四：漏洞分析（Vulnerability-Analysis）"><a href="#阶段四：漏洞分析（Vulnerability-Analysis）" class="headerlink" title="阶段四：漏洞分析（Vulnerability Analysis）"></a>阶段四：漏洞分析（Vulnerability Analysis）</h4><p><strong>目标</strong>：自动化+手工结合，发现系统存在的安全漏洞。</p>
+<table>
+<thead>
+<tr>
+<th>子项</th>
+<th>具体操作</th>
+<th>工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>漏洞扫描</td>
+<td>全量自动化扫描，快速发现已知漏洞（CVE漏洞、弱口令、配置缺陷等）</td>
+<td>Nessus, OpenVAS, AWVS</td>
+</tr>
+<tr>
+<td>Web专项扫描</td>
+<td>针对Web应用的SQL注入、XSS、CSRF、SSRF等OWASP Top 10漏洞</td>
+<td>Xray, Nuclei + 模板, Burp Suite主动扫描</td>
+</tr>
+<tr>
+<td>弱口令爆破</td>
+<td>对SSH&#x2F;RDP&#x2F;MySQL&#x2F;FTP&#x2F;Web后台等常见服务进行弱口令检测</td>
+<td>Hydra, Medusa, SuperWeakPass</td>
+</tr>
+<tr>
+<td>手工验证</td>
+<td><strong>对扫描结果逐条手工确认</strong>——自动化工具误报率高，必须人工验证</td>
+<td>Burp Repeater, SQLMap –dbs, 手工构造Payload</td>
+</tr>
+</tbody></table>
+<p>手工验证需确认三件事：</p>
+<ul>
+<li>判断是否真的存在漏洞（还是只是版本号匹配）</li>
+<li>确认漏洞利用条件（需要认证？需要特定参数？）</li>
+<li>评估漏洞实际危害（能获取什么级别的权限？）</li>
+</ul>
+<p><strong>关键原则</strong>：自动化扫描只是”捞鱼”，手工验证才是”确认鱼的大小和种类”。不验证的漏洞报告没有价值。</p>
+<hr>
+<h4 id="阶段五：渗透攻击（Exploitation）"><a href="#阶段五：渗透攻击（Exploitation）" class="headerlink" title="阶段五：渗透攻击（Exploitation）"></a>阶段五：渗透攻击（Exploitation）</h4><p><strong>目标</strong>：利用已验证的漏洞，获取目标系统的初始访问权限（Initial Foothold）。</p>
+<table>
+<thead>
+<tr>
+<th>突破方式</th>
+<th>具体技术</th>
+<th>常用工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Web漏洞利用</td>
+<td>SQL注入拿数据&#x2F;写Webshell、文件上传绕过getshell、SSRF打内网、反序列化RCE、模板注入(SSTI)</td>
+<td>SQLMap, 蚁剑&#x2F;冰蝎&#x2F;哥斯拉, ysoserial</td>
+</tr>
+<tr>
+<td>系统漏洞利用</td>
+<td>利用未修复的CVE（如永恒之蓝MS17-010、BlueKeep等）直接获取系统权限</td>
+<td>Metasploit, 公开Exploit-DB脚本</td>
+</tr>
+<tr>
+<td>弱口令&#x2F;默认口令</td>
+<td>通过前期爆破或已知默认口令直接登录系统</td>
+<td>—</td>
+</tr>
+<tr>
+<td>钓鱼攻击</td>
+<td>构造钓鱼邮件&#x2F;页面，诱导员工点击并获取凭据或Shell（通常仅在大型红蓝对抗中使用）</td>
+<td>GoPhish, Cobalt Strike</td>
+</tr>
+<tr>
+<td>近源攻击</td>
+<td>Wi-Fi破解、物理接口接入、USB BadUSB等（红蓝对抗场景）</td>
+<td>Aircrack-ng, Rubber Ducky</td>
+</tr>
+</tbody></table>
+<p><strong>获取权限的常见形式</strong>：Webshell (命令执行型&#x2F;文件管理型)、反弹Shell (nc&#x2F;bash&#x2F;powershell)、远程桌面&#x2F;RDP、SSH密钥</p>
+<hr>
+<h4 id="阶段六：后渗透利用（Post-Exploitation）"><a href="#阶段六：后渗透利用（Post-Exploitation）" class="headerlink" title="阶段六：后渗透利用（Post Exploitation）"></a>阶段六：后渗透利用（Post Exploitation）</h4><p><strong>目标</strong>：从已突破的点向更深处推进，扩大战果，提升权限，最终拿下核心目标。</p>
+<p><strong>（1）权限提升（Privilege Escalation）</strong></p>
+<table>
+<thead>
+<tr>
+<th>方向</th>
+<th>典型方法</th>
+<th>工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Linux提权</td>
+<td>内核漏洞提权(DirtyCow&#x2F;DirtyPipe)、SUID&#x2F;SGID可执行文件滥用、sudo配置漏洞、Cron任务劫持、Capability滥用、Docker组提权</td>
+<td>LinPEAS, linux-exploit-suggester, GTFOBins</td>
+</tr>
+<tr>
+<td>Windows提权</td>
+<td>内核漏洞提权、服务权限配置不当（不安全的服务路径&#x2F;可写服务）、AlwaysInstallElevated、UAC绕过、Token窃取</td>
+<td>WinPEAS, Watson, JuicyPotato, PrintSpoofer</td>
+</tr>
+<tr>
+<td>数据库提权</td>
+<td>MySQL UDF提权&#x2F;MOF提权、SQL Server xp_cmdshell</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p><strong>（2）横向移动（Lateral Movement）</strong></p>
+<table>
+<thead>
+<tr>
+<th>技术</th>
+<th>说明</th>
+<th>工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>凭据窃取</td>
+<td>从内存dump密码哈希、浏览器保存密码、配置文件中的明文密码</td>
+<td>Mimikatz, LaZagne</td>
+</tr>
+<tr>
+<td>哈希传递(PtH)</td>
+<td>不破解密码，直接用NTLM哈希认证其他Windows主机</td>
+<td>Mimikatz, Impacket</td>
+</tr>
+<tr>
+<td>票据攻击</td>
+<td>Kerberos黄金票据&#x2F;白银票据，伪造域控权限</td>
+<td>Mimikatz, Rubeus</td>
+</tr>
+<tr>
+<td>SSH密钥复用</td>
+<td>用已获取的SSH私钥登录其他Linux主机</td>
+<td>—</td>
+</tr>
+<tr>
+<td>RDP&#x2F;WMI&#x2F;PSExec</td>
+<td>利用Windows远程管理协议跳板</td>
+<td>PsExec, WMIexec</td>
+</tr>
+</tbody></table>
+<p><strong>（3）数据窃取与权限维持（测试目标场景）</strong></p>
+<table>
+<thead>
+<tr>
+<th>动作</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定位核心数据</td>
+<td>搜索数据库连接串、敏感文件、代码仓库、内部文档</td>
+</tr>
+<tr>
+<td>数据外传测试</td>
+<td>模拟攻击者将数据打包传出（测试DLP和数据防泄露能力）</td>
+</tr>
+<tr>
+<td>留持久化后门</td>
+<td>计划任务&#x2F;服务&#x2F;注册表启动项&#x2F;SSH公钥&#x2F;WEB后门（<strong>测试后必须全部清除</strong>）</td>
+</tr>
+<tr>
+<td>痕迹清理</td>
+<td>清除Shell历史、日志中操作记录、上传的文件（<strong>测试后执行</strong>）</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段七：报告撰写（Reporting）"><a href="#阶段七：报告撰写（Reporting）" class="headerlink" title="阶段七：报告撰写（Reporting）"></a>阶段七：报告撰写（Reporting）</h4><p><strong>目标</strong>：将测试成果转化为可读、可落地的安全报告。报告质量直接决定测试价值。</p>
+<table>
+<thead>
+<tr>
+<th>报告章节</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>概述</td>
+<td>测试目标、范围、时间、测试类型（黑&#x2F;白&#x2F;灰盒）</td>
+</tr>
+<tr>
+<td>漏洞清单</td>
+<td>每个漏洞的：名称、CVSS评分、风险等级（高&#x2F;中&#x2F;低）、发现方式、复现步骤（截图+Payload）、危害说明</td>
+</tr>
+<tr>
+<td>攻击链总结</td>
+<td>从入口到核心目标的完整攻击路径梳理，让客户直观感受风险</td>
+</tr>
+<tr>
+<td>修复建议</td>
+<td>按优先级排序：高危→立即修复（如直接RCE、数据泄露）；中危→尽快修复（如信息泄露、弱口令）；低危→择期修复。每项给出具体修复方案而非泛泛的”加强安全配置”</td>
+</tr>
+<tr>
+<td>附录</td>
+<td>工具清单、Payload列表、时间线</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="3-2-代码审计流程（6大阶段）"><a href="#3-2-代码审计流程（6大阶段）" class="headerlink" title="3.2 代码审计流程（6大阶段）"></a>3.2 代码审计流程（6大阶段）</h3><p>代码审计（Security Code Review）是从源码层面发现安全漏洞的白盒测试方法，通常在 <strong>1~4周</strong> 完成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">前期准备 → 自动化扫描 → 人工审计 → 漏洞验证 → 修复建议 → 审计报告</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="阶段一：前期准备"><a href="#阶段一：前期准备" class="headerlink" title="阶段一：前期准备"></a>阶段一：前期准备</h4><table>
+<thead>
+<tr>
+<th>子项</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>获取完整源码</td>
+<td>包括项目代码、依赖包(package.json&#x2F;pom.xml&#x2F;go.mod等)、数据库建表脚本、配置文件模板</td>
+</tr>
+<tr>
+<td>了解技术栈</td>
+<td>后端语言（Java&#x2F;Python&#x2F;Go&#x2F;PHP&#x2F;.NET）、Web框架（Spring Boot&#x2F;Django&#x2F;Gin&#x2F;ThinkPHP）、ORM框架、中间件</td>
+</tr>
+<tr>
+<td>了解业务架构</td>
+<td>功能模块划分、用户角色与权限体系、外部API调用关系、数据流向</td>
+</tr>
+<tr>
+<td>环境搭建</td>
+<td>本地部署运行，确保代码可编译、可调试</td>
+</tr>
+<tr>
+<td>明确审计范围</td>
+<td>全量审计还是仅核心模块？是否包含第三方依赖？</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段二：自动化扫描"><a href="#阶段二：自动化扫描" class="headerlink" title="阶段二：自动化扫描"></a>阶段二：自动化扫描</h4><table>
+<thead>
+<tr>
+<th>子项</th>
+<th>具体操作</th>
+<th>工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SAST扫描</td>
+<td>使用静态应用安全测试工具全量扫描，自动检测规则匹配的漏洞模式</td>
+<td>SonarQube, Fortify SCA, Checkmarx, Semgrep, CodeQL</td>
+</tr>
+<tr>
+<td>SCA扫描</td>
+<td>软件成分分析——检测引入的第三方依赖是否存在已知CVE漏洞</td>
+<td>OWASP Dependency-Check, Snyk, Trivy</td>
+</tr>
+<tr>
+<td>密钥&#x2F;敏感信息扫描</td>
+<td>扫描代码中是否硬编码了密码、API Key、Token等</td>
+<td>Gitleaks, TruffleHog</td>
+</tr>
+<tr>
+<td>结果初筛</td>
+<td>过滤误报（False Positive），标记需要人工深入分析的告警</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p><strong>注意</strong>：自动化工具仅能发现”模式匹配”类型的漏洞（如使用了危险函数），无法理解业务逻辑。误报率通常在30%~70%。</p>
+<hr>
+<h4 id="阶段三：人工审计（核心环节）"><a href="#阶段三：人工审计（核心环节）" class="headerlink" title="阶段三：人工审计（核心环节）"></a>阶段三：人工审计（核心环节）</h4><p>这是代码审计最有价值的部分，依赖审计人员的经验和对漏洞模式的理解。</p>
+<p><strong>（1）审计方法论：污点追踪（Taint Tracking）</strong></p>
+<p>核心思想：追踪外部可控数据（Source）→ 经过的过滤函数（Sanitizer）→ 到达危险操作（Sink）的完整路径。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Source（用户输入点）  →  Sanitizer（过滤/转义）  →  Sink（危险操作点）</span><br><span class="line">     ↓                        ↓                        ↓</span><br><span class="line">request.getParameter()    安全过滤缺失/不足         SQL执行/命令执行/文件操作</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>示例（Java）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Source</td>
+<td><code>request.getParameter()</code>, <code>@RequestBody</code>, <code>req.getInputStream()</code>, Cookie值, Header值, 文件内容</td>
+</tr>
+<tr>
+<td>Sink</td>
+<td><code>stmt.executeQuery()</code>, <code>Runtime.exec()</code>, <code>new FileOutputStream()</code>, <code>ProcessBuilder.start()</code></td>
+</tr>
+<tr>
+<td>Sanitizer</td>
+<td><code>ESAPI.encoder()</code>, <code>HtmlUtils.htmlEscape()</code>, 参数化查询(PreparedStatement), 白名单校验</td>
+</tr>
+</tbody></table>
+<p>如果 Source → Sink 路径上”没有足够的Sanitizer”，就存在漏洞。</p>
+<p><strong>（2）逐类漏洞审计要点</strong></p>
+<table>
+<thead>
+<tr>
+<th>漏洞类型</th>
+<th>审计对象</th>
+<th>典型危险模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SQL注入</strong></td>
+<td>所有数据库查询语句</td>
+<td>拼接SQL字符串（<code>&quot;SELECT * FROM users WHERE id=&quot; + id</code>），未使用参数化查询&#x2F;ORM</td>
+</tr>
+<tr>
+<td><strong>XSS跨站</strong></td>
+<td>所有输出到HTML&#x2F;JS的代码</td>
+<td>未转义直接输出用户内容（<code>out.println(userInput)</code>），innerHTML赋值</td>
+</tr>
+<tr>
+<td><strong>命令注入</strong></td>
+<td>所有调用系统命令的地方</td>
+<td><code>Runtime.exec(&quot;ping &quot; + ip)</code> 未过滤参数</td>
+</tr>
+<tr>
+<td><strong>文件上传</strong></td>
+<td>文件上传功能</td>
+<td>仅前端校验、黑名单过滤可绕过、未限制文件类型&#x2F;大小、未重命名</td>
+</tr>
+<tr>
+<td><strong>文件操作</strong></td>
+<td>文件读取&#x2F;写入&#x2F;下载&#x2F;删除</td>
+<td>路径拼接导致目录穿越（<code>../../../etc/passwd</code>）、任意文件读取&#x2F;写入</td>
+</tr>
+<tr>
+<td><strong>反序列化</strong></td>
+<td><code>ObjectInputStream.readObject()</code>, <code>json</code>解析</td>
+<td>不可信数据反序列化，未做类型白名单校验</td>
+</tr>
+<tr>
+<td><strong>SSRF</strong></td>
+<td>服务端发起HTTP请求的地方</td>
+<td>URL参数可控且未限制访问目标（可打内网）</td>
+</tr>
+<tr>
+<td><strong>XXE</strong></td>
+<td>XML解析处</td>
+<td>未禁用外部实体解析（DTD&#x2F;ENTITY）</td>
+</tr>
+<tr>
+<td><strong>权限绕过</strong></td>
+<td>越权访问</td>
+<td>未做身份校验的水平越权（IDOR）、未做角色校验的垂直越权</td>
+</tr>
+<tr>
+<td><strong>加密问题</strong></td>
+<td>加密&#x2F;哈希&#x2F;随机数</td>
+<td>硬编码密钥、弱算法(MD5&#x2F;SHA1&#x2F;DES&#x2F;ECB)、不安全的随机数(Random而非SecureRandom)</td>
+</tr>
+<tr>
+<td><strong>敏感信息泄露</strong></td>
+<td>日志&#x2F;响应&#x2F;错误页面</td>
+<td>日志打印密码&#x2F;Token、错误信息泄露堆栈&#x2F;路径、响应返回多余字段</td>
+</tr>
+</tbody></table>
+<p><strong>（3）审计顺序策略</strong></p>
+<ol>
+<li><strong>先高危后低危</strong>：先找 SQL注入&#x2F;命令注入&#x2F;反序列化&#x2F;任意文件上传 这种直接 getshell 的</li>
+<li><strong>先外部后内部</strong>：先审计对外暴露的接口（Controller&#x2F;API）再审计内部Service</li>
+<li><strong>先功能点后全局</strong>：先审计登录&#x2F;注册&#x2F;上传&#x2F;支付等关键功能，再审计全局过滤器&#x2F;拦截器</li>
+<li><strong>正向+逆向结合</strong>：正向从Controller跟到DAO，逆向从Sink反推到Controller</li>
+</ol>
+<hr>
+<h4 id="阶段四：漏洞验证"><a href="#阶段四：漏洞验证" class="headerlink" title="阶段四：漏洞验证"></a>阶段四：漏洞验证</h4><table>
+<thead>
+<tr>
+<th>子项</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>搭建测试环境</td>
+<td>部署代码到测试环境，确保可正常访问</td>
+</tr>
+<tr>
+<td>构造攻击向量</td>
+<td>针对审计发现的疑似漏洞，构建具体的Payload进行验证</td>
+</tr>
+<tr>
+<td>确认漏洞可利用</td>
+<td>验证漏洞是否真实存在、利用条件是否满足、实际危害程度</td>
+</tr>
+<tr>
+<td>截图&#x2F;录屏</td>
+<td>记录完整复现过程作为证据</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段五：修复建议"><a href="#阶段五：修复建议" class="headerlink" title="阶段五：修复建议"></a>阶段五：修复建议</h4><table>
+<thead>
+<tr>
+<th>要求</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>代码级方案</td>
+<td>不能写”修复SQL注入”而应写”将第X行拼接SQL改为PreparedStatement参数化查询”</td>
+</tr>
+<tr>
+<td>给出正反对比</td>
+<td>错误写法 vs 正确写法，方便开发对照修改</td>
+</tr>
+<tr>
+<td>风险评级</td>
+<td>按CVSS标准评分，标注危害等级和修复优先级</td>
+</tr>
+</tbody></table>
+<h4 id="阶段六：审计报告"><a href="#阶段六：审计报告" class="headerlink" title="阶段六：审计报告"></a>阶段六：审计报告</h4><p>与渗透测试报告结构类似，额外包含：漏洞所在文件路径+行号、代码片段截图、修复前后对比代码。</p>
+<hr>
+<h3 id="3-3-漏洞挖掘流程（7大阶段）"><a href="#3-3-漏洞挖掘流程（7大阶段）" class="headerlink" title="3.3 漏洞挖掘流程（7大阶段）"></a>3.3 漏洞挖掘流程（7大阶段）</h3><p>漏洞挖掘（Vulnerability Research）是主动发现未知漏洞（0day）的研究过程，一条完整的漏洞挖掘链通常需要 <strong>数周到数月</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">选题定向 → 环境搭建 → 攻击面分析 → 方法选择与执行 → 异常捕获与定位 → PoC/EXP开发 → 漏洞披露</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="阶段一：选题与定向"><a href="#阶段一：选题与定向" class="headerlink" title="阶段一：选题与定向"></a>阶段一：选题与定向</h4><table>
+<thead>
+<tr>
+<th>子项</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>选定目标</td>
+<td>选择有研究价值的软件&#x2F;组件&#x2F;协议&#x2F;设备。新上线的产品、大版本更新的流行框架、IoT设备固件是热门方向</td>
+</tr>
+<tr>
+<td>信息收集</td>
+<td>获取目标版本号、技术栈、历史漏洞(CVE)列表、公开安全公告、补丁对比</td>
+</tr>
+<tr>
+<td>确定技术路线</td>
+<td>根据目标类型确定：Web应用 → 代码审计+黑盒Fuzzing；二进制程序 → 逆向+Fuzzing；IoT&#x2F;嵌入式 → 固件提取+协议分析</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段二：环境搭建"><a href="#阶段二：环境搭建" class="headerlink" title="阶段二：环境搭建"></a>阶段二：环境搭建</h4><table>
+<thead>
+<tr>
+<th>目标类型</th>
+<th>搭建方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Web&#x2F;网络应用</td>
+<td>部署源码或二进制，搭建本地测试环境</td>
+</tr>
+<tr>
+<td>二进制程序</td>
+<td>安装对应OS版本，配置调试器(WinDbg&#x2F;gdb)、反汇编器(IDA Pro&#x2F;Ghidra)</td>
+</tr>
+<tr>
+<td>IoT设备</td>
+<td>提取固件（binwalk解包）、模拟运行(Firmadyne&#x2F;QEMU)或实体设备调试(UART&#x2F;JTAG)</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段三：攻击面分析"><a href="#阶段三：攻击面分析" class="headerlink" title="阶段三：攻击面分析"></a>阶段三：攻击面分析</h4><table>
+<thead>
+<tr>
+<th>子项</th>
+<th>分析内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>输入点枚举</td>
+<td>所有接受外部数据的地方：HTTP参数、文件上传、网络协议端口、IPC接口、API参数</td>
+</tr>
+<tr>
+<td>协议解析点</td>
+<td>自定义协议的解析代码——往往是C&#x2F;C++编写的，内存安全问题重灾区</td>
+</tr>
+<tr>
+<td>文件格式解析</td>
+<td>支持的文档&#x2F;图片&#x2F;压缩包格式——解析代码复杂、攻击面大</td>
+</tr>
+<tr>
+<td>第三方组件</td>
+<td>使用了哪些开源库？这些库的哪个版本有已知漏洞或历史安全公告？</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段四：方法选择与执行"><a href="#阶段四：方法选择与执行" class="headerlink" title="阶段四：方法选择与执行"></a>阶段四：方法选择与执行</h4><p>这是漏洞挖掘的核心技术环节，选择哪种方法取决于目标类型和研究方向：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>适用场景</th>
+<th>具体技术</th>
+<th>常用工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>模糊测试(Fuzzing)</strong></td>
+<td>任何接受外部输入的程序</td>
+<td>生成大量变异&#x2F;随机输入喂给目标，监控崩溃：黑盒（不需要源码，如AFL）、灰盒（通过插桩获取覆盖率反馈，如AFL++）、协议Fuzzing（Peach, Sulley, Boofuzz）、Web Fuzzing（对API参数进行异常值测试）</td>
+<td>AFL++, LibFuzzer, honggfuzz, Peach, Burp Intruder</td>
+</tr>
+<tr>
+<td><strong>逆向分析</strong></td>
+<td>无源码的二进制程序</td>
+<td>静态分析：用IDA Pro&#x2F;Ghidra反汇编后阅读伪代码，寻找危险函数(strcpy&#x2F;memcpy&#x2F;gets&#x2F;scanf)；动态分析：用调试器下断点，跟踪内存操作</td>
+<td>IDA Pro, Ghidra, x64dbg, WinDbg, gdb</td>
+</tr>
+<tr>
+<td><strong>补丁对比</strong></td>
+<td>软件供应商刚发布安全补丁</td>
+<td>对比补丁前后的二进制&#x2F;源码差异 → 定位修复的漏洞位置 → 逆向分析漏洞原理 → 针对未打补丁的版本开发利用</td>
+<td>Bindiff, Diaphora, IDA</td>
+</tr>
+<tr>
+<td><strong>污点分析</strong></td>
+<td>有源码的目标</td>
+<td>将漏洞模式抽象为QL查询语句，自动追踪Source→Sink路径</td>
+<td>CodeQL, Joern</td>
+</tr>
+<tr>
+<td><strong>符号执行</strong></td>
+<td>探索深层执行路径</td>
+<td>将程序输入符号化，通过约束求解遍历不同执行路径，发现常规测试无法触达的深层漏洞</td>
+<td>angr, KLEE, S2E</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段五：异常捕获与定位"><a href="#阶段五：异常捕获与定位" class="headerlink" title="阶段五：异常捕获与定位"></a>阶段五：异常捕获与定位</h4><table>
+<thead>
+<tr>
+<th>子项</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>崩溃监控</td>
+<td>Fuzzing时监控目标进程是否崩溃（Segment Fault &#x2F; Access Violation等），收集崩溃样本</td>
+</tr>
+<tr>
+<td>崩溃分类</td>
+<td>判断崩溃类型：栈溢出、堆溢出、UAF(Use-After-Free)、double-free、整数溢出等</td>
+</tr>
+<tr>
+<td>崩溃去重</td>
+<td>多个崩溃样本可能触发同一根因，需要去重（通过崩溃地址&#x2F;调用栈哈希）</td>
+</tr>
+<tr>
+<td>根因定位</td>
+<td>利用调试器回放崩溃→定位崩溃点→追踪到漏洞根因（哪里的代码对输入处理不当）</td>
+</tr>
+<tr>
+<td>可利用性评估</td>
+<td>判断漏洞是否可被利用：可控的EIP&#x2F;RIP？可控的写操作？信息泄露？</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段六：PoC与EXP开发"><a href="#阶段六：PoC与EXP开发" class="headerlink" title="阶段六：PoC与EXP开发"></a>阶段六：PoC与EXP开发</h4><table>
+<thead>
+<tr>
+<th>产出物</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PoC (Proof of Concept)</td>
+<td>证明漏洞存在的验证代码，只需触发崩溃&#x2F;异常即可。用于提交CVE</td>
+</tr>
+<tr>
+<td>EXP (Exploit)</td>
+<td>能够实际利用漏洞执行代码的完整利用脚本。包含了ROP链&#x2F;Shellcode等高级技术</td>
+</tr>
+</tbody></table>
+<p><strong>EXP开发涉及的关键技术</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>技术</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>栈溢出利用</td>
+<td>覆盖返回地址 → ROP链 → 调用system&#x2F;execve</td>
+</tr>
+<tr>
+<td>堆利用</td>
+<td>堆风水(Heap Feng Shui)、Tcache poisoning、Fastbin attack</td>
+</tr>
+<tr>
+<td>ASLR绕过</td>
+<td>通过信息泄露获取基地址、partial overwrite</td>
+</tr>
+<tr>
+<td>NX&#x2F;DEP绕过</td>
+<td>ROP(Return-Oriented Programming)或mprotect修改内存属性</td>
+</tr>
+<tr>
+<td>CFG绕过</td>
+<td>Control Flow Guard — Windows现代保护机制，需要更精巧的利用链</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段七：漏洞披露"><a href="#阶段七：漏洞披露" class="headerlink" title="阶段七：漏洞披露"></a>阶段七：漏洞披露</h4><table>
+<thead>
+<tr>
+<th>子项</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>联系厂商</td>
+<td>通过漏洞奖励计划(Bug Bounty)或直接邮件联系厂商安全团队</td>
+</tr>
+<tr>
+<td>CVE申请</td>
+<td>向MITRE申请CVE编号，获得全球统一漏洞标识</td>
+</tr>
+<tr>
+<td>撰写漏洞报告</td>
+<td>详细的漏洞描述、影响版本、复现步骤、修复建议</td>
+</tr>
+<tr>
+<td>披露时间线</td>
+<td>遵循「负责任的披露」原则——给厂商90天修复期后再公开细节</td>
+</tr>
+<tr>
+<td>发表技术文章</td>
+<td>在博客&#x2F;安全会议上分享漏洞挖掘过程和技术心得</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="3-4-应急响应流程（PDCERF模型-—-6大阶段）"><a href="#3-4-应急响应流程（PDCERF模型-—-6大阶段）" class="headerlink" title="3.4 应急响应流程（PDCERF模型 — 6大阶段）"></a>3.4 应急响应流程（PDCERF模型 — 6大阶段）</h3><p>应急响应遵循国际通用的 <strong>PDCERF</strong> 方法论，强调”分秒必争但步步为营”：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">准备(Preparation) → 检测(Detection) → 抑制(Containment) → 根除(Eradication) → 恢复(Recovery) → 跟进(Follow-up)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="阶段一：准备（Preparation）—-功夫在平时"><a href="#阶段一：准备（Preparation）—-功夫在平时" class="headerlink" title="阶段一：准备（Preparation）— 功夫在平时"></a>阶段一：准备（Preparation）— 功夫在平时</h4><p>应急响应做得好不好，70%取决于平时准备的充分程度。</p>
+<table>
+<thead>
+<tr>
+<th>准备工作</th>
+<th>具体内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>应急预案</td>
+<td>针对勒索病毒、数据泄露、DDoS、Web篡改、钓鱼邮件等常见事件类型，分别制定处置SOP</td>
+</tr>
+<tr>
+<td>应急团队</td>
+<td>明确角色分工：总指挥、技术分析组(取证&#x2F;逆向)、业务恢复组、对外沟通组、法务合规组</td>
+</tr>
+<tr>
+<td>通讯渠道</td>
+<td>建立脱离办公网络（以避免被攻击者监控）的应急通讯群</td>
+</tr>
+<tr>
+<td>工具资源</td>
+<td>提前备好：取证U盘(Linux Live USB)、抓包工具(Wireshark&#x2F;tcpdump)、日志分析工具、应急工具箱</td>
+</tr>
+<tr>
+<td>基础数据</td>
+<td>日常维护：网络拓扑图、资产清单(IP&#x2F;域名&#x2F;负责人)、基线配置快照、日常流量基线</td>
+</tr>
+<tr>
+<td>演练</td>
+<td>定期进行应急演练（桌面推演+实战演练），确保流程不是纸上谈兵</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段二：检测与研判（Detection-Analysis）"><a href="#阶段二：检测与研判（Detection-Analysis）" class="headerlink" title="阶段二：检测与研判（Detection &amp; Analysis）"></a>阶段二：检测与研判（Detection &amp; Analysis）</h4><p>收到告警后的第一件事：<strong>判断是不是真实事件</strong>，而不是误报。</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>发现渠道</strong></td>
+<td>SOC&#x2F;SIEM告警、IDS&#x2F;IPS告警、杀软&#x2F;EDR告警、运维发现异常（CPU跑满&#x2F;流量突增）、员工上报（收到可疑邮件&#x2F;电脑变慢）、外部通报（白帽子&#x2F;监管机构）</td>
+</tr>
+<tr>
+<td><strong>初步分析</strong></td>
+<td>查看告警来源设备、告警类型、触发时间、关联的其他告警</td>
+</tr>
+<tr>
+<td><strong>信息验证</strong></td>
+<td>登录受影响主机检查：是否有异常进程？异常网络连接？计划任务？新增用户？最近修改的文件？</td>
+</tr>
+<tr>
+<td><strong>判断真伪</strong></td>
+<td>关键问题：这个告警是否由正常业务行为触发？这个告警的时间与业务变化是否吻合？是否有多个独立告警相互印证？</td>
+</tr>
+<tr>
+<td><strong>定级</strong></td>
+<td>根据影响范围和危害程度确定事件级别：<strong>Ⅰ级（特别重大）</strong> 核心系统被控、大规模数据泄露；<strong>Ⅱ级（重大）</strong> 重要系统被控；<strong>Ⅲ级（较大）</strong> 非核心系统异常；<strong>Ⅳ级（一般）</strong> 低风险告警</td>
+</tr>
+<tr>
+<td><strong>启动应急</strong></td>
+<td>Ⅰ&#x2F;Ⅱ级事件立即启动应急响应流程，通知上级和相关部门</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段三：抑制（Containment）—-先止血"><a href="#阶段三：抑制（Containment）—-先止血" class="headerlink" title="阶段三：抑制（Containment）— 先止血"></a>阶段三：抑制（Containment）— 先止血</h4><p><strong>关键原则</strong>：先切断攻击链路，再调查取证。犹豫越久，损失越大。</p>
+<table>
+<thead>
+<tr>
+<th>抑制手段</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>网络隔离</td>
+<td>将受影响主机断网&#x2F;VLAN隔离，阻止攻击者进一步操控和横向移动</td>
+</tr>
+<tr>
+<td>封禁IP&#x2F;域名</td>
+<td>在防火墙上封禁C2通信地址、恶意IP</td>
+</tr>
+<tr>
+<td>下线服务</td>
+<td>紧急下线受影响系统（同时切换到备用或维护页面）</td>
+</tr>
+<tr>
+<td>重置凭据</td>
+<td>立即修改受影响账户和关联账户的密码、重置API Key&#x2F;Token</td>
+</tr>
+<tr>
+<td>阻断进程</td>
+<td>Kill恶意进程，停止可疑服务</td>
+</tr>
+<tr>
+<td><strong>保留证据</strong></td>
+<td><strong>在断网前先做内存dump和网络连接快照</strong>——一旦关机或断网，内存中的恶意代码、网络连接状态、加密密钥等关键证据将永久丢失</td>
+</tr>
+</tbody></table>
+<p><strong>关键决策</strong>：是”先关停再调查”还是”维持运行暗中监控”。前者保安全，后者保溯源证据——需要高层决策。</p>
+<hr>
+<h4 id="阶段四：根除（Eradication）—-治本"><a href="#阶段四：根除（Eradication）—-治本" class="headerlink" title="阶段四：根除（Eradication）— 治本"></a>阶段四：根除（Eradication）— 治本</h4><table>
+<thead>
+<tr>
+<th>动作</th>
+<th>具体内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>清除恶意文件</td>
+<td>删除Webshell、木马、后门程序、恶意脚本</td>
+</tr>
+<tr>
+<td>清除恶意账户</td>
+<td>删除攻击者创建的系统账户、SSH公钥、数据库用户</td>
+</tr>
+<tr>
+<td>清除持久化机制</td>
+<td>删除恶意计划任务(crontab&#x2F;计划任务)、注册表启动项、恶意服务</td>
+</tr>
+<tr>
+<td>修补漏洞</td>
+<td>修复攻击者利用的漏洞（打补丁、改配置、修复代码）</td>
+</tr>
+<tr>
+<td>重置全部凭据</td>
+<td>所有可能泄露的密码、密钥、证书全部更换</td>
+</tr>
+<tr>
+<td>全网排查</td>
+<td>确认攻击者没有在其他系统中留下后门——逐一检查同网段&#x2F;同AD域的其他主机</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段五：恢复（Recovery）"><a href="#阶段五：恢复（Recovery）" class="headerlink" title="阶段五：恢复（Recovery）"></a>阶段五：恢复（Recovery）</h4><table>
+<thead>
+<tr>
+<th>动作</th>
+<th>具体内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据恢复</td>
+<td>从干净备份中恢复数据——<strong>先确认备份未被感染</strong></td>
+</tr>
+<tr>
+<td>系统重建</td>
+<td>严重感染的主机应该重装而非修复（你不知道攻击者还改了哪里）</td>
+</tr>
+<tr>
+<td>逐步上线</td>
+<td>先上非核心系统，监控一段时间无异常后再上核心系统</td>
+</tr>
+<tr>
+<td>加强监控</td>
+<td>恢复后至少持续高强度监控72小时，关注是否有残余后门触发</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="阶段六：跟进复盘（Follow-up）"><a href="#阶段六：跟进复盘（Follow-up）" class="headerlink" title="阶段六：跟进复盘（Follow-up）"></a>阶段六：跟进复盘（Follow-up）</h4><table>
+<thead>
+<tr>
+<th>动作</th>
+<th>具体内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>编写事件报告</td>
+<td>包含：事件时间线（精确到分钟）、攻击路径还原、影响范围、处置过程、根因分析</td>
+</tr>
+<tr>
+<td>安全加固</td>
+<td>根据根因制定改进计划：修补漏洞、关闭不必要端口、加强监控规则、增加告警覆盖</td>
+</tr>
+<tr>
+<td>改进流程</td>
+<td>应急响应过程中暴露的问题（沟通不畅？工具不足？授权延迟？）逐一改进</td>
+</tr>
+<tr>
+<td>存档与分享</td>
+<td>事件报告归档，匿名化后在内部&#x2F;行业内分享经验教训</td>
+</tr>
+</tbody></table>
+<p><strong>事件时间线示例</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">T+0min   14:30  SOC收到SQL注入告警</span><br><span class="line">T+5min   14:35  分析确认非误报</span><br><span class="line">T+15min  14:45  I级应急启动</span><br><span class="line">T+25min  14:55  防火墙封禁攻击IP</span><br><span class="line">T+40min  15:10  发现Webshell，断网隔离</span><br><span class="line">T+2h     16:30  根除完成，开始恢复</span><br><span class="line">T+6h     20:30  服务恢复，持续监控</span><br><span class="line">T+72h     —     确认无异常，关闭事件</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-5-红蓝对抗流程"><a href="#3-5-红蓝对抗流程" class="headerlink" title="3.5 红蓝对抗流程"></a>3.5 红蓝对抗流程</h3><p>红蓝对抗是渗透测试的”实战升级版”，模拟真实APT攻击的全流程，通常会持续 <strong>2~8周</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">预攻击准备 → 外网打点 → 建立据点 → 权限提升 → 横向移动 → 达成目标 → 清理痕迹</span><br></pre></td></tr></table></figure>
+
+<p>与渗透测试的关键区别：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>渗透测试</th>
+<th>红蓝对抗</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>目标</td>
+<td>尽可能多地发现漏洞</td>
+<td>模拟真实攻击，检验检测+响应能力</td>
+</tr>
+<tr>
+<td>范围</td>
+<td>明确限定目标系统</td>
+<td>不设限，一切可达的目标</td>
+</tr>
+<tr>
+<td>手段</td>
+<td>以技术漏洞利用为主</td>
+<td>漏洞+社工+钓鱼+近源+供应链等组合拳</td>
+</tr>
+<tr>
+<td>隐蔽性</td>
+<td>不要求隐蔽</td>
+<td>必须隐蔽，测试蓝队检测能力</td>
+</tr>
+<tr>
+<td>持续时间</td>
+<td>1~4周</td>
+<td>2~8周甚至更长</td>
+</tr>
+<tr>
+<td>蓝队是否知情</td>
+<td>知道在测试</td>
+<td>完全不知情（双盲）</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.预攻击准备</td>
+<td>C2基础设施搭建（域名&#x2F;服务器&#x2F;CDN）、免杀木马制作、钓鱼站点&#x2F;邮件模板准备</td>
+</tr>
+<tr>
+<td>2.外网打点</td>
+<td>信息收集+漏洞扫描+利用，获取第一台外网主机权限</td>
+</tr>
+<tr>
+<td>3.建立据点</td>
+<td>部署C2植入物，建立与C2服务器的加密通信隧道（HTTP&#x2F;HTTPS&#x2F;DNS隧道）</td>
+</tr>
+<tr>
+<td>4.权限提升</td>
+<td>从Web&#x2F;普通用户权限提升至Administrator&#x2F;root&#x2F;SYSTEM</td>
+</tr>
+<tr>
+<td>5.横向移动</td>
+<td>信息收集（域环境、网络拓扑、敏感资产定位）→ 凭据窃取 → 逐步迁移至核心目标</td>
+</tr>
+<tr>
+<td>6.达成目标</td>
+<td>获取预设的靶标（域控、核心数据库、CEO邮箱等），证明攻击可达</td>
+</tr>
+<tr>
+<td>7.清理痕迹</td>
+<td>清除操作日志、删除植入物和工具</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="3-6-安全运营（SOC）日常工作流程"><a href="#3-6-安全运营（SOC）日常工作流程" class="headerlink" title="3.6 安全运营（SOC）日常工作流程"></a>3.6 安全运营（SOC）日常工作流程</h3><p>SOC是组织网络安全的”第一道防线”，7×24小时持续监控：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">日志采集 → 实时分析 → 告警生成 → 事件分级 → 研判处置 → 关闭归档</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>干什么</th>
+<th>工具&#x2F;系统</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.日志采集</td>
+<td>从全网设备(防火墙&#x2F;WAF&#x2F;IDS&#x2F;服务器&#x2F;终端&#x2F;应用)统一收集日志，标准化格式</td>
+<td>SIEM (Splunk&#x2F;ELK&#x2F;奇安信NGSOC)</td>
+</tr>
+<tr>
+<td>2.实时分析</td>
+<td>规则引擎+UEBA(用户实体行为分析)+机器学习，实时关联分析海量日志</td>
+<td>SIEM规则引擎、AI检测模型</td>
+</tr>
+<tr>
+<td>3.告警生成</td>
+<td>命中规则或模型异常时产生告警（每天可能有数百到数万条）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4.事件分级</td>
+<td>L1分析师告警分类：误报？低危？高危？真实攻击？</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5.研判处置</td>
+<td>L2分析师深入分析确认为真实威胁的事件，执行处置或升级为应急响应</td>
+<td>EDR, 威胁情报平台</td>
+</tr>
+<tr>
+<td>6.关闭归档</td>
+<td>记录处置过程和结果，沉淀为案例库(KB)，优化检测规则</td>
+<td>工单系统</td>
+</tr>
+</tbody></table>
+<p><strong>SOC分级运营模型</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>人员</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>L1（一线监控）</td>
+<td>初级分析师</td>
+<td>7×24轮班看告警，初步分类和过滤误报</td>
+</tr>
+<tr>
+<td>L2（事件分析）</td>
+<td>中级分析师</td>
+<td>深入分析确认真实威胁，执行常见事件处置</td>
+</tr>
+<tr>
+<td>L3（高级研判）</td>
+<td>高级分析师&#x2F;安全专家</td>
+<td>处理复杂APT攻击、0day利用等高级威胁</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="3-7-威胁情报工作流程"><a href="#3-7-威胁情报工作流程" class="headerlink" title="3.7 威胁情报工作流程"></a>3.7 威胁情报工作流程</h3><p>威胁情报为安全运营和应急响应提供”敌情预警”：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">情报需求定义 → 情报收集 → 情报处理 → 情报分析 → 情报分发 → 情报反馈</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.需求定义</td>
+<td>明确需要什么情报：行业威胁态势？特定APT组织动态？最新IOC？漏洞利用情报？</td>
+</tr>
+<tr>
+<td>2.情报收集</td>
+<td>多源采集：开源情报（安全博客&#x2F;Twitter&#x2F;GitHub）、商业情报(Recorded Future&#x2F;微步在线)、社区共享(ISAC)、内部情报（自身SOC产生的告警数据）</td>
+</tr>
+<tr>
+<td>3.情报处理</td>
+<td>去重、去伪、标准化格式(STIX&#x2F;TAXII)、打标签</td>
+</tr>
+<tr>
+<td>4.情报分析</td>
+<td>关联分析、归因攻击组织、评估情报可信度(高&#x2F;中&#x2F;低)和威胁等级</td>
+</tr>
+<tr>
+<td>5.情报分发</td>
+<td>将IOC推送到SIEM&#x2F;EDR&#x2F;防火墙自动阻断；战略情报报告推送给决策层</td>
+</tr>
+<tr>
+<td>6.情报反馈</td>
+<td>评估情报效用，优化情报需求和采集策略</td>
+</tr>
+</tbody></table>
+<p><strong>威胁情报金字塔（从底层到顶层）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>内容</th>
+<th>有效期</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件哈希(Hash)</td>
+<td>恶意文件MD5&#x2F;SHA256</td>
+<td>小时~天（易变）</td>
+<td><code>a1b2c3d4...</code></td>
+</tr>
+<tr>
+<td>IP&#x2F;域名(IOC)</td>
+<td>C2服务器地址</td>
+<td>天~周</td>
+<td><code>103.xxx.xxx.xxx</code></td>
+</tr>
+<tr>
+<td>网络&#x2F;主机特征</td>
+<td>攻击行为模式</td>
+<td>周~月</td>
+<td>特定User-Agent&#x2F;注册表键</td>
+</tr>
+<tr>
+<td>工具(Tools)</td>
+<td>攻击者使用的工具</td>
+<td>月~年</td>
+<td>Cobalt Strike, Mimikatz</td>
+</tr>
+<tr>
+<td>TTPs（战术技术过程）</td>
+<td>攻击行为方法论</td>
+<td>年</td>
+<td>钓鱼→横向移动→勒索</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="3-8-等保测评流程"><a href="#3-8-等保测评流程" class="headerlink" title="3.8 等保测评流程"></a>3.8 等保测评流程</h3><p>等级保护测评（等保）是国家合规要求，覆盖技术+管理两个维度：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">定级 → 备案 → 建设整改 → 测评 → 监督检查</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.定级</td>
+<td>确定系统安全保护等级（一级~五级，最常见的是二级和三级）</td>
+</tr>
+<tr>
+<td>2.备案</td>
+<td>向公安机关提交定级报告，完成备案</td>
+</tr>
+<tr>
+<td>3.建设整改</td>
+<td>根据等级要求进行安全建设（技术+管理），补齐差距</td>
+</tr>
+<tr>
+<td>4.测评</td>
+<td>测评机构入场，按国家标准进行技术测试（渗透测试、配置核查、漏洞扫描）和管理审核（制度&#x2F;流程&#x2F;人员）</td>
+</tr>
+<tr>
+<td>5.监督检查</td>
+<td>公安机关定期检查，持续合规</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四、入行建议路线"><a href="#四、入行建议路线" class="headerlink" title="四、入行建议路线"></a>四、入行建议路线</h2><p>推荐学习路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Web基础（HTTP/HTML/JS/SQL）→ 常见漏洞原理（OWASP Top 10）</span><br><span class="line">    → 渗透测试入门 → 代码审计入门</span><br><span class="line">                      ↓</span><br><span class="line">                选择方向深入：</span><br><span class="line">        ┌──────┬──────┬──────┬──────┐</span><br><span class="line">        │渗透  │审计  │挖掘  │蓝队  │...</span><br><span class="line">        └──────┴──────┴──────┴──────┘</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>小结</strong>：网安行业看似庞杂，实则脉络清晰——红队攻、蓝队守、合规保底线、开发堵源头。无论你最终选择哪个方向，渗透测试都是最扎实的起点，因为只有理解攻击，才能真正做好防御。</p>
+</blockquote>
+
+            </div>
+            <footer class="article-footer">
+                <div class="share-container">
+                    <div class="bdsharebuttonbox" 
+                        data-url="https://qq8697.github.io/blog/2026/06/netsec-quick-intro.html"
+                        data-id="cmqrenc8f0000ssvcgv6p40nh"
+                        data-title="网络安全业务快速入门"
+                        data-description="网络安全业务快速入门">
+                        <a data-cmd="more"><i class="fa fa-share" style="margin-right: 5px"></i>Share</a>
+                    </div>
+                    <script>
+                    if (window.location.protocol === 'https') {
+                        var bdshare = document.querySelector(".bdsharebuttonbox");
+                        var url = bdshare.getAttribute('data-url');
+                        var id = bdshare.getAttribute('data-id');
+                        var title = bdshare.getAttribute('data-title');
+                        var description = bdshare.getAttribute('data-description');
+                        window._bd_share_config = {
+                            "common":{
+                                "bdUrl": url,
+                                "bdDesc": description,
+                                "bdText": title,
+                                "bdPic":"",
+                                "bdSnsKey":{},
+                                "bdMini":"2",
+                                "bdMiniList":false,
+                                "bdStyle":"0",
+                                "bdSize":"16"
+                            },
+                            "share":{"bdSize":16}
+                        };
+                        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                    } else {
+                        document.querySelector('.bdsharebuttonbox').style.display = 'none';
+                    }
+                    </script>
+                    <style>
+                        .bdshare-button-style0-16 a,
+                        .bdshare-button-style0-16 .bds_more {
+                            background-image: none;
+                        }
+                    </style>
+                </div>
+            </footer>
+        </div>
+        <nav id="article-nav">
+            
+            
+                <a href="/blog/2026/05/why-pull-request-name.html" id="article-nav-older" class="article-nav-link-wrap">
+                    <strong class="article-nav-caption">Older</strong>
+                    <div class="article-nav-title">为什么新的代码更改叫 Pull Request？</div>
+                </a>
+            
+        </nav>
+    </article>
+
+    <!-- Valine Comments -->
+    
+    <section id="comments">
+        <div id="valine-thread"></div>
+        <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+        <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+        <script>
+            new Valine({
+                el: '#valine-thread',
+                notify: false,
+                verify: false,
+                app_id: 'xIUWTw3eV1WAotjbFwGrIKMe-gzGzoHsz',
+                app_key: 'xSc2rEN1LKKnuh9N60iOBNdU',
+                placeholder: '评论的时候，留下在Gravatar注册时所使用的邮箱即可显示头像',
+                visitor: true
+            });
+            document.querySelector("#valine-thread .info").style.display='none'
+        </script>
+    </section>
+    
+</section>
+
+            <aside id="sidebar">
+    <!-- Recent Posts -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/06/netsec-quick-intro.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/06/netsec-quick-intro.html" class="title">网络安全业务快速入门</a></p>
+                            <p class="item-date"><time datetime="2026-06-24T02:00:00.000Z">2026-06-24</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/05/why-pull-request-name.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/05/why-pull-request-name.html" class="title">为什么新的代码更改叫 Pull Request？</a></p>
+                            <p class="item-date"><time datetime="2026-05-20T02:00:00.000Z">2026-05-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/05/my-three-bicycles.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/05/my-three-bicycles.html" class="title">我的三辆自行车 — 从入门公路到碳纤维电变再到折叠车</a></p>
+                            <p class="item-date"><time datetime="2026-05-18T14:00:00.000Z">2026-05-18</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/05/hexo-blog-migration.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/05/hexo-blog-migration.html" class="title">将静态博客迁移到 Hexo — 从手写 HTML 到 Markdown 自动化</a></p>
+                            <p class="item-date"><time datetime="2026-05-18T04:00:00.000Z">2026-05-18</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2018/10/markdown-grammar-guide.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2018/10/markdown-grammar-guide.html" class="title">Markdown 语法指南</a></p>
+                            <p class="item-date"><time datetime="2018-10-24T07:10:35.000Z">2018-10-24</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/">博客</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/">骑行</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/%E8%A3%85%E5%A4%87/">装备</a><span class="category-list-count">1</span></li></ul></li></ul>
+        </div>
+    </div>
+
+    <!-- Archives -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/06/">六月 2026</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/05/">五月 2026</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub/" rel="tag">GitHub</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub-Pages/" rel="tag">GitHub Pages</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HTTP/" rel="tag">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pull-Request/" rel="tag">Pull Request</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/SRAM/" rel="tag">SRAM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" rel="tag">代码协作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">代码审计</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%85%A5%E8%A1%8C%E6%8C%87%E5%8D%97/" rel="tag">入行指南</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" rel="tag">公路车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%9D%8E%E6%99%AE/" rel="tag">坎普</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" rel="tag">威胁情报</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" rel="tag">安全运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="tag">应急响应</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" rel="tag">折叠车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="tag">漏洞挖掘</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" rel="tag">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" rel="tag">红蓝对抗</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BD%91%E5%AE%89%E5%85%A5%E9%97%A8/" rel="tag">网安入门</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E9%A3%8E%E8%A1%8C/" rel="tag">风行</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    <!-- Tag Cloud -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/blog/tags/Git/" style="font-size: 13px;">Git</a> <a href="/blog/tags/GitHub/" style="font-size: 13px;">GitHub</a> <a href="/blog/tags/GitHub-Pages/" style="font-size: 13px;">GitHub Pages</a> <a href="/blog/tags/HTTP/" style="font-size: 13px;">HTTP</a> <a href="/blog/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/blog/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/blog/tags/Pull-Request/" style="font-size: 13px;">Pull Request</a> <a href="/blog/tags/SRAM/" style="font-size: 13px;">SRAM</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" style="font-size: 13px;">代码协作</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" style="font-size: 13px;">代码审计</a> <a href="/blog/tags/%E5%85%A5%E8%A1%8C%E6%8C%87%E5%8D%97/" style="font-size: 13px;">入行指南</a> <a href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" style="font-size: 13px;">公路车</a> <a href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 13px;">博客搭建</a> <a href="/blog/tags/%E5%9D%8E%E6%99%AE/" style="font-size: 13px;">坎普</a> <a href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" style="font-size: 13px;">威胁情报</a> <a href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" style="font-size: 13px;">安全运营</a> <a href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" style="font-size: 13px;">应急响应</a> <a href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" style="font-size: 13px;">折叠车</a> <a href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 13px;">渗透测试</a> <a href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" style="font-size: 13px;">漏洞挖掘</a> <a href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="font-size: 13px;">版本控制</a> <a href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" style="font-size: 13px;">红蓝对抗</a> <a href="/blog/tags/%E7%BD%91%E5%AE%89%E5%85%A5%E9%97%A8/" style="font-size: 13px;">网安入门</a> <a href="/blog/tags/%E9%A3%8E%E8%A1%8C/" style="font-size: 13px;">风行</a>
+        </div>
+    </div>
+
+    <!-- Links -->
+    
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://nav.wuhongbin.com">前端导航</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://code.wuhongbin.com">代码碎片</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    
+
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2026 TA圣堂米拉娜<br>
+            秘密已经泄露，战斗一触即发！
+        </div>
+    </div>
+</footer>
+
+    </div>
+
+    <!-- Light Gallery JS -->
+    <script src="/blog/libs/lightgallery/js/lightgallery.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-autoplay.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-video.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-pager.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-zoom.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-hash.min.js"></script>
+
+    <script src="/blog/js/main.js"></script>
+</body>
+</html>
