@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+
+<title>Agent 开发主流技术路线 | TA圣堂米拉娜</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="description" content="前端 博客 圣堂">
+<meta name="keywords" content="前端 博客 圣堂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agent 开发主流技术路线 | TA圣堂米拉娜">
+<meta property="og:url" content="https://qq8697.github.io/blog/2026/06/agent-roadmap.html">
+<meta property="og:site_name" content="TA圣堂米拉娜">
+<meta property="og:description" content="前端 博客 圣堂">
+<meta property="og:locale" content="zh-CN">
+
+<meta property="og:image" content="/blog/css/images/avatar.jpg">
+<meta property="og:updated_time" content="2026-06-29T08:31:01.680Z">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Agent 开发主流技术路线 | TA圣堂米拉娜">
+<meta name="twitter:description" content="前端 博客 圣堂">
+
+<meta name="twitter:image" content="/blog/css/images/avatar.jpg">
+
+
+<link rel="icon" href="/blog/css/images/favicon.ico" />
+
+<link rel="stylesheet" href="/blog/libs/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/blog/libs/open-sans/styles.css">
+<link rel="stylesheet" href="/blog/libs/source-code-pro/styles.css">
+<link rel="stylesheet" href="/blog/css/style.css">
+<script src="/blog/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<!-- Code highlight -->
+<link rel="stylesheet" href="/blog/libs/highlight/github.css">
+<script src="/blog/libs/highlight/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- Light Gallery -->
+<link rel="stylesheet" href="/blog/libs/lightgallery/css/lightgallery.min.css">
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-127105097-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?fa59de63d3320a45f6aa672138d2e55c";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/blog/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">TA圣堂米拉娜</span>
+            </a>
+            <nav id="main-nav">
+                <a class="main-nav-link" href="/blog/">Home</a>
+                <a class="main-nav-link" href="/blog/archives">Archives</a>
+                <a class="main-nav-link" href="/blog/categories">Categories</a>
+                <a class="main-nav-link" href="/blog/tags">Tags</a>
+                <a class="main-nav-link" href="/blog/about">About</a>
+            </nav>
+            <nav id="sub-nav">
+                <div class="profile" id="profile-nav">
+                    <a id="profile-anchor" href="javascript:;">
+                        <img class="avatar" src="/blog/css/images/avatar.jpg" />
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                </div>
+            </nav>
+            <div id="search-form-wrap">
+                <form class="search-form">
+                    <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+                    <button type="submit" class="search-form-submit"></button>
+                </form>
+                <div class="ins-search">
+                    <div class="ins-search-mask"></div>
+                    <div class="ins-search-container">
+                        <div class="ins-input-wrapper">
+                            <input type="text" class="ins-search-input" placeholder="Type something..." />
+                            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+                        </div>
+                        <div class="ins-section-wrapper">
+                            <div class="ins-section-container"></div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                (function (window) {
+                    var INSIGHT_CONFIG = {
+                        TRANSLATION: {
+                            POSTS: 'Posts',
+                            PAGES: 'Pages',
+                            CATEGORIES: 'Categories',
+                            TAGS: 'Tags',
+                            UNTITLED: '(Untitled)',
+                        },
+                        ROOT_URL: '/blog/',
+                        CONTENT_URL: '/blog/content.json',
+                    };
+                    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+                })(window);
+                </script>
+                <script src="/blog/js/insight.js"></script>
+            </div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                <td><a class="main-nav-link" href="/blog/">Home</a></td>
+                <td><a class="main-nav-link" href="/blog/archives">Archives</a></td>
+                <td><a class="main-nav-link" href="/blog/categories">Categories</a></td>
+                <td><a class="main-nav-link" href="/blog/tags">Tags</a></td>
+                <td><a class="main-nav-link" href="/blog/about">About</a></td>
+                <td>
+                    <div class="search-form">
+                        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            <aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/blog/css/images/avatar.jpg" />
+            <h2 id="name">圣堂</h2>
+            <h3 id="title">前端攻城师</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>北京, 中国</span>
+            <a id="follow" target="_blank" href="https://gitee.com/qq8697">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                10
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                37
+                <span>tag</span>
+            </div>
+        </div>
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                        
+                        <td>
+                            <a href="https://steamcommunity.com/profiles/76561198386205036/" target="_blank" title="steam" class=tooltip>
+                                <i class="fa fa-steam"></i>
+                            </a>
+                        </td>
+                        
+                    
+                </tr>
+            </table>
+        </div>
+    </div>
+</aside>
+
+            <section id="main">
+    <article id="post-agent-roadmap" class="article article-type-post" itemscope itemprop="blogPost">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 class="article-title" itemprop="name">
+                    Agent 开发主流技术路线
+                </h1>
+                <div class="article-meta">
+                    <div class="article-date">
+                        <i class="fa fa-calendar"></i>
+                        <a href="/blog/2026/06/agent-roadmap.html">
+                            <time datetime="2026-06-29T08:00:00.000Z" itemprop="datePublished">2026-06-29</time>
+                        </a>
+                    </div>
+                    
+                    <div class="article-category">
+                        <i class="fa fa-folder"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><i class="fa fa-angle-right"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a>
+                        
+                    </div>
+                    
+                    
+                    <div class="article-tag">
+                        <i class="fa fa-tag"></i>
+                        
+                            <a class="tag-link" href="/blog/tags/Agent/">Agent</a>
+                        
+                            <a class="tag-link" href="/blog/tags/MCP/">MCP</a>
+                        
+                            <a class="tag-link" href="/blog/tags/Agent%E5%BC%80%E5%8F%91/">Agent开发</a>
+                        
+                            <a class="tag-link" href="/blog/tags/Skills/">Skills</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/">上下文工程</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF/">技术路线</a>
+                        
+                    </div>
+                    
+                </div>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                <p>2024 年，Agent 开发是这样的：一个巨大的 System Prompt，几百行，塞满了 <code>You are an expert...</code>、<code>If...then...</code>。改一个字，整个 Agent 就跑偏了。</p>
+<p>2026 年，Agent 开发走向了<strong>解耦</strong>：Prompt 被拆成 Skills（怎么做）和 Rules（不能做）；接口被标准化为 MCP；编排分化出两条路径——写代码深度定制，或拖拽配置快速上线。</p>
+<p><strong>路径 A：代码&#x2F;框架驱动（工程化）</strong>——用 LangGraph &#x2F; CrewAI &#x2F; AutoGen 写代码，深度定制复杂业务逻辑，适合生产级部署。<br><strong>路径 B：配置&#x2F;平台驱动（产品化）</strong>——用 Dify &#x2F; Coze &#x2F; Flowise 可视化编排，Skills + MCP + Rules 组合配置，适合快速原型和标准化场景。</p>
+<p>两条路径共享同一套底层公式：</p>
+<blockquote>
+<p><strong>Agent 开发 &#x3D; 能力定义（Skills&#x2F;MCP）+ 行为约束（Rules）+ 推理引擎（LLM）+ 编排载体（框架&#x2F;平台&#x2F;代码）</strong></p>
+</blockquote>
+<p>这篇文章按公式逐层拆解：每一层是什么、两条路径各怎么做、2026 年主流工具怎么选。</p>
+<hr>
+<h2 id="一、核心公式与两条路径"><a href="#一、核心公式与两条路径" class="headerlink" title="一、核心公式与两条路径"></a>一、核心公式与两条路径</h2><h3 id="1-1-统一公式拆解"><a href="#1-1-统一公式拆解" class="headerlink" title="1.1 统一公式拆解"></a>1.1 统一公式拆解</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Agent 开发 = 能力定义 + 行为约束 + 推理引擎 + 编排载体</span><br><span class="line">              │            │          │          │</span><br><span class="line">           Skills/MCP    Rules     LLM 选型   框架/平台</span><br><span class="line">              │            │          │          │</span><br><span class="line">         &quot;能做什么&quot;    &quot;不能做什么&quot;  &quot;怎么思考&quot;  &quot;怎么执行&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这四个组件缺一不可：能力定义决定了 Agent 的操作范围，行为约束划定了安全边界，推理引擎提供智力支撑，编排载体负责把一切串起来跑。</p>
+<h3 id="1-2-路径-A-vs-路径-B"><a href="#1-2-路径-A-vs-路径-B" class="headerlink" title="1.2 路径 A vs 路径 B"></a>1.2 路径 A vs 路径 B</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>路径 A：代码&#x2F;框架驱动</th>
+<th>路径 B：配置&#x2F;平台驱动</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开发方式</td>
+<td>选框架 → 写代码（LangGraph&#x2F;CrewAI&#x2F;AutoGen）</td>
+<td>组合 Skills + MCP + Rules（Dify&#x2F;Coze&#x2F;Flowise）</td>
+</tr>
+<tr>
+<td>能力定义</td>
+<td>框架内置 Tool + 可选 MCP</td>
+<td>统一 MCP 协议，即插即用</td>
+</tr>
+<tr>
+<td>行为约束</td>
+<td>代码中实现安全检查</td>
+<td>平台内置 Rules + Hooks</td>
+</tr>
+<tr>
+<td>推理引擎</td>
+<td>自由切换模型，代码控制</td>
+<td>平台内置模型路由</td>
+</tr>
+<tr>
+<td>编排载体</td>
+<td>代码定义 Agent Loop + 多 Agent 协作</td>
+<td>可视化 Workflow + 标准化编排模式</td>
+</tr>
+<tr>
+<td>适合人群</td>
+<td>开发者、工程师</td>
+<td>开发者 + 业务人员 + 产品经理</td>
+</tr>
+<tr>
+<td>核心优势</td>
+<td>深度定制、复杂逻辑、完全掌控</td>
+<td>快速原型、低门槛、开箱即用</td>
+</tr>
+</tbody></table>
+<p><strong>一句话总结</strong>：路径 A 是”造轮子”——完全掌控，适合深度定制；路径 B 是”拼乐高”——快速搭建，适合标准化场景。两条路径在 2026 年都已成熟，选哪条取决于你的场景，而不是你的”段位”。</p>
+<p>路径 A 的核心框架生态数据：<strong>LangGraph</strong> GitHub 超 9 万 Star，是生产级 Agent 工作流的事实标准；<strong>CrewAI</strong> 月下载量达 520 万。这些不是玩具——大量团队已经在生产环境中使用它们。</p>
+<h3 id="1-3-统一架构全景图"><a href="#1-3-统一架构全景图" class="headerlink" title="1.3 统一架构全景图"></a>1.3 统一架构全景图</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────────────┐</span><br><span class="line">│                     🧠 推理引擎（LLM）                         │</span><br><span class="line">│   Claude 5 / GPT-5.1 / DeepSeek / Qwen 3 / Gemini 3         │</span><br><span class="line">│   混合路由：深度推理模型做 Planning · 轻量模型做 Action         │</span><br><span class="line">├──────────────────────────────────────────────────────────────┤</span><br><span class="line">│                     🔧 能力定义层                             │</span><br><span class="line">│   Skills（Markdown 技能包） ←→  MCP Server（标准化工具接口）    │</span><br><span class="line">│   &quot;能做什么&quot;                                                │</span><br><span class="line">├──────────────────────────────────────────────────────────────┤</span><br><span class="line">│                     🛡️ 行为约束层                             │</span><br><span class="line">│   Rules（项目约定） + Hooks（自动检查）                         │</span><br><span class="line">│   &quot;不能做什么&quot; + &quot;自动检查&quot;                                   │</span><br><span class="line">├──────────────────────────────────────────────────────────────┤</span><br><span class="line">│                     ⚙️ 编排载体                               │</span><br><span class="line">│   路径 A：LangGraph / CrewAI / AutoGen（代码驱动）             │</span><br><span class="line">│   路径 B：Dify / Coze / Flowise（可视化配置）                  │</span><br><span class="line">│   &quot;怎么执行&quot;                                                │</span><br><span class="line">├──────────────────────────────────────────────────────────────┤</span><br><span class="line">│                     🏗️ Harness（生产就绪）                    │</span><br><span class="line">│   权限控制 · 上下文管理 · 错误恢复 · 成本控制 · 可观测性 · 人工介入 │</span><br><span class="line">│   &quot;怎么不跑偏&quot;                                              │</span><br><span class="line">└──────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>这张图是全文的导航地图：自上而下，从”大脑”到”手脚”到”安全网”，每一层都会在后续章节展开。</p>
+<hr>
+<h2 id="二、能力定义：Skills-与-MCP"><a href="#二、能力定义：Skills-与-MCP" class="headerlink" title="二、能力定义：Skills 与 MCP"></a>二、能力定义：Skills 与 MCP</h2><p><strong>核心观点</strong>：能力定义层决定了 Agent 的”手”能伸多远——Skills 定义它懂什么流程，MCP 定义它能接什么系统。</p>
+<h3 id="2-1-Skills：Markdown-即技能包"><a href="#2-1-Skills：Markdown-即技能包" class="headerlink" title="2.1 Skills：Markdown 即技能包"></a>2.1 Skills：Markdown 即技能包</h3><p>Skills 是存放在 <code>SKILL.md</code> 中的 Markdown 指令包，教 Agent 如何完成特定任务。它把”每次手写 Prompt”变成了”菜谱式复用”。Skills 的本质是让传统的 System Prompt 走向结构化、模块化——在 IDE 中它表现为 <code>.cursor/rules/</code> 下的配置文件或 <code>AGENTS.md</code>，在平台上表现为封装好的技能包。</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>存放位置</td>
+<td>路径 A：项目级 <code>.cursor/skills/</code> 或 <code>.claude/skills/</code>；路径 B：平台内置 Skill 市场</td>
+</tr>
+<tr>
+<td>触发方式</td>
+<td>自动匹配（根据用户意图）或手动 <code>/skill-name</code></td>
+</tr>
+<tr>
+<td>生态现状</td>
+<td>2026 年已有数千个社区 Skills，覆盖 TDD、代码审查、文档生成、部署等</td>
+</tr>
+<tr>
+<td>路径差异</td>
+<td>路径 A 中 Skills 增强代码可控性；路径 B 中 Skills 是开发的核心载体</td>
+</tr>
+</tbody></table>
+<p><strong>示例：一个 TDD Skill</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Skill: TDD 开发</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 触发条件</span></span><br><span class="line">当用户要求&quot;用 TDD 方式开发&quot;或&quot;先写测试再写代码&quot;时激活。</span><br><span class="line"></span><br><span class="line"><span class="section">## 工作流程</span></span><br><span class="line"><span class="bullet">1.</span> 分析需求 → 列出测试用例</span><br><span class="line"><span class="bullet">2.</span> 先写测试代码（Red）</span><br><span class="line"><span class="bullet">3.</span> 运行测试，确认失败</span><br><span class="line"><span class="bullet">4.</span> 写最小实现代码（Green）</span><br><span class="line"><span class="bullet">5.</span> 运行测试，确认通过</span><br><span class="line"><span class="bullet">6.</span> 重构优化（Refactor）</span><br><span class="line"><span class="bullet">7.</span> 循环直到所有测试通过</span><br><span class="line"></span><br><span class="line"><span class="section">## 输出格式</span></span><br><span class="line"><span class="bullet">-</span> 测试文件：<span class="code">`__tests__/xxx.test.ts`</span></span><br><span class="line"><span class="bullet">-</span> 实现文件：<span class="code">`src/xxx.ts`</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-MCP：AI-界的-USB-C"><a href="#2-2-MCP：AI-界的-USB-C" class="headerlink" title="2.2 MCP：AI 界的 USB-C"></a>2.2 MCP：AI 界的 USB-C</h3><p>MCP（Model Context Protocol）是 Anthropic 推出的开放协议，让 AI 应用通过统一接口连接外部工具和数据源。一个 MCP Server 写一次，所有支持 MCP 的 AI 应用都能用——解决了 M×N 集成地狱。</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>2026 年现状</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>生态规模</td>
+<td>2000+ 公共 MCP Server，覆盖数据库、云 API、监控、CI&#x2F;CD</td>
+</tr>
+<tr>
+<td>平台支持</td>
+<td>GitHub、Slack、Jira、Sentry 等主流平台提供官方 MCP</td>
+</tr>
+<tr>
+<td>协议演进</td>
+<td>支持 HTTP streamable transport，不再局限于 stdio</td>
+</tr>
+<tr>
+<td>行业地位</td>
+<td>Anthropic + OpenAI + Google + Microsoft 全部支持</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-Computer-Use：无-API-系统的最后拼图"><a href="#2-3-Computer-Use：无-API-系统的最后拼图" class="headerlink" title="2.3 Computer Use：无 API 系统的最后拼图"></a>2.3 Computer Use：无 API 系统的最后拼图</h3><p>Tool Calling 解决了”有 API 的系统”，MCP 统一了接口标准，Computer Use 解决了”没有 API 的遗留系统”——AI 直接看屏幕、点鼠标、敲键盘。目前适用场景有限，但填补了关键空白。</p>
+<h3 id="2-4-工具选型决策树"><a href="#2-4-工具选型决策树" class="headerlink" title="2.4 工具选型决策树"></a>2.4 工具选型决策树</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">需要连接外部系统？</span><br><span class="line">  ├── 有 API → 写 MCP Server（一次编写，处处可用）</span><br><span class="line">  ├── 无 API → 考虑 Computer Use（GUI 操作）</span><br><span class="line">  └── 简单操作 → 直接用 Tool Function（函数调用）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、行为约束：Rules-与-Hooks"><a href="#三、行为约束：Rules-与-Hooks" class="headerlink" title="三、行为约束：Rules 与 Hooks"></a>三、行为约束：Rules 与 Hooks</h2><p><strong>核心观点</strong>：能力定义让 Agent “能做事”，行为约束让 Agent “不乱来”——这是从 Demo 到生产最关键的一步。</p>
+<h3 id="3-1-Rules：持久化的项目约定"><a href="#3-1-Rules：持久化的项目约定" class="headerlink" title="3.1 Rules：持久化的项目约定"></a>3.1 Rules：持久化的项目约定</h3><p>Rules 是每次对话自动注入的项目级指令，约束 Agent 的行为边界。路径 A 放在 <code>.cursor/rules/</code> 或项目根目录的 <code>AGENTS.md</code> 中；路径 B 在平台设置中配置。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># .cursor/rules/coding-style.md</span></span><br><span class="line"><span class="bullet">-</span> 所有 API 必须写 JSDoc</span><br><span class="line"><span class="bullet">-</span> 测试用 Vitest，覆盖率 ≥ 80%</span><br><span class="line"><span class="bullet">-</span> 分支命名：feature/xxx, fix/xxx</span><br><span class="line"><span class="bullet">-</span> 禁止 force push 到 main</span><br><span class="line"><span class="bullet">-</span> 数据库用 PostgreSQL，不用 MySQL</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-Hooks：自动化安全网"><a href="#3-2-Hooks：自动化安全网" class="headerlink" title="3.2 Hooks：自动化安全网"></a>3.2 Hooks：自动化安全网</h3><p>Hooks 在 Agent 执行工具前后触发，用于校验、审计或自动化拦截。路径 A 通过配置文件定义，路径 B 通常内置在平台中。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;preToolUse&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;matcher&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Bash&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./hooks/validate-command.sh&quot;</span><span class="punctuation">]</span><span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;postToolUse&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;matcher&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Write&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./hooks/run-linter.sh&quot;</span><span class="punctuation">]</span><span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-三者协同"><a href="#3-3-三者协同" class="headerlink" title="3.3 三者协同"></a>3.3 三者协同</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Skills  = 告诉 Agent &quot;怎么做&quot;（流程级指令）</span><br><span class="line">Rules   = 告诉 Agent &quot;什么不能做&quot;（约束边界）</span><br><span class="line">Hooks   = 在 Agent 行动时&quot;自动检查&quot;（安全网）</span><br><span class="line"></span><br><span class="line">三者配合使用，而非各自独立：**Skills 定义正向流程，Rules 划定负向边界，Hooks 在边界上执行检查**。</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么这很重要？</strong> 因为 Skills + Rules + Hooks 解决了 Agent 开发中最核心的痛点：<strong>可复用性</strong>和<strong>可预测性</strong>。你不再需要每次对话都重复解释”我们怎么做 TDD”，你只需要写一次 Skill，永久生效。</p>
+<hr>
+<h2 id="四、推理引擎：模型选型与上下文工程"><a href="#四、推理引擎：模型选型与上下文工程" class="headerlink" title="四、推理引擎：模型选型与上下文工程"></a>四、推理引擎：模型选型与上下文工程</h2><p><strong>核心观点</strong>：2026 年的模型已经足够强，瓶颈不在模型能力，而在”喂给模型的信息质量”。</p>
+<h3 id="4-1-2026-模型格局"><a href="#4-1-2026-模型格局" class="headerlink" title="4.1 2026 模型格局"></a>4.1 2026 模型格局</h3><table>
+<thead>
+<tr>
+<th>模型</th>
+<th>定位</th>
+<th>适合场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Claude 5</td>
+<td>深度推理、长上下文（200K）</td>
+<td>复杂代码、长文档分析</td>
+</tr>
+<tr>
+<td>GPT-5.1</td>
+<td>通用能力强、生态最完善</td>
+<td>全场景覆盖</td>
+</tr>
+<tr>
+<td>DeepSeek</td>
+<td>性价比极高、中文优秀</td>
+<td>中文场景、成本敏感</td>
+</tr>
+<tr>
+<td>Qwen 3</td>
+<td>阿里系、多模态</td>
+<td>企业级中文应用</td>
+</tr>
+<tr>
+<td>Gemini 3</td>
+<td>多模态、Google 生态</td>
+<td>多媒体处理</td>
+</tr>
+</tbody></table>
+<p><strong>模型选型建议</strong>：路径 A 可以自由组合模型——2026 年流行的做法是<strong>混合路由架构</strong>：用具有深度推理能力的模型（如 Claude 5、GPT-5.1）做 Planning（规划），用更轻量、响应更快的模型做 Action（工具调用执行）。路径 B 通常由平台内置模型路由自动选择。</p>
+<h3 id="4-2-上下文工程三原则"><a href="#4-2-上下文工程三原则" class="headerlink" title="4.2 上下文工程三原则"></a>4.2 上下文工程三原则</h3><p>上下文工程（Context Engineering）是 2026 年 Agent 开发的核心技能，比 Prompt Engineering 更关键：</p>
+<ol>
+<li><strong>精选 &gt; 堆量</strong>：100 行精准上下文 &gt; 5000 行无关信息。给 Agent 递”精准小抄”，不是”整本百科全书”</li>
+<li><strong>分层注入</strong>：System Prompt → Skills → Rules → 对话历史 → 工具输出，按优先级分层</li>
+<li><strong>动态裁剪</strong>：根据当前任务自动选择注入哪些 Skills，不是全部加载</li>
+</ol>
+<h3 id="4-3-路径-A-vs-路径-B-的上下文策略"><a href="#4-3-路径-A-vs-路径-B-的上下文策略" class="headerlink" title="4.3 路径 A vs 路径 B 的上下文策略"></a>4.3 路径 A vs 路径 B 的上下文策略</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>路径 A</th>
+<th>路径 B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>上下文控制</td>
+<td>代码精确控制每一层上下文</td>
+<td>平台自动管理，手动微调</td>
+</tr>
+<tr>
+<td>记忆管理</td>
+<td>自建 Memory 层（向量库&#x2F;摘要）</td>
+<td>平台内置记忆管理</td>
+</tr>
+<tr>
+<td>优化空间</td>
+<td>极大，可深度定制</td>
+<td>受限于平台能力</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五、编排模式：从单-Agent-到多-Agent"><a href="#五、编排模式：从单-Agent-到多-Agent" class="headerlink" title="五、编排模式：从单 Agent 到多 Agent"></a>五、编排模式：从单 Agent 到多 Agent</h2><p><strong>核心观点</strong>：能力定义、行为约束、推理引擎都是”零件”，编排载体是把零件组装成”机器”的方式。</p>
+<h3 id="5-1-Agent-Loop-的本质"><a href="#5-1-Agent-Loop-的本质" class="headerlink" title="5.1 Agent Loop 的本质"></a>5.1 Agent Loop 的本质</h3><p>无论是路径 A 还是路径 B，Agent 的核心运行逻辑都是同一个循环：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">观察 → 规划 → 行动 → 验证 → 观察 → ...</span><br></pre></td></tr></table></figure>
+
+<p>这个循环被称为 ReAct（Reasoning + Acting）模式。路径 A 用代码实现这个循环，路径 B 由平台内置引擎驱动。</p>
+<h3 id="5-2-四种多-Agent-模式"><a href="#5-2-四种多-Agent-模式" class="headerlink" title="5.2 四种多 Agent 模式"></a>5.2 四种多 Agent 模式</h3><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>结构</th>
+<th>适用场景</th>
+<th>成熟度</th>
+<th>路径 A 实现</th>
+<th>路径 B 实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Supervisor</td>
+<td>一个主管分配任务给多个 Worker</td>
+<td>代码审查 + 修复</td>
+<td>✅ 成熟</td>
+<td>CrewAI &#x2F; AutoGen</td>
+<td>平台内置</td>
+</tr>
+<tr>
+<td>Swarm</td>
+<td>多个平等 Agent 自主认领任务</td>
+<td>并行搜索 + 汇总</td>
+<td>✅ 成熟</td>
+<td>代码编排</td>
+<td>平台内置</td>
+</tr>
+<tr>
+<td>Handoff</td>
+<td>Agent A 完成后交接给 Agent B</td>
+<td>客服 → 技术专家</td>
+<td>✅ 成熟</td>
+<td>代码编排</td>
+<td>平台内置</td>
+</tr>
+<tr>
+<td>DAG</td>
+<td>固定流程 A→B→C</td>
+<td>文档处理流水线</td>
+<td>✅ 成熟</td>
+<td>代码编排（LangGraph）</td>
+<td>可视化拖拽</td>
+</tr>
+</tbody></table>
+<p><strong>四种模式拓扑图</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Supervisor（主管模式）          Swarm（蜂群模式）</span><br><span class="line">    ┌─────┐                    ┌───┐ ┌───┐ ┌───┐</span><br><span class="line">    │主管  │                    │ A │ │ B │ │ C │</span><br><span class="line">    └──┬──┘                    └─┬─┘ └─┬─┘ └─┬─┘</span><br><span class="line">  ┌───┼───┐                    └──┬───┴──┬──┘</span><br><span class="line">  ▼   ▼   ▼                       ▼      ▼</span><br><span class="line">┌──┐┌──┐┌──┐                  任务池   结果汇总</span><br><span class="line">│W1││W2││W3│</span><br><span class="line">└──┘└──┘└──┘</span><br><span class="line"></span><br><span class="line">Handoff（交接模式）             DAG（有向无环图）</span><br><span class="line">┌───┐    ┌───┐                ┌───┐</span><br><span class="line">│ A ├───→│ B │                │ A │</span><br><span class="line">└───┘    └───┘                └─┬─┘</span><br><span class="line">                                │</span><br><span class="line">                           ┌────┼────┐</span><br><span class="line">                           ▼    ▼    ▼</span><br><span class="line">                         ┌──┐┌──┐┌──┐</span><br><span class="line">                         │B ││C ││D │</span><br><span class="line">                         └─┬┘└──┘└─┬┘</span><br><span class="line">                           │        │</span><br><span class="line">                           └───┬────┘</span><br><span class="line">                               ▼</span><br><span class="line">                             ┌──┐</span><br><span class="line">                             │E │</span><br><span class="line">                             └──┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-Subagent：当前最佳实践"><a href="#5-3-Subagent：当前最佳实践" class="headerlink" title="5.3 Subagent：当前最佳实践"></a>5.3 Subagent：当前最佳实践</h3><p>主 Agent 把特定任务委派给 Subagent，每个 Subagent 拥有独立上下文窗口。好处是：</p>
+<ul>
+<li>避免上下文污染（主对话不会被大量搜索结果塞满）</li>
+<li>并行执行（多个 Subagent 同时工作）</li>
+<li>失败隔离（一个 Subagent 崩溃不影响其他）</li>
+</ul>
+<h3 id="5-4-路径-A-vs-路径-B-编排差异"><a href="#5-4-路径-A-vs-路径-B-编排差异" class="headerlink" title="5.4 路径 A vs 路径 B 编排差异"></a>5.4 路径 A vs 路径 B 编排差异</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>路径 A</th>
+<th>路径 B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>编排方式</td>
+<td>写代码定义角色和流程</td>
+<td>可视化拖拽 + 配置</td>
+</tr>
+<tr>
+<td>灵活性</td>
+<td>极高，可任意定制</td>
+<td>受限于平台能力</td>
+</tr>
+<tr>
+<td>调试</td>
+<td>传统代码调试工具</td>
+<td>平台内置 Trace</td>
+</tr>
+<tr>
+<td>复用</td>
+<td>代码库</td>
+<td>模板市场</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、Harness-Engineering：生产就绪的七个维度"><a href="#六、Harness-Engineering：生产就绪的七个维度" class="headerlink" title="六、Harness Engineering：生产就绪的七个维度"></a>六、Harness Engineering：生产就绪的七个维度</h2><p><strong>核心观点</strong>：Agent 循环本身只占 5% 的代码，剩下 95% 全在解决”循环跑起来之后怎么保证不跑偏”。这就是 Harness Engineering 的价值。</p>
+<p>行业数据显示，大约 <strong>80%-90% 的 AI Agent 项目没能进入生产环境</strong>——不是因为 AI 不够聪明，而是因为没有人搭好它”干活的环境”。Harness Engineering 就是解决这个问题的。</p>
+<table>
+<thead>
+<tr>
+<th>领域</th>
+<th>核心问题</th>
+<th>2026 年最佳实践</th>
+<th>路径 A 做法</th>
+<th>路径 B 做法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>权限控制</td>
+<td>Agent 会不会 rm -rf？</td>
+<td>7 层纵深防御 + Deny-First</td>
+<td>自建权限层</td>
+<td>平台内置</td>
+</tr>
+<tr>
+<td>上下文管理</td>
+<td>对话长了就失忆？</td>
+<td>5 层压缩流水线 + 自动总结</td>
+<td>自建 Memory</td>
+<td>平台内置</td>
+</tr>
+<tr>
+<td>工具调度</td>
+<td>并发调用安全吗？</td>
+<td>并发感知执行器，互斥串行</td>
+<td>代码控制</td>
+<td>平台调度</td>
+</tr>
+<tr>
+<td>错误恢复</td>
+<td>工具调用失败怎么办？</td>
+<td>自动重试 + 自我修正 + 熔断</td>
+<td>自建重试逻辑</td>
+<td>平台内置</td>
+</tr>
+<tr>
+<td>成本控制</td>
+<td>一次对话花了多少钱？</td>
+<td>Token 预算 + 实时追踪 + 告警</td>
+<td>自建监控</td>
+<td>平台仪表盘</td>
+</tr>
+<tr>
+<td>可观测性</td>
+<td>Agent 内部发生了什么？</td>
+<td>OpenTelemetry + 调用链追踪</td>
+<td>自建 Trace</td>
+<td>平台内置</td>
+</tr>
+<tr>
+<td>人工介入</td>
+<td>关键操作谁确认？</td>
+<td>Human-in-the-loop + 审批策略</td>
+<td>自建审批流</td>
+<td>平台内置</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>黄金法则</strong>：永远不要让 Agent 在没有人类确认的情况下，直接向客户发送邮件或操作真实钱包。无论是路径 A 的代码 <code>interrupt</code> 机制，还是路径 B 平台的审批节点，<strong>人类作为最后一道防线</strong>是 2026 年商业化落地的硬性要求。</p>
+</blockquote>
+<p><strong>关键认知</strong>：路径 A 在 Harness 上投入更大，但换来完全掌控；路径 B 开箱即用，但定制空间有限。这是两条路径最核心的 trade-off。</p>
+<hr>
+<h2 id="七、IDE-与开发工具链"><a href="#七、IDE-与开发工具链" class="headerlink" title="七、IDE 与开发工具链"></a>七、IDE 与开发工具链</h2><p><strong>核心观点</strong>：2026 年的 IDE 不再是代码编辑器，而是 Agent 的控制面板。三条路径互补使用。</p>
+<table>
+<thead>
+<tr>
+<th>范式</th>
+<th>代表</th>
+<th>特点</th>
+<th>适合谁</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>智能补全</td>
+<td>GitHub Copilot、Tabnine</td>
+<td>行级补全，速度快</td>
+<td>习惯传统编码的开发者</td>
+</tr>
+<tr>
+<td>Agent IDE</td>
+<td>Cursor、Windsurf</td>
+<td>AI 作为伙伴，多文件修改，可视化 Diff</td>
+<td>全栈开发者</td>
+</tr>
+<tr>
+<td>终端 Agent</td>
+<td>Claude Code、Codex CLI</td>
+<td>无 IDE 锁定，终端原生，全系统访问</td>
+<td>偏好终端的高级开发者</td>
+</tr>
+</tbody></table>
+<p><strong>关键认知</strong>：开发者不需要三选一——它们是互补的：</p>
+<ul>
+<li>日常编码 → Copilot 行级补全（零延迟）</li>
+<li>重构&#x2F;新功能 → Cursor Agent 模式（可视化 Diff）</li>
+<li>CI&#x2F;CD&#x2F;批量任务 → Claude Code CLI（脚本化运行）</li>
+</ul>
+<p><strong>路径 A 工具链</strong>：Cursor&#x2F;Claude Code + LangGraph&#x2F;CrewAI + 自建 MCP + Git<br><strong>路径 B 工具链</strong>：Dify&#x2F;Coze 平台 + 平台内置 MCP 市场 + 模板市场</p>
+<hr>
+<h2 id="八、场景化选型矩阵"><a href="#八、场景化选型矩阵" class="headerlink" title="八、场景化选型矩阵"></a>八、场景化选型矩阵</h2><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐技术栈</th>
+<th>路径</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>快速原型，业务验证</td>
+<td>Dify &#x2F; Coze &#x2F; Flowise</td>
+<td>路径 B</td>
+<td>拖拽式编排，小时级出 Demo</td>
+</tr>
+<tr>
+<td>非开发者参与（产品&#x2F;运营）</td>
+<td>Dify &#x2F; Coze 低代码平台</td>
+<td>路径 B</td>
+<td>无需编程，业务人员直接配置</td>
+</tr>
+<tr>
+<td>标准化客服&#x2F;助手</td>
+<td>Dify + Skills + MCP + Rules</td>
+<td>路径 B</td>
+<td>场景固定，配置化足够</td>
+</tr>
+<tr>
+<td>个人开发者，日常提效</td>
+<td>Cursor + Claude + Skills + 社区 MCP</td>
+<td>路径 A</td>
+<td>轻量级代码方案，开箱即用</td>
+</tr>
+<tr>
+<td>团队协作，统一规范</td>
+<td>Claude Code + Rules + Hooks + 自定义 MCP</td>
+<td>路径 A</td>
+<td>版本控制 Skills，统一行为边界</td>
+</tr>
+<tr>
+<td>多 Agent 复杂协作</td>
+<td>CrewAI &#x2F; AutoGen + Supervisor 模式</td>
+<td>路径 A</td>
+<td>代码定义角色，深度控制编排</td>
+</tr>
+<tr>
+<td>企业级，安全合规</td>
+<td>AutoGen &#x2F; 自建 Harness + 7 层权限 + 审计日志</td>
+<td>路径 A</td>
+<td>安全第一，合规优先，完全掌控</td>
+</tr>
+<tr>
+<td>CI&#x2F;CD 集成</td>
+<td>Claude Code CLI + GitHub Actions + MCP</td>
+<td>路径 A</td>
+<td>脚本化运行，全自动</td>
+</tr>
+</tbody></table>
+<h3 id="路径选择决策树"><a href="#路径选择决策树" class="headerlink" title="路径选择决策树"></a>路径选择决策树</h3><p>如果你还不确定选哪条路，按这个流程”对号入座”：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">开始</span><br><span class="line">  ├─ 你有编程基础吗？</span><br><span class="line">  │   ├─ 否 → 路径 B（Dify/Coze）</span><br><span class="line">  │   └─ 是 ↓</span><br><span class="line">  ├─ 需要深度定制/复杂编排吗？</span><br><span class="line">  │   ├─ 否 → 路径 B（配置化足够）</span><br><span class="line">  │   └─ 是 ↓</span><br><span class="line">  ├─ 需要生产级部署/安全合规吗？</span><br><span class="line">  │   ├─ 是 → 路径 A（LangGraph/AutoGen + Harness）</span><br><span class="line">  │   └─ 否 → 路径 B（快速验证，后续可迁移）</span><br><span class="line">  └─ 最终选择</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>提醒</strong>：路径不是”终身绑定”。很多团队的实际做法是：先用路径 B 快速验证想法，确认可行后，核心模块迁移到路径 A 做深度定制。两条路径可以共存。</p>
+</blockquote>
+<hr>
+<h2 id="九、双路径学习路线"><a href="#九、双路径学习路线" class="headerlink" title="九、双路径学习路线"></a>九、双路径学习路线</h2><h3 id="路径-A：代码-框架驱动（适合有编程基础的开发者）"><a href="#路径-A：代码-框架驱动（适合有编程基础的开发者）" class="headerlink" title="路径 A：代码&#x2F;框架驱动（适合有编程基础的开发者）"></a>路径 A：代码&#x2F;框架驱动（适合有编程基础的开发者）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">第 1 周：选一个框架，跑通第一个 Agent</span><br><span class="line">        → LangGraph 或 CrewAI，理解 Agent Loop、Tool Calling、Memory</span><br><span class="line">        🎯 产出：一个能回答公司内部文档问题的 Agent，跑通完整 Agent Loop</span><br><span class="line"></span><br><span class="line">第 2 周：写一个 MCP Server</span><br><span class="line">        → 让 Agent 调用你的 API，理解标准化接口的价值</span><br><span class="line">        🎯 产出：一个可复用的 MCP Server，Agent 能通过它查询数据库</span><br><span class="line"></span><br><span class="line">第 3 周：用框架定义多 Agent 协作</span><br><span class="line">        → 用 CrewAI 定义 3-5 个角色协作完成任务（如自动写周报）</span><br><span class="line">        🎯 产出：一个多 Agent 协作 Demo，自动完成端到端任务</span><br><span class="line"></span><br><span class="line">第 4 周：配置 Rules + Hooks，建立安全边界</span><br><span class="line">        → 让 Agent 在可控范围内工作，权限控制、错误恢复</span><br><span class="line">        🎯 产出：项目级 Rules 配置 + Hooks 脚本，Agent 行为受控</span><br><span class="line"></span><br><span class="line">第 5 周：学习上下文工程</span><br><span class="line">        → 优化 Agent 表现，精选信息 &gt; 堆量信息</span><br><span class="line">        🎯 产出：优化后的 Agent，在相同任务上表现明显提升</span><br><span class="line"></span><br><span class="line">第 6 周：部署 + 监控 + 成本控制</span><br><span class="line">        → 从本地 Demo 到生产环境，关注 Harness Engineering</span><br><span class="line">        🎯 产出：一个可对外演示的生产级 Agent 原型</span><br></pre></td></tr></table></figure>
+
+<h3 id="路径-B：配置-平台驱动（适合快速上手，无需深厚编程基础）"><a href="#路径-B：配置-平台驱动（适合快速上手，无需深厚编程基础）" class="headerlink" title="路径 B：配置&#x2F;平台驱动（适合快速上手，无需深厚编程基础）"></a>路径 B：配置&#x2F;平台驱动（适合快速上手，无需深厚编程基础）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">第 1 周：用 Dify / Coze 搭一个客服 Agent</span><br><span class="line">        → 拖拽式编排，感受&quot;配置驱动&quot;的威力</span><br><span class="line">        🎯 产出：一个能处理常见 FAQ 的客服机器人，在平台上线可对外演示</span><br><span class="line"></span><br><span class="line">第 2 周：学习 Skills 写法</span><br><span class="line">        → 理解 Skills 怎么组织、怎么复用、怎么触发</span><br><span class="line">        🎯 产出：3-5 个可复用的 Skill，覆盖常用业务场景</span><br><span class="line"></span><br><span class="line">第 3 周：配置 Rules + Hooks</span><br><span class="line">        → 建立安全边界，让 Agent 在可控范围内工作</span><br><span class="line">        🎯 产出：完整的 Rules 配置，Agent 不会越权操作</span><br><span class="line"></span><br><span class="line">第 4 周：接入 MCP，扩展 Agent 能力</span><br><span class="line">        → 连接数据库、API、第三方服务</span><br><span class="line">        🎯 产出：Agent 能通过 MCP 访问外部系统，能力范围大幅扩展</span><br><span class="line"></span><br><span class="line">第 5 周：学习上下文工程</span><br><span class="line">        → 优化 Agent 表现，精选信息 &gt; 堆量信息</span><br><span class="line">        🎯 产出：优化后的 Agent，回答准确率明显提升</span><br><span class="line"></span><br><span class="line">第 6 周：平台部署 + 监控 + 成本控制</span><br><span class="line">        → 从平台 Demo 到生产环境，关注 Harness Engineering</span><br><span class="line">        🎯 产出：一个在生产环境稳定运行的 Agent 应用</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>选哪条？</strong> 如果你有编程基础且需要深度定制，走路径 A；如果你想快速验证想法或让业务团队参与，走路径 B。两条路径的底层知识（MCP、Skills、Rules、上下文工程、Harness）是相通的，学会一条再学另一条，成本很低。</p>
+</blockquote>
+<blockquote>
+<p><strong>小结</strong>：2026 年的 Agent 开发，两条路径并存，核心公式统一：<strong>能力定义（Skills&#x2F;MCP）+ 行为约束（Rules）+ 推理引擎（LLM）+ 编排载体（框架&#x2F;平台&#x2F;代码）</strong>。路径 A 用代码掌控编排，路径 B 用配置加速落地。无论选哪条路，你都不再只是”程序员”，而是”Agent 架构师”：设计 Agent 能做什么、不能做什么、怎么协作、怎么监控。</p>
+<p>如果你已经读过 <a href="https://qq8697.github.io/blog/2026/06/agent-quick-intro.html">Agent 概念快速入门</a>（WHAT）和 <a href="https://qq8697.github.io/blog/2026/06/agent-dev-quick-intro.html">Agent 开发快速入门</a>（HOW），现在你知道了”当前该用什么、怎么选”（WHICH &amp; WHY）。三篇文章串起来，就是 Agent 开发从入门到生产的完整地图。</p>
+</blockquote>
+
+            </div>
+            <footer class="article-footer">
+                <div class="share-container">
+                    <div class="bdsharebuttonbox" 
+                        data-url="https://qq8697.github.io/blog/2026/06/agent-roadmap.html"
+                        data-id="cmqt48uxy000044vca80te4r5"
+                        data-title="Agent 开发主流技术路线"
+                        data-description="Agent 开发主流技术路线">
+                        <a data-cmd="more"><i class="fa fa-share" style="margin-right: 5px"></i>Share</a>
+                    </div>
+                    <script>
+                    if (window.location.protocol === 'https') {
+                        var bdshare = document.querySelector(".bdsharebuttonbox");
+                        var url = bdshare.getAttribute('data-url');
+                        var id = bdshare.getAttribute('data-id');
+                        var title = bdshare.getAttribute('data-title');
+                        var description = bdshare.getAttribute('data-description');
+                        window._bd_share_config = {
+                            "common":{
+                                "bdUrl": url,
+                                "bdDesc": description,
+                                "bdText": title,
+                                "bdPic":"",
+                                "bdSnsKey":{},
+                                "bdMini":"2",
+                                "bdMiniList":false,
+                                "bdStyle":"0",
+                                "bdSize":"16"
+                            },
+                            "share":{"bdSize":16}
+                        };
+                        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                    } else {
+                        document.querySelector('.bdsharebuttonbox').style.display = 'none';
+                    }
+                    </script>
+                    <style>
+                        .bdshare-button-style0-16 a,
+                        .bdshare-button-style0-16 .bds_more {
+                            background-image: none;
+                        }
+                    </style>
+                </div>
+            </footer>
+        </div>
+        <nav id="article-nav">
+            
+            
+                <a href="/blog/2026/06/agent-dev-quick-intro.html" id="article-nav-older" class="article-nav-link-wrap">
+                    <strong class="article-nav-caption">Older</strong>
+                    <div class="article-nav-title">Agent 开发快速入门</div>
+                </a>
+            
+        </nav>
+    </article>
+
+    <!-- Valine Comments -->
+    
+    <section id="comments">
+        <div id="valine-thread"></div>
+        <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+        <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+        <script>
+            new Valine({
+                el: '#valine-thread',
+                notify: false,
+                verify: false,
+                app_id: 'xIUWTw3eV1WAotjbFwGrIKMe-gzGzoHsz',
+                app_key: 'xSc2rEN1LKKnuh9N60iOBNdU',
+                placeholder: '评论的时候，留下在Gravatar注册时所使用的邮箱即可显示头像',
+                visitor: true
+            });
+            document.querySelector("#valine-thread .info").style.display='none'
+        </script>
+    </section>
+    
+</section>
+
+            <aside id="sidebar">
+    <!-- Recent Posts -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/06/agent-roadmap.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/06/agent-roadmap.html" class="title">Agent 开发主流技术路线</a></p>
+                            <p class="item-date"><time datetime="2026-06-29T08:00:00.000Z">2026-06-29</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/06/agent-dev-quick-intro.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/06/agent-dev-quick-intro.html" class="title">Agent 开发快速入门</a></p>
+                            <p class="item-date"><time datetime="2026-06-25T04:00:00.000Z">2026-06-25</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/06/agent-quick-intro.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/06/agent-quick-intro.html" class="title">Agent 概念快速入门</a></p>
+                            <p class="item-date"><time datetime="2026-06-25T02:00:00.000Z">2026-06-25</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/06/netsec-quick-intro.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/06/netsec-quick-intro.html" class="title">网络安全业务快速入门</a></p>
+                            <p class="item-date"><time datetime="2026-06-24T02:00:00.000Z">2026-06-24</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/05/why-pull-request-name.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/05/why-pull-request-name.html" class="title">为什么新的代码更改叫 Pull Request？</a></p>
+                            <p class="item-date"><time datetime="2026-05-20T02:00:00.000Z">2026-05-20</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/">博客</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/">骑行</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/%E8%A3%85%E5%A4%87/">装备</a><span class="category-list-count">1</span></li></ul></li></ul>
+        </div>
+    </div>
+
+    <!-- Archives -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/06/">六月 2026</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/05/">五月 2026</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent/" rel="tag">Agent</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" rel="tag">Agent开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub/" rel="tag">GitHub</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub-Pages/" rel="tag">GitHub Pages</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HTTP/" rel="tag">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCP/" rel="tag">MCP</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Prompt/" rel="tag">Prompt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pull-Request/" rel="tag">Pull Request</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/RAG/" rel="tag">RAG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ReAct/" rel="tag">ReAct</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/SRAM/" rel="tag">SRAM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skill/" rel="tag">Skill</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skills/" rel="tag">Skills</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Tool-Calling/" rel="tag">Tool Calling</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Workflow/" rel="tag">Workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" rel="tag">上下文工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" rel="tag">代码协作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">代码审计</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" rel="tag">公路车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%9D%8E%E6%99%AE/" rel="tag">坎普</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" rel="tag">威胁情报</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" rel="tag">安全运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="tag">应急响应</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF/" rel="tag">技术路线</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" rel="tag">折叠车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="tag">漏洞挖掘</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" rel="tag">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" rel="tag">红蓝对抗</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" rel="tag">网安业务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E9%A3%8E%E8%A1%8C/" rel="tag">风行</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    <!-- Tag Cloud -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/blog/tags/Agent/" style="font-size: 20px;">Agent</a> <a href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" style="font-size: 16.5px;">Agent开发</a> <a href="/blog/tags/Git/" style="font-size: 13px;">Git</a> <a href="/blog/tags/GitHub/" style="font-size: 13px;">GitHub</a> <a href="/blog/tags/GitHub-Pages/" style="font-size: 13px;">GitHub Pages</a> <a href="/blog/tags/HTTP/" style="font-size: 13px;">HTTP</a> <a href="/blog/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/blog/tags/MCP/" style="font-size: 20px;">MCP</a> <a href="/blog/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/blog/tags/Prompt/" style="font-size: 13px;">Prompt</a> <a href="/blog/tags/Pull-Request/" style="font-size: 13px;">Pull Request</a> <a href="/blog/tags/Python/" style="font-size: 13px;">Python</a> <a href="/blog/tags/RAG/" style="font-size: 13px;">RAG</a> <a href="/blog/tags/ReAct/" style="font-size: 13px;">ReAct</a> <a href="/blog/tags/SRAM/" style="font-size: 13px;">SRAM</a> <a href="/blog/tags/Skill/" style="font-size: 13px;">Skill</a> <a href="/blog/tags/Skills/" style="font-size: 13px;">Skills</a> <a href="/blog/tags/Token/" style="font-size: 13px;">Token</a> <a href="/blog/tags/Tool-Calling/" style="font-size: 16.5px;">Tool Calling</a> <a href="/blog/tags/Workflow/" style="font-size: 13px;">Workflow</a> <a href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">上下文工程</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" style="font-size: 13px;">代码协作</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" style="font-size: 13px;">代码审计</a> <a href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" style="font-size: 13px;">公路车</a> <a href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 13px;">博客搭建</a> <a href="/blog/tags/%E5%9D%8E%E6%99%AE/" style="font-size: 13px;">坎普</a> <a href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" style="font-size: 13px;">威胁情报</a> <a href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" style="font-size: 13px;">安全运营</a> <a href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" style="font-size: 13px;">应急响应</a> <a href="/blog/tags/%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF/" style="font-size: 13px;">技术路线</a> <a href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" style="font-size: 13px;">折叠车</a> <a href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 13px;">渗透测试</a> <a href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" style="font-size: 13px;">漏洞挖掘</a> <a href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="font-size: 13px;">版本控制</a> <a href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" style="font-size: 13px;">红蓝对抗</a> <a href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" style="font-size: 13px;">网安业务</a> <a href="/blog/tags/%E9%A3%8E%E8%A1%8C/" style="font-size: 13px;">风行</a>
+        </div>
+    </div>
+
+    <!-- Links -->
+    
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://nav.wuhongbin.com">前端导航</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://code.wuhongbin.com">代码碎片</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    
+
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2026 TA圣堂米拉娜<br>
+            秘密已经泄露，战斗一触即发！
+        </div>
+    </div>
+</footer>
+
+    </div>
+
+    <!-- Light Gallery JS -->
+    <script src="/blog/libs/lightgallery/js/lightgallery.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-autoplay.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-video.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-pager.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-zoom.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-hash.min.js"></script>
+
+    <script src="/blog/js/main.js"></script>
+</body>
+</html>
