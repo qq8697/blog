@@ -9,7 +9,7 @@
 <meta name="keywords" content="前端 博客 圣堂">
 <meta property="og:type" content="website">
 <meta property="og:title" content="TA圣堂米拉娜">
-<meta property="og:url" content="https://qq8697.github.io/blog/tags/威胁情报/index.html">
+<meta property="og:url" content="https://qq8697.github.io/blog/page/2/index.html">
 <meta property="og:site_name" content="TA圣堂米拉娜">
 <meta property="og:description" content="前端 博客 圣堂">
 <meta property="og:locale" content="zh-CN">
@@ -182,29 +182,73 @@ var _hmt = _hmt || [];
 </aside>
 
             <section id="main">
-    <article class="article article-type-post">
+
+    <article id="post-correctly-use-GET-and-POST-method-to-send-requests" class="article article-type-post" itemscope itemprop="blogPost">
         <div class="article-inner">
             <header class="article-header">
-                <h1 class="article-title" itemprop="name">
-                    tag: 威胁情报
+                <h1 itemprop="name">
+                    <a class="article-title" href="/blog/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html">正确的使用GET与POST方法发送请求</a>
                 </h1>
+                <div class="article-meta">
+                    <div class="article-date">
+                        <i class="fa fa-calendar"></i>
+                        <a href="/blog/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html">
+                            <time datetime="2018-09-18T07:10:35.000Z" itemprop="datePublished">2018-09-18</time>
+                        </a>
+                    </div>
+                    
+                    <div class="article-category">
+                        <i class="fa fa-folder"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/HTTP/">HTTP</a><i class="fa fa-angle-right"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/HTTP/GET-POST/">GET &amp; POST</a>
+                        
+                    </div>
+                    
+                    
+                    <div class="article-tag">
+                        <i class="fa fa-tag"></i>
+                        
+                            <a class="tag-link" href="/blog/tags/HTTP/">HTTP</a>
+                        
+                    </div>
+                    
+                </div>
             </header>
             <div class="article-entry" itemprop="articleBody">
                 
-                <ul class="layout-wrap-inner list-categories">
-                    
-                        <li>
-                            <a href="/blog/2026/06/netsec-quick-intro.html">网络安全业务快速入门</a>
-                            <span class="archive-article-date">2026-06-24</span>
-                        </li>
-                    
-                </ul>
+                    <h2 id="GET请求-url上的参数需要转义"><a href="#GET请求-url上的参数需要转义" class="headerlink" title="GET请求 -&gt; url上的参数需要转义"></a>GET请求 -&gt; url上的参数需要转义</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">ajax</span>(<span class="params">url, data</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> args = []</span><br><span class="line">    <span class="keyword">for</span> (key <span class="keyword">in</span> data) &#123;</span><br><span class="line">        args.<span class="title function_">push</span>(<span class="string">`<span class="subst">$&#123;<span class="built_in">encodeURIComponent</span>(key)&#125;</span> = <span class="subst">$&#123;<span class="built_in">encodeURIComponent</span>(data[key])&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> query = args.<span class="title function_">join</span>(<span class="string">&#x27;&amp;&#x27;</span>)</span><br><span class="line">    url += ~url.<span class="title function_">indexOf</span>(<span class="string">&#x27;?&#x27;</span>) ? <span class="string">`&amp;<span class="subst">$&#123;query&#125;</span>`</span> : <span class="string">`?<span class="subst">$&#123;query&#125;</span>`</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>()</span><br><span class="line">    xhr.<span class="title function_">open</span>(<span class="string">&quot;GET&quot;</span>, url)</span><br><span class="line">    xhr.<span class="title function_">send</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>GET请求url参数上 key&#x2F;value 对中的 value 除了简单类型的变量还可能是数组或者对象，需要做判断与处理：</p>
+<p>对象的话使用 <code>encodeURIComponent</code> 会变成对 <code>&quot;[object Object]&quot;</code> 的转义：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">encodeURIComponent</span>(<span class="string">&quot;[object Object]&quot;</span>) === <span class="built_in">encodeURIComponent</span>(&#123;<span class="attr">page</span>:<span class="number">5</span>&#125;) <span class="comment">// true</span></span><br><span class="line"><span class="comment">// &quot;%5Bobject%20Object%5D&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>数组 <code>&#123;ids: [1,2,3]&#125;</code> -&gt; <code>ids[0]=1&amp;ids[1]=2&amp;ids[2]=3</code></li>
+<li>对象 <code>&#123;user: &#123;name: &#39;sj&#39;, age: 23&#125;&#125;</code> -&gt; <code>user[name]=&#39;sj&#39;&amp;user[age]=23</code></li>
+</ul>
+<h2 id="POST请求-参数在请求体中"><a href="#POST请求-参数在请求体中" class="headerlink" title="POST请求 -&gt; 参数在请求体中"></a>POST请求 -&gt; 参数在请求体中</h2><p>（url上也可以，因为一般的web框架的POST请求都会收到url和请求体，取决于后端如何处理）</p>
+<p>默认的mime类型为 <code>text/plain</code> ，请求参数在 Request Payload 下以 key&#x3D;value 并由 <code>&amp;</code> 连接形式显示 -&gt; 并不是按照字段分行显示</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 控制台下发送POST请求</span></span><br><span class="line"><span class="keyword">let</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>()</span><br><span class="line">xhr.<span class="title function_">open</span>(<span class="string">&quot;POST&quot;</span>, <span class="string">&quot;/&quot;</span>)</span><br><span class="line">xhr.<span class="title function_">send</span>(<span class="string">&quot;name=&#x27;sj&#x27;&amp;age=23&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查看请求信息</span></span><br><span class="line"><span class="comment">// Request Headers</span></span><br><span class="line"><span class="comment">// Content-Type: text/plain;charset=UTF-8</span></span><br><span class="line"><span class="comment">// Request Payload</span></span><br><span class="line"><span class="comment">// name=&#x27;sj&#x27;&amp;age=23</span></span><br></pre></td></tr></table></figure>
+                    <p class="article-more-link">
+                        <a href="/blog/2018/09/correctly-use-GET-and-POST-method-to-send-requests.html#more">Read More</a>
+                    </p>
                 
             </div>
+            <footer class="article-footer"></footer>
         </div>
     </article>
-    
+
 </section>
+
+<nav id="page-nav">
+    
+        <a class="extend prev" rel="prev" href="/blog/">&laquo; Prev</a>
+    
+    
+</nav>
+
 
             <aside id="sidebar">
     <!-- Recent Posts -->
