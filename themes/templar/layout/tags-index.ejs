@@ -1,0 +1,16 @@
+<section id="main">
+    <article class="article article-type-post">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 class="article-title" itemprop="name">
+                    <%= page.title || __('tags') %>
+                </h1>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                <div class="layout-wrap-inner tag-cloud">
+                    <%- tagcloud({ min_font: 16, max_font: 24 }) %>
+                </div>
+            </div>
+        </div>
+    </article>
+</section>

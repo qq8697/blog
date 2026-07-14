@@ -1,0 +1,36 @@
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="<%= url_for(theme.avatar || '/css/images/avatar.jpg') %>" />
+            <h2 id="name"><%= theme.author || config.author %></h2>
+            <h3 id="title"><%= theme.subtitle || 'Blogger' %></h3>
+            <span id="location"><i class="fa fa-map-marker"></i><%= theme.location || '' %></span>
+            <a id="follow" target="_blank" href="https://gitee.com/qq8697">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                <%= site.posts.length %>
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                <%= site.tags.length %>
+                <span>tag</span>
+            </div>
+        </div>
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    <% if (theme.social) { %>
+                        <% if (theme.social.steam) { %>
+                        <td>
+                            <a href="<%= theme.social.steam %>" target="_blank" title="steam" class=tooltip>
+                                <i class="fa fa-steam"></i>
+                            </a>
+                        </td>
+                        <% } %>
+                    <% } %>
+                </tr>
+            </table>
+        </div>
+    </div>
+</aside>

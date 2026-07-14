@@ -1,0 +1,58 @@
+<section id="main">
+<% page.posts.each(function(post) { %>
+    <article id="post-<%= post.slug %>" class="article article-type-post" itemscope itemprop="blogPost">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 itemprop="name">
+                    <a class="article-title" href="<%= url_for(post.path) %>"><%= post.title %></a>
+                </h1>
+                <div class="article-meta">
+                    <div class="article-date">
+                        <i class="fa fa-calendar"></i>
+                        <a href="<%= url_for(post.path) %>">
+                            <time datetime="<%= post.date.toISOString() %>" itemprop="datePublished"><%= date(post.date, 'YYYY-MM-DD') %></time>
+                        </a>
+                    </div>
+                    <% if (post.categories.length > 0) { %>
+                    <div class="article-category">
+                        <i class="fa fa-folder"></i>
+                        <% post.categories.each(function(cat, i) { %>
+                            <a class="article-category-link" href="<%= url_for(cat.path) %>"><%= cat.name %></a><% if (i < post.categories.length - 1) { %><i class="fa fa-angle-right"></i><% } %>
+                        <% }) %>
+                    </div>
+                    <% } %>
+                    <% if (post.tags.length > 0) { %>
+                    <div class="article-tag">
+                        <i class="fa fa-tag"></i>
+                        <% post.tags.each(function(tag) { %>
+                            <a class="tag-link" href="<%= url_for(tag.path) %>"><%= tag.name %></a>
+                        <% }) %>
+                    </div>
+                    <% } %>
+                </div>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                <% if (post.excerpt) { %>
+                    <%- post.excerpt %>
+                    <p class="article-more-link">
+                        <a href="<%= url_for(post.path) %>#more">Read More</a>
+                    </p>
+                <% } else { %>
+                    <%- post.content %>
+                <% } %>
+            </div>
+            <footer class="article-footer"></footer>
+        </div>
+    </article>
+<% }) %>
+</section>
+<% if (page.prev || page.next) { %>
+<nav id="page-nav">
+    <% if (page.prev) { %>
+        <a class="extend prev" rel="prev" href="<%= url_for(page.prev_link) %>">&laquo; Prev</a>
+    <% } %>
+    <% if (page.next) { %>
+        <a class="extend next" rel="next" href="<%= url_for(page.next_link) %>">Next &raquo;</a>
+    <% } %>
+</nav>
+<% } %>

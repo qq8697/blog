@@ -1,0 +1,29 @@
+# Templar Theme for Hexo
+# Based on original blog design by sj
+
+# Sidebar settings
+sidebar: true
+
+# Profile
+avatar: /css/images/avatar.jpg
+author: 圣堂
+subtitle: 前端攻城师
+location: 北京, 中国
+
+# Social
+social:
+  steam: https://steamcommunity.com/profiles/76561198386205036/
+
+# Links
+links:
+  前端导航: http://nav.wuhongbin.com
+  代码碎片: http://code.wuhongbin.com
+
+# Comments: Valine
+valine:
+  app_id: xIUWTw3eV1WAotjbFwGrIKMe-gzGzoHsz
+  app_key: xSc2rEN1LKKnuh9N60iOBNdU
+
+# Analytics
+google_analytics: UA-127105097-1
+baidu_analytics: fa59de63d3320a45f6aa672138d2e55c

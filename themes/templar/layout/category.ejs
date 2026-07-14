@@ -1,0 +1,33 @@
+<section id="main">
+    <article class="article article-type-post">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 class="article-title" itemprop="name">
+                    <%= __('category') %>: <%= page.category || page.title %>
+                </h1>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                <% if (page.posts.length > 0) { %>
+                <ul class="layout-wrap-inner list-categories">
+                    <% page.posts.each(function(post) { %>
+                        <li>
+                            <a href="<%= url_for(post.path) %>"><%= post.title %></a>
+                            <span class="archive-article-date"><%= date(post.date, 'YYYY-MM-DD') %></span>
+                        </li>
+                    <% }) %>
+                </ul>
+                <% } %>
+            </div>
+        </div>
+    </article>
+    <% if (page.prev || page.next) { %>
+    <nav id="page-nav">
+        <% if (page.prev) { %>
+            <a class="extend prev" rel="prev" href="<%= url_for(page.prev_link) %>">&laquo; Prev</a>
+        <% } %>
+        <% if (page.next) { %>
+            <a class="extend next" rel="next" href="<%= url_for(page.next_link) %>">Next &raquo;</a>
+        <% } %>
+    </nav>
+    <% } %>
+</section>

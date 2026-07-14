@@ -1,0 +1,67 @@
+<meta charset="utf-8">
+<%
+var title = page.title ? page.title + ' | ' + config.title : config.title;
+var description = page.description || config.description;
+var keywords = page.keywords || config.keywords;
+var ogType = is_post() ? 'article' : 'website';
+var ogImage = page.cover || theme.avatar ? url_for(theme.avatar) : '';
+%>
+<title><%= title %></title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="description" content="<%= description %>">
+<meta name="keywords" content="<%= keywords %>">
+<meta property="og:type" content="<%= ogType %>">
+<meta property="og:title" content="<%= title %>">
+<meta property="og:url" content="<%= config.url + '/' + page.path %>">
+<meta property="og:site_name" content="<%= config.title %>">
+<meta property="og:description" content="<%= description %>">
+<meta property="og:locale" content="zh-CN">
+<% if (ogImage) { %>
+<meta property="og:image" content="<%= ogImage %>">
+<meta property="og:updated_time" content="<%= page.updated ? page.updated.toISOString() : '' %>">
+<% } %>
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="<%= title %>">
+<meta name="twitter:description" content="<%= description %>">
+<% if (ogImage) { %>
+<meta name="twitter:image" content="<%= ogImage %>">
+<% } %>
+
+<link rel="icon" href="<%= url_for('/css/images/favicon.ico') %>" />
+
+<link rel="stylesheet" href="<%= url_for('/libs/font-awesome/css/font-awesome.min.css') %>">
+<link rel="stylesheet" href="<%= url_for('/libs/open-sans/styles.css') %>">
+<link rel="stylesheet" href="<%= url_for('/libs/source-code-pro/styles.css') %>">
+<link rel="stylesheet" href="<%= url_for('/css/style.css') %>">
+<script src="<%= url_for('/libs/jquery/2.1.3/jquery.min.js') %>"></script>
+
+<!-- Code highlight -->
+<link rel="stylesheet" href="<%= url_for('/libs/highlight/github.css') %>">
+<script src="<%= url_for('/libs/highlight/highlight.js') %>"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- Light Gallery -->
+<link rel="stylesheet" href="<%= url_for('/libs/lightgallery/css/lightgallery.min.css') %>">
+
+<% if (theme.google_analytics) { %>
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', '<%= theme.google_analytics %>', 'auto');
+ga('send', 'pageview');
+</script>
+<% } %>
+
+<% if (theme.baidu_analytics) { %>
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?<%= theme.baidu_analytics %>";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<% } %>

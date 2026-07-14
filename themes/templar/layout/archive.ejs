@@ -1,0 +1,38 @@
+<section id="main">
+    <article class="article article-type-post">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 class="article-title" itemprop="name">
+                    <%= __('archive') %> <% if (page.year) { %><%= page.year %><% } %><% if (page.month) { %> <%= page.month %>月<% } %>
+                </h1>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                <div class="timeline-wrap">
+                    <% page.posts.each(function(post) { %>
+                        <div class="timeline-row">
+                            <a href="<%= url_for(post.path) %>">
+                                <span class="node"></span>
+                            </a>
+                            <div class="content">
+                                <h1><a href="<%= url_for(post.path) %>"><%= post.title %></a></h1>
+                                <div class="article-meta">
+                                    <time datetime="<%= post.date.toISOString() %>"><%= date(post.date, 'YYYY-MM-DD') %></time>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </article>
+    <% if (page.prev || page.next) { %>
+    <nav id="page-nav">
+        <% if (page.prev) { %>
+            <a class="extend prev" rel="prev" href="<%= url_for(page.prev_link) %>">&laquo; Prev</a>
+        <% } %>
+        <% if (page.next) { %>
+            <a class="extend next" rel="next" href="<%= url_for(page.next_link) %>">Next &raquo;</a>
+        <% } %>
+    </nav>
+    <% } %>
+</section>

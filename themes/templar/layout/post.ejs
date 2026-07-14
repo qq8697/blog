@@ -1,0 +1,116 @@
+<section id="main">
+    <article id="post-<%= page.slug %>" class="article article-type-post" itemscope itemprop="blogPost">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 class="article-title" itemprop="name">
+                    <%= page.title %>
+                </h1>
+                <div class="article-meta">
+                    <div class="article-date">
+                        <i class="fa fa-calendar"></i>
+                        <a href="<%= url_for(page.path) %>">
+                            <time datetime="<%= page.date.toISOString() %>" itemprop="datePublished"><%= date(page.date, 'YYYY-MM-DD') %></time>
+                        </a>
+                    </div>
+                    <% if (page.categories.length > 0) { %>
+                    <div class="article-category">
+                        <i class="fa fa-folder"></i>
+                        <% page.categories.each(function(cat, i) { %>
+                            <a class="article-category-link" href="<%= url_for(cat.path) %>"><%= cat.name %></a><% if (i < page.categories.length - 1) { %><i class="fa fa-angle-right"></i><% } %>
+                        <% }) %>
+                    </div>
+                    <% } %>
+                    <% if (page.tags.length > 0) { %>
+                    <div class="article-tag">
+                        <i class="fa fa-tag"></i>
+                        <% page.tags.each(function(tag) { %>
+                            <a class="tag-link" href="<%= url_for(tag.path) %>"><%= tag.name %></a>
+                        <% }) %>
+                    </div>
+                    <% } %>
+                </div>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                <%- page.content %>
+            </div>
+            <footer class="article-footer">
+                <div class="share-container">
+                    <div class="bdsharebuttonbox" 
+                        data-url="<%= config.url + '/' + page.path %>"
+                        data-id="<%= page._id %>"
+                        data-title="<%= page.title %>"
+                        data-description="<%= page.description || page.title %>">
+                        <a data-cmd="more"><i class="fa fa-share" style="margin-right: 5px"></i>Share</a>
+                    </div>
+                    <script>
+                    if (window.location.protocol === 'https') {
+                        var bdshare = document.querySelector(".bdsharebuttonbox");
+                        var url = bdshare.getAttribute('data-url');
+                        var id = bdshare.getAttribute('data-id');
+                        var title = bdshare.getAttribute('data-title');
+                        var description = bdshare.getAttribute('data-description');
+                        window._bd_share_config = {
+                            "common":{
+                                "bdUrl": url,
+                                "bdDesc": description,
+                                "bdText": title,
+                                "bdPic":"",
+                                "bdSnsKey":{},
+                                "bdMini":"2",
+                                "bdMiniList":false,
+                                "bdStyle":"0",
+                                "bdSize":"16"
+                            },
+                            "share":{"bdSize":16}
+                        };
+                        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                    } else {
+                        document.querySelector('.bdsharebuttonbox').style.display = 'none';
+                    }
+                    </script>
+                    <style>
+                        .bdshare-button-style0-16 a,
+                        .bdshare-button-style0-16 .bds_more {
+                            background-image: none;
+                        }
+                    </style>
+                </div>
+            </footer>
+        </div>
+        <nav id="article-nav">
+            <% if (page.prev) { %>
+                <a href="<%= url_for(page.prev.path) %>" id="article-nav-newer" class="article-nav-link-wrap">
+                    <strong class="article-nav-caption">Newer</strong>
+                    <div class="article-nav-title"><%= page.prev.title %></div>
+                </a>
+            <% } %>
+            <% if (page.next) { %>
+                <a href="<%= url_for(page.next.path) %>" id="article-nav-older" class="article-nav-link-wrap">
+                    <strong class="article-nav-caption">Older</strong>
+                    <div class="article-nav-title"><%= page.next.title %></div>
+                </a>
+            <% } %>
+        </nav>
+    </article>
+
+    <!-- Valine Comments -->
+    <% if (theme.valine) { %>
+    <section id="comments">
+        <div id="valine-thread"></div>
+        <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+        <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+        <script>
+            new Valine({
+                el: '#valine-thread',
+                notify: false,
+                verify: false,
+                app_id: '<%= theme.valine.app_id %>',
+                app_key: '<%= theme.valine.app_key %>',
+                placeholder: '评论的时候，留下在Gravatar注册时所使用的邮箱即可显示头像',
+                visitor: true
+            });
+            document.querySelector("#valine-thread .info").style.display='none'
+        </script>
+    </section>
+    <% } %>
+</section>

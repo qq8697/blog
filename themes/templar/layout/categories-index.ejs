@@ -1,0 +1,16 @@
+<section id="main">
+    <article class="article article-type-post">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 class="article-title" itemprop="name">
+                    <%= page.title || __('categories') %>
+                </h1>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                <div class="layout-wrap-inner list-categories">
+                    <%- list_categories({ show_count: true, depth: 2 }) %>
+                </div>
+            </div>
+        </div>
+    </article>
+</section>

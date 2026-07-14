@@ -1,0 +1,76 @@
+<header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="<%= url_for('/') %>" id="logo">
+                <i class="logo"></i>
+                <span class="site-title"><%= config.title %></span>
+            </a>
+            <nav id="main-nav">
+                <a class="main-nav-link" href="<%= url_for('/') %>">Home</a>
+                <a class="main-nav-link" href="<%= url_for('/archives') %>">Archives</a>
+                <a class="main-nav-link" href="<%= url_for('/categories') %>">Categories</a>
+                <a class="main-nav-link" href="<%= url_for('/tags') %>">Tags</a>
+                <a class="main-nav-link" href="<%= url_for('/about') %>">About</a>
+            </nav>
+            <nav id="sub-nav">
+                <div class="profile" id="profile-nav">
+                    <a id="profile-anchor" href="javascript:;">
+                        <img class="avatar" src="<%= url_for(theme.avatar || '/css/images/avatar.jpg') %>" />
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                </div>
+            </nav>
+            <div id="search-form-wrap">
+                <form class="search-form">
+                    <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+                    <button type="submit" class="search-form-submit"></button>
+                </form>
+                <div class="ins-search">
+                    <div class="ins-search-mask"></div>
+                    <div class="ins-search-container">
+                        <div class="ins-input-wrapper">
+                            <input type="text" class="ins-search-input" placeholder="Type something..." />
+                            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+                        </div>
+                        <div class="ins-section-wrapper">
+                            <div class="ins-section-container"></div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                (function (window) {
+                    var INSIGHT_CONFIG = {
+                        TRANSLATION: {
+                            POSTS: 'Posts',
+                            PAGES: 'Pages',
+                            CATEGORIES: 'Categories',
+                            TAGS: 'Tags',
+                            UNTITLED: '(Untitled)',
+                        },
+                        ROOT_URL: '<%= config.root %>',
+                        CONTENT_URL: '<%= url_for('/content.json') %>',
+                    };
+                    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+                })(window);
+                </script>
+                <script src="<%= url_for('/js/insight.js') %>"></script>
+            </div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                <td><a class="main-nav-link" href="<%= url_for('/') %>">Home</a></td>
+                <td><a class="main-nav-link" href="<%= url_for('/archives') %>">Archives</a></td>
+                <td><a class="main-nav-link" href="<%= url_for('/categories') %>">Categories</a></td>
+                <td><a class="main-nav-link" href="<%= url_for('/tags') %>">Tags</a></td>
+                <td><a class="main-nav-link" href="<%= url_for('/about') %>">About</a></td>
+                <td>
+                    <div class="search-form">
+                        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>

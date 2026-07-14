@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="<%= config.language.substring(0, 2) %>">
+<head>
+    <%- partial('partial/head') %>
+</head>
+<body>
+    <div id="container">
+        <%- partial('partial/header') %>
+        <div class="outer">
+            <%- partial('partial/profile') %>
+            <%- body %>
+            <%- partial('partial/sidebar') %>
+        </div>
+        <%- partial('partial/footer') %>
+    </div>
+
+    <!-- Light Gallery JS -->
+    <script src="<%= url_for('/libs/lightgallery/js/lightgallery.min.js') %>"></script>
+    <script src="<%= url_for('/libs/lightgallery/js/lg-thumbnail.min.js') %>"></script>
+    <script src="<%= url_for('/libs/lightgallery/js/lg-autoplay.min.js') %>"></script>
+    <script src="<%= url_for('/libs/lightgallery/js/lg-video.min.js') %>"></script>
+    <script src="<%= url_for('/libs/lightgallery/js/lg-fullscreen.min.js') %>"></script>
+    <script src="<%= url_for('/libs/lightgallery/js/lg-pager.min.js') %>"></script>
+    <script src="<%= url_for('/libs/lightgallery/js/lg-zoom.min.js') %>"></script>
+    <script src="<%= url_for('/libs/lightgallery/js/lg-hash.min.js') %>"></script>
+
+    <script src="<%= url_for('/js/main.js') %>"></script>
+</body>
+</html>

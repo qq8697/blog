@@ -5,7 +5,6 @@ categories:
   - 技术
   - AI
 tags:
-  - Agent
   - Agent开发
   - DeepAgents
   - 代码审计
@@ -25,13 +24,7 @@ tags:
 
 它在 LangChain 生态中的位置：
 
-```
-LangGraph（底层运行时：图执行、流式、持久化、检查点）
-    ↓
-LangChain create_agent（轻量 Harness：最小 Agent 循环）
-    ↓
-DeepAgents（完整 Harness：规划 + 文件 + 子Agent + 记忆 + 技能）
-```
+![LangChain 生态示意图](/images/Gemini_Generated_Image_ao4zb3ao4zb3ao4z.png)
 
 **一句话定位**：如果你用纯 Python 写 Agent，需要自己实现文件系统、子 Agent、上下文压缩、持久记忆——DeepAgents 把这些全部预装好了，你只需要关注业务逻辑。
 
@@ -200,19 +193,19 @@ Agent 会自动调用 `read_file`、`search_code` 等工具，你不需要手动
 **默认 Middleware 栈**（按执行顺序，来源：[官方文档](https://docs.langchain.com/oss/python/deepagents/customization#default-stack-main-agent)）：
 
 ```
- 1. TodoListMiddleware         → 任务规划与跟踪
- 2. SkillsMiddleware           → Skills 注入（仅当传 skills 时）
- 3. FilesystemMiddleware       → 文件系统操作
- 4. SubAgentMiddleware         → 子 Agent 委派
- 5. SummarizationMiddleware    → 上下文压缩
- 6. PatchToolCallsMiddleware   → 修复悬空/孤儿工具调用
- 7. AsyncSubAgentMiddleware    → 异步子 Agent（仅当配置时）
- 8. 你的自定义 Middleware      → 通过 middleware 参数传入
- 9. Harness profile extras     → 模型 profile 的 provider 特定中间件
-10. Excluded-tool filtering    → 排除工具过滤
-11. Prompt caching             → Anthropic / Bedrock 缓存
-12. MemoryMiddleware           → 长期记忆（仅当传 memory 时）
-13. HumanInTheLoopMiddleware   → HITL（仅当传 interrupt_on 时）
+TodoListMiddleware         → 任务规划与跟踪
+SkillsMiddleware           → Skills 注入（仅当传 skills 时）
+FilesystemMiddleware       → 文件系统操作
+SubAgentMiddleware         → 子 Agent 委派
+SummarizationMiddleware    → 上下文压缩
+PatchToolCallsMiddleware   → 修复悬空/孤儿工具调用
+AsyncSubAgentMiddleware    → 异步子 Agent（仅当配置时）
+你的自定义 Middleware      → 通过 middleware 参数传入
+Harness profile extras     → 模型 profile 的 provider 特定中间件
+Excluded-tool filtering    → 排除工具过滤
+Prompt caching             → Anthropic / Bedrock 缓存
+MemoryMiddleware           → 长期记忆（仅当传 memory 时）
+HumanInTheLoopMiddleware   → HITL（仅当传 interrupt_on 时）
 ```
 
 **三种压缩策略**（自动触发）：
@@ -369,22 +362,7 @@ agent = create_deep_agent(tools=tools)
 
 采用 Supervisor 编排模式：
 
-```
-                    ┌─────────────────────────────┐
-                    │     Supervisor Agent         │
-                    │   "审计任务总调度"            │
-                    │   通过 task 工具委派子任务    │
-                    └──────────┬──────────────────┘
-                               │
-      ┌────────────┬───────────┼───────────┬────────────┐
-      ▼            ▼           ▼           ▼            ▼
-┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
-│ Searcher │ │Security  │ │Compliance│ │ Report   │
-│          │ │Auditor   │ │Checker   │ │Generator │
-└──────────┘ └──────────┘ └──────────┘ └──────────┘
-"代码搜索    "安全漏洞    "合规性      "报告生成
- 与检索"     检测"       检查"        与输出"
-```
+![Supervisor 编排模式](/images/Gemini_Generated_Image_cn5x69cn5x69cn5x.png)
 
 **各子 Agent 职责**：
 
