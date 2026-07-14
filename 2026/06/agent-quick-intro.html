@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh-CN">
 
 <meta property="og:image" content="/blog/css/images/avatar.jpg">
-<meta property="og:updated_time" content="2026-06-25T08:24:14.211Z">
+<meta property="og:updated_time" content="2026-07-08T01:53:08.872Z">
 
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Agent 概念快速入门 | TA圣堂米拉娜">
@@ -155,11 +155,11 @@ var _hmt = _hmt || [];
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                11
+                13
                 <span>posts</span>
             </div>
             <div class="article-info-block">
-                38
+                45
                 <span>tag</span>
             </div>
         </div>
@@ -233,7 +233,7 @@ var _hmt = _hmt || [];
                 <p>两年前，我们惊叹于 ChatGPT 能聊天。今天，AI 已经能自己读文件、调 API、操作电脑、自主拆任务执行——它不是”更会聊了”，而是”进化出了手脚”。</p>
 <p>这篇文章带你理清这背后每一个关键概念：从最底层的 Token 和 Context Window，到让 AI 查资料再回答的 RAG，再到统一工具接口的 MCP、沉淀工作流程的 Skill，最后到能自主落地干活的 Agent 和 Harness。</p>
 <hr>
-<h2 id="一、基础：AI-怎么”识字”和”记事”"><a href="#一、基础：AI-怎么”识字”和”记事”" class="headerlink" title="一、基础：AI 怎么”识字”和”记事”"></a>一、基础：AI 怎么”识字”和”记事”</h2><p>在聊所有高级概念之前，先搞清楚 AI 最底层的两个限制——它们决定了 AI 能”想”多少。</p>
+<h2 id="一、基础：Token-与-Context-Window"><a href="#一、基础：Token-与-Context-Window" class="headerlink" title="一、基础：Token 与 Context Window"></a>一、基础：Token 与 Context Window</h2><p>在聊所有高级概念之前，先搞清楚 AI 最底层的两个限制——它们决定了 AI 能”想”多少。</p>
 <h3 id="1-1-Token-—-文字的最小单元"><a href="#1-1-Token-—-文字的最小单元" class="headerlink" title="1.1 Token — 文字的最小单元"></a>1.1 Token — 文字的最小单元</h3><table>
 <thead>
 <tr>
@@ -252,10 +252,6 @@ var _hmt = _hmt || [];
 <tr>
 <td>影响</td>
 <td>API 费用、速率限制、max_tokens 上限都以 Token 计算</td>
-</tr>
-<tr>
-<td>类比</td>
-<td>就像你打字时的”每敲一下键盘”，AI 按 Token 数计费</td>
 </tr>
 </tbody></table>
 <blockquote>
@@ -285,10 +281,13 @@ var _hmt = _hmt || [];
 <td>上下文压缩（Compaction）：把早期历史总结成摘要，腾出空间继续工作</td>
 </tr>
 </tbody></table>
+<p>各模型上下文窗口容量差异很大：GPT-4o 为 128K，Claude 为 200K，Gemini 2.0 已达 2M Token。选模型时，上下文窗口大小是关键指标之一。</p>
 <p><strong>Compaction 的工程智慧</strong>：Claude Code 实现了 5 层压缩流水线——从零成本的”裁剪无关历史”到”让 LLM 把整个历史总结成结构化 Markdown 快照”，先用便宜的本地操作，实在不行再花 API 钱做重写总结。</p>
-<p><strong>关系</strong>：Token 是”最小单元”，Context Window 是”单次容量上限”。就像你写文章的字符数 vs 笔记本的页数限制——字太多，本子写不下。</p>
+<blockquote>
+<p>关系：Token 是”最小单元”，Context Window 是”单次容量上限”。</p>
+</blockquote>
 <hr>
-<h2 id="二、指令：怎么让-AI-听懂需求"><a href="#二、指令：怎么让-AI-听懂需求" class="headerlink" title="二、指令：怎么让 AI 听懂需求"></a>二、指令：怎么让 AI 听懂需求</h2><p>有了基础能力，下一步是”让 AI 理解你到底要它干什么”。</p>
+<h2 id="二、指令：Prompt-与-Context-Engineering"><a href="#二、指令：Prompt-与-Context-Engineering" class="headerlink" title="二、指令：Prompt 与 Context Engineering"></a>二、指令：Prompt 与 Context Engineering</h2><p>有了基础能力，下一步是”让 AI 理解你到底要它干什么”。</p>
 <h3 id="2-1-Prompt-—-指令话术"><a href="#2-1-Prompt-—-指令话术" class="headerlink" title="2.1 Prompt — 指令话术"></a>2.1 Prompt — 指令话术</h3><table>
 <thead>
 <tr>
@@ -337,10 +336,10 @@ var _hmt = _hmt || [];
 </tr>
 </tbody></table>
 <blockquote>
-<p>一句话：Prompt 是”一句话指令”，Context Engineering 是”你给 AI 看的全部资料的编排策略”。从 Prompt Engineering 到 Context Engineering，是从”写提示词”到”管控信息流”的范式升级。</p>
+<p>关系：Prompt 是”一句话指令”，Context Engineering 是”你给 AI 看的全部资料的编排策略”。从 Prompt Engineering 到 Context Engineering，是从”写提示词”到”管控信息流”的范式升级。</p>
 </blockquote>
 <hr>
-<h2 id="三、查证：怎么解决-AI-瞎编"><a href="#三、查证：怎么解决-AI-瞎编" class="headerlink" title="三、查证：怎么解决 AI 瞎编"></a>三、查证：怎么解决 AI 瞎编</h2><p>AI 最致命的问题——幻觉（Hallucination）。你问它”公司上个季度销售额是多少”，它不知道，但会编一个数字，而且编得理直气壮。解决方案：让它先查资料再回答。</p>
+<h2 id="三、查证：RAG-与向量数据库"><a href="#三、查证：RAG-与向量数据库" class="headerlink" title="三、查证：RAG 与向量数据库"></a>三、查证：RAG 与向量数据库</h2><p>AI 最致命的问题——幻觉（Hallucination）。你问它”公司上个季度销售额是多少”，它不知道，但会编一个数字，而且编得理直气壮。解决方案：让它先查资料再回答。</p>
 <h3 id="3-1-RAG-—-检索增强生成"><a href="#3-1-RAG-—-检索增强生成" class="headerlink" title="3.1 RAG — 检索增强生成"></a>3.1 RAG — 检索增强生成</h3><table>
 <thead>
 <tr>
@@ -366,7 +365,10 @@ var _hmt = _hmt || [];
 </tr>
 </tbody></table>
 <blockquote>
-<p>你把公司 200 页的员工手册做成 RAG 知识库。问”年假有多少天”，系统先检索到《员工手册》第 7 章相关段落，拼进 Prompt 变成”根据以下上下文回答：……Question: 年假有多少天？”——回答就基于真实文档，而不是模型瞎猜。</p>
+<p>你把公司 200 页的员工手册做成 RAG 知识库。问”年假有多少天”，系统先检索到《员工手册》相关段落，拼进 Prompt 变成”根据以下上下文回答：……Question: 年假有多少天？”——回答就基于真实文档，而不是模型瞎猜。</p>
+</blockquote>
+<blockquote>
+<p>RAG 的前提是知识库本身质量过硬——“垃圾进，垃圾出”。如果检索到的文档本身就是错的，AI 依然会按照错误文档回答。RAG 解决了”不知道”的问题，但没解决”推理”的问题。</p>
 </blockquote>
 <h3 id="3-2-向量数据库-—-RAG-的检索引擎"><a href="#3-2-向量数据库-—-RAG-的检索引擎" class="headerlink" title="3.2 向量数据库 — RAG 的检索引擎"></a>3.2 向量数据库 — RAG 的检索引擎</h3><p>传统关键词搜索有硬伤：”销售额”搜不到”营收”，”怎么做红烧肉”匹配不到”如何烹饪红烧肉”。</p>
 <table>
@@ -393,9 +395,9 @@ var _hmt = _hmt || [];
 <td>Milvus、PGVector、Chroma、Pinecone</td>
 </tr>
 </tbody></table>
-<p><strong>关系</strong>：RAG 是”方法论”（让 AI 查资料再回答），向量数据库是”核心引擎”（怎么查）。没有向量数据库，RAG 只能做关键词匹配，效果大打折扣。</p>
+<p>关系：RAG 是”方法论”（让 AI 查资料再回答），向量数据库是”核心引擎”（怎么查）。没有向量数据库，RAG 只能做关键词匹配，效果大打折扣。</p>
 <hr>
-<h2 id="四、行动：AI-从”说”到”做”"><a href="#四、行动：AI-从”说”到”做”" class="headerlink" title="四、行动：AI 从”说”到”做”"></a>四、行动：AI 从”说”到”做”</h2><p>LLM 本质是文字处理器——只输出文字，不能操作文件、不能调 API、不能上网。让 AI 真正”做事”需要三层能力。</p>
+<h2 id="四、行动：Tool-Calling、MCP-与-Computer-Use"><a href="#四、行动：Tool-Calling、MCP-与-Computer-Use" class="headerlink" title="四、行动：Tool Calling、MCP 与 Computer Use"></a>四、行动：Tool Calling、MCP 与 Computer Use</h2><p>LLM 本质是文字处理器——只输出文字，不能操作文件、不能调 API、不能上网。让 AI 真正”做事”需要三层能力。</p>
 <h3 id="4-1-Tool-Calling-—-函数调用"><a href="#4-1-Tool-Calling-—-函数调用" class="headerlink" title="4.1 Tool Calling — 函数调用"></a>4.1 Tool Calling — 函数调用</h3><table>
 <thead>
 <tr>
@@ -413,13 +415,13 @@ var _hmt = _hmt || [];
 </tr>
 <tr>
 <td>一个循环</td>
-<td>用户问”旧金山天气”→ 模型返回 <code>get_weather(location=&quot;SF&quot;)</code> → 程序调天气 API → 结果还给模型 → 模型用自然语言回答你</td>
+<td>用户问”上海天气”→ 模型返回 <code>get_weather(location=&quot;ShangHai&quot;)</code> → 程序调天气 API → 结果还给模型 → 模型用自然语言回答你</td>
 </tr>
 </tbody></table>
 <blockquote>
-<p>这就是 Agent 的”手”——LLM 说”我要读文件”，Agent 帮它读。LLM 说”我要调 API”，Agent 帮它调。LLM 自己什么都没做，但它决定了每一步该做什么。</p>
+<p>LLM 说”我要读文件”，Agent 帮它读。LLM 说”我要调 API”，Agent 帮它调。LLM 自己什么都没做，但它决定了每一步该做什么。</p>
 </blockquote>
-<h3 id="4-2-MCP-—-模型上下文协议（AI-界的-USB-C）"><a href="#4-2-MCP-—-模型上下文协议（AI-界的-USB-C）" class="headerlink" title="4.2 MCP — 模型上下文协议（AI 界的 USB-C）"></a>4.2 MCP — 模型上下文协议（AI 界的 USB-C）</h3><p>最早的实现方式是把每个工具的集成逻辑硬编码在 Agent 主程序里。这导致了著名的 <strong>M×N 集成地狱</strong>：N 个 AI 模型 × M 个外部工具 &#x3D; N×M 套定制集成。5 个模型 × 10 个工具 &#x3D; 50 套集成。</p>
+<h3 id="4-2-MCP-—-模型上下文协议"><a href="#4-2-MCP-—-模型上下文协议" class="headerlink" title="4.2 MCP — 模型上下文协议"></a>4.2 MCP — 模型上下文协议</h3><p>最早的实现方式是把每个工具的集成逻辑硬编码在 Agent 主程序里。这导致了著名的 <strong>M×N 集成地狱</strong>：N 个 AI 模型 × M 个外部工具 &#x3D; N×M 套定制集成。</p>
 <table>
 <thead>
 <tr>
@@ -441,7 +443,7 @@ var _hmt = _hmt || [];
 </tr>
 <tr>
 <td>行业地位</td>
-<td>2025年12月捐赠给 Linux 基金会 Agentic AI Foundation，Anthropic+OpenAI+Block 联合创立，月下载量 9700 万次</td>
+<td>2025 年 12 月捐赠给 Linux 基金会 Agentic AI Foundation，OpenAI、Block 等公司随后宣布支持，月下载量 9700 万次</td>
 </tr>
 </tbody></table>
 <blockquote>
@@ -471,12 +473,14 @@ var _hmt = _hmt || [];
 <td>操作没有 API 的遗留系统、跨多个应用完成复杂流程</td>
 </tr>
 </tbody></table>
-<p><strong>三层关系</strong>：</p>
+<p><strong>三者关系</strong>：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Tool Calling     →  AI 能&quot;调接口&quot;（精确但需要 API 存在）</span><br><span class="line">    ↓</span><br><span class="line">MCP              →  统一了接口标准（无需为每个工具写定制集成）</span><br><span class="line">    ↓</span><br><span class="line">Computer Use     →  没有 API 也能操控（直接看屏幕、点鼠标）</span><br></pre></td></tr></table></figure>
 
-<p>三者叠加，AI 从”只能打字”变成了”能操作一切”。</p>
+<blockquote>
+<p>三者叠加，AI 从”只能打字聊天”变成了”能操作一切”。</p>
+</blockquote>
 <hr>
-<h2 id="五、沉淀：把重复工作流程化"><a href="#五、沉淀：把重复工作流程化" class="headerlink" title="五、沉淀：把重复工作流程化"></a>五、沉淀：把重复工作流程化</h2><h3 id="5-1-Skill-—-技能包"><a href="#5-1-Skill-—-技能包" class="headerlink" title="5.1 Skill — 技能包"></a>5.1 Skill — 技能包</h3><table>
+<h2 id="五、沉淀：Skill-技能包"><a href="#五、沉淀：Skill-技能包" class="headerlink" title="五、沉淀：Skill 技能包"></a>五、沉淀：Skill 技能包</h2><h3 id="5-1-Skill-—-技能包"><a href="#5-1-Skill-—-技能包" class="headerlink" title="5.1 Skill — 技能包"></a>5.1 Skill — 技能包</h3><table>
 <thead>
 <tr>
 <th>维度</th>
@@ -501,10 +505,10 @@ var _hmt = _hmt || [];
 </tr>
 </tbody></table>
 <blockquote>
-<p>类比：Prompt 是”每次口头教做菜”，Skill 是”写成菜谱贴在厨房”——下次说”做红烧肉”，Agent 自动按菜谱来，不用从头教。</p>
+<p>关系：Prompt 是”每次口头教做菜”，Skill 是”写成菜谱贴在厨房”——下次说”做红烧肉”，Agent 自动按菜谱来，不用从头教。</p>
 </blockquote>
 <hr>
-<h2 id="六、自主：AI-能自己拆任务执行"><a href="#六、自主：AI-能自己拆任务执行" class="headerlink" title="六、自主：AI 能自己拆任务执行"></a>六、自主：AI 能自己拆任务执行</h2><h3 id="6-1-Agent-—-智能体"><a href="#6-1-Agent-—-智能体" class="headerlink" title="6.1 Agent — 智能体"></a>6.1 Agent — 智能体</h3><table>
+<h2 id="六、自主：Agent-智能体"><a href="#六、自主：Agent-智能体" class="headerlink" title="六、自主：Agent 智能体"></a>六、自主：Agent 智能体</h2><h3 id="6-1-Agent-—-智能体"><a href="#6-1-Agent-—-智能体" class="headerlink" title="6.1 Agent — 智能体"></a>6.1 Agent — 智能体</h3><table>
 <thead>
 <tr>
 <th>维度</th>
@@ -525,13 +529,15 @@ var _hmt = _hmt || [];
 </tr>
 </tbody></table>
 <blockquote>
-<p>一句话道破本质：<strong>Agent 就是所有不需要智能的部分拼在一起，给中间那个真正需要智能的 LLM 打工。</strong> LLM 不会读文件？Agent 帮它读。LLM 不会联网？Agent 帮它搜。LLM 不会执行命令？Agent 帮它跑。</p>
+<p>一句话道破本质：<strong>Agent 就是所有不需要智能的部分拼在一起，给真正智能的 LLM 打工。</strong> LLM 不会读文件？Agent 帮它读。LLM 不会联网？Agent 帮它搜。LLM 不会执行命令？Agent 帮它跑。</p>
 </blockquote>
 <p><strong>Agent 循环拆解（以改 Bug 为例）</strong>：</p>
 <p><img src="/blog/images/Gemini_Generated_Image_s7ty73s7ty73s7ty.png" alt="Agent 循环示意图"></p>
-<p>Agent 的肚子里，核心就是一个 <code>while(true)</code> 循环——永远在问 LLM”接下来干什么？”</p>
+<blockquote>
+<p><strong>Agent 循环</strong>：Agent 逻辑核心就是一个 <code>while(true)</code> 循环——永远在问 LLM”接下来干什么？” 在第 3 轮拿到修复方案并实际执行修改动作后，Agent 必须再调用一次 LLM 来形成闭环回复，而非直接结束。</p>
+</blockquote>
 <hr>
-<h2 id="七、落地：控风险、串流程、长期运行"><a href="#七、落地：控风险、串流程、长期运行" class="headerlink" title="七、落地：控风险、串流程、长期运行"></a>七、落地：控风险、串流程、长期运行</h2><p>前面的概念让 AI 能”做事”，但要让它在生产环境中可靠运行，还需要三层保障。</p>
+<h2 id="七、落地：Harness、Workflow-与-Workspace-Agent"><a href="#七、落地：Harness、Workflow-与-Workspace-Agent" class="headerlink" title="七、落地：Harness、Workflow 与 Workspace Agent"></a>七、落地：Harness、Workflow 与 Workspace Agent</h2><p>前面的概念让 AI 能”做事”，但要让它在生产环境中可靠运行，还需要三层保障。</p>
 <h3 id="7-1-Harness-—-执行框架-安全外壳"><a href="#7-1-Harness-—-执行框架-安全外壳" class="headerlink" title="7.1 Harness — 执行框架 &#x2F; 安全外壳"></a>7.1 Harness — 执行框架 &#x2F; 安全外壳</h3><table>
 <thead>
 <tr>
@@ -570,7 +576,7 @@ var _hmt = _hmt || [];
 </tr>
 </tbody></table>
 <blockquote>
-<p>Harness 是”把裸 LLM 包装成可靠 Agent”的系统工程。Claude Code 的源码中，核心 Agent 循环只占 5%，剩下 95% 全在解决”循环跑起来之后怎么保证不跑偏”。</p>
+<p>Harness 是”把 LLM 包装成可靠 Agent”的系统工程。Claude Code 的源码中，核心 Agent 循环只占 5%，剩下 95% 全在解决”循环跑起来之后怎么保证不跑偏”。</p>
 </blockquote>
 <h3 id="7-2-Workflow-—-工作流"><a href="#7-2-Workflow-—-工作流" class="headerlink" title="7.2 Workflow — 工作流"></a>7.2 Workflow — 工作流</h3><table>
 <thead>
@@ -619,7 +625,7 @@ var _hmt = _hmt || [];
 <td>持久记忆 + 权限体系 + 团队协作 + 持续学习</td>
 </tr>
 </tbody></table>
-<p><strong>三层关系</strong>：</p>
+<p><strong>三者关系</strong>：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Harness         →  控风险（不让 AI 乱搞）</span><br><span class="line">Workflow        →  串流程（让多步任务标准化）</span><br><span class="line">Workspace Agent →  长期运行（从临时工变正式员工）</span><br></pre></td></tr></table></figure>
 
 <hr>
@@ -720,6 +726,30 @@ var _hmt = _hmt || [];
                 
                     <li>
                         <div class="item-thumbnail">
+                            <a href="/blog/2026/07/red-blue-purple-agent-comm.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/07/red-blue-purple-agent-comm.html" class="title">网络安全红蓝紫队 Agent 通信快速入门</a></p>
+                            <p class="item-date"><time datetime="2026-07-13T02:00:00.000Z">2026-07-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/07/ai-coding-best-practices.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/07/ai-coding-best-practices.html" class="title">AI Coding 最佳实践快速入门</a></p>
+                            <p class="item-date"><time datetime="2026-07-03T06:00:00.000Z">2026-07-03</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
                             <a href="/blog/2026/06/deepagents-code-audit.html" class="thumbnail">
                                 <span class="thumbnail-image thumbnail-none"></span>
                             </a>
@@ -754,30 +784,6 @@ var _hmt = _hmt || [];
                         </div>
                     </li>
                 
-                    <li>
-                        <div class="item-thumbnail">
-                            <a href="/blog/2026/06/agent-quick-intro.html" class="thumbnail">
-                                <span class="thumbnail-image thumbnail-none"></span>
-                            </a>
-                        </div>
-                        <div class="item-inner">
-                            <p class="item-title"><a href="/blog/2026/06/agent-quick-intro.html" class="title">Agent 概念快速入门</a></p>
-                            <p class="item-date"><time datetime="2026-06-25T02:00:00.000Z">2026-06-25</time></p>
-                        </div>
-                    </li>
-                
-                    <li>
-                        <div class="item-thumbnail">
-                            <a href="/blog/2026/06/netsec-quick-intro.html" class="thumbnail">
-                                <span class="thumbnail-image thumbnail-none"></span>
-                            </a>
-                        </div>
-                        <div class="item-inner">
-                            <p class="item-title"><a href="/blog/2026/06/netsec-quick-intro.html" class="title">网络安全业务快速入门</a></p>
-                            <p class="item-date"><time datetime="2026-06-24T02:00:00.000Z">2026-06-24</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -786,7 +792,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/">博客</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><span class="category-list-count">6</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/">骑行</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/%E8%A3%85%E5%A4%87/">装备</a><span class="category-list-count">1</span></li></ul></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/">博客</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><span class="category-list-count">8</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/">骑行</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/%E8%A3%85%E5%A4%87/">装备</a><span class="category-list-count">1</span></li></ul></li></ul>
         </div>
     </div>
 
@@ -794,7 +800,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/06/">六月 2026</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/05/">五月 2026</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/07/">七月 2026</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/06/">六月 2026</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/05/">五月 2026</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -802,7 +808,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">标签</h3>
         <div class="widget">
-            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent/" rel="tag">Agent</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" rel="tag">Agent开发</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DeepAgents/" rel="tag">DeepAgents</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub/" rel="tag">GitHub</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub-Pages/" rel="tag">GitHub Pages</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HTTP/" rel="tag">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCP/" rel="tag">MCP</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Prompt/" rel="tag">Prompt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pull-Request/" rel="tag">Pull Request</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/RAG/" rel="tag">RAG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ReAct/" rel="tag">ReAct</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/SRAM/" rel="tag">SRAM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skill/" rel="tag">Skill</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skills/" rel="tag">Skills</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Tool-Calling/" rel="tag">Tool Calling</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Workflow/" rel="tag">Workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" rel="tag">上下文工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" rel="tag">代码协作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">代码审计</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" rel="tag">公路车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%9D%8E%E6%99%AE/" rel="tag">坎普</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" rel="tag">威胁情报</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" rel="tag">安全运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="tag">应急响应</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF/" rel="tag">技术路线</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" rel="tag">折叠车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="tag">漏洞挖掘</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" rel="tag">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" rel="tag">红蓝对抗</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" rel="tag">网安业务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E9%A3%8E%E8%A1%8C/" rel="tag">风行</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/A2A/" rel="tag">A2A</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/AI-Coding/" rel="tag">AI Coding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ATT-CK/" rel="tag">ATT&amp;CK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent/" rel="tag">Agent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" rel="tag">Agent开发</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" rel="tag">C2框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DeepAgents/" rel="tag">DeepAgents</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub/" rel="tag">GitHub</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub-Pages/" rel="tag">GitHub Pages</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HTTP/" rel="tag">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" rel="tag">Loop工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCP/" rel="tag">MCP</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Prompt/" rel="tag">Prompt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pull-Request/" rel="tag">Pull Request</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/RAG/" rel="tag">RAG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ReAct/" rel="tag">ReAct</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/SRAM/" rel="tag">SRAM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/STIX/" rel="tag">STIX</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skill/" rel="tag">Skill</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skills/" rel="tag">Skills</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Superpowers/" rel="tag">Superpowers</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/TDD/" rel="tag">TDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Tool-Calling/" rel="tag">Tool Calling</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Workflow/" rel="tag">Workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" rel="tag">上下文工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" rel="tag">代码协作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">代码审计</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" rel="tag">公路车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%9D%8E%E6%99%AE/" rel="tag">坎普</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" rel="tag">威胁情报</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" rel="tag">安全运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="tag">应急响应</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" rel="tag">折叠车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="tag">漏洞挖掘</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" rel="tag">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" rel="tag">红蓝对抗</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" rel="tag">网安业务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E9%A3%8E%E8%A1%8C/" rel="tag">风行</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -810,7 +816,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">标签云</h3>
         <div class="widget tagcloud">
-            <a href="/blog/tags/Agent/" style="font-size: 20px;">Agent</a> <a href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" style="font-size: 17.67px;">Agent开发</a> <a href="/blog/tags/DeepAgents/" style="font-size: 13px;">DeepAgents</a> <a href="/blog/tags/Git/" style="font-size: 13px;">Git</a> <a href="/blog/tags/GitHub/" style="font-size: 13px;">GitHub</a> <a href="/blog/tags/GitHub-Pages/" style="font-size: 13px;">GitHub Pages</a> <a href="/blog/tags/HTTP/" style="font-size: 13px;">HTTP</a> <a href="/blog/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/blog/tags/MCP/" style="font-size: 20px;">MCP</a> <a href="/blog/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/blog/tags/Prompt/" style="font-size: 13px;">Prompt</a> <a href="/blog/tags/Pull-Request/" style="font-size: 13px;">Pull Request</a> <a href="/blog/tags/Python/" style="font-size: 13px;">Python</a> <a href="/blog/tags/RAG/" style="font-size: 13px;">RAG</a> <a href="/blog/tags/ReAct/" style="font-size: 13px;">ReAct</a> <a href="/blog/tags/SRAM/" style="font-size: 13px;">SRAM</a> <a href="/blog/tags/Skill/" style="font-size: 13px;">Skill</a> <a href="/blog/tags/Skills/" style="font-size: 15.33px;">Skills</a> <a href="/blog/tags/Token/" style="font-size: 13px;">Token</a> <a href="/blog/tags/Tool-Calling/" style="font-size: 15.33px;">Tool Calling</a> <a href="/blog/tags/Workflow/" style="font-size: 13px;">Workflow</a> <a href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">上下文工程</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" style="font-size: 13px;">代码协作</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" style="font-size: 15.33px;">代码审计</a> <a href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" style="font-size: 13px;">公路车</a> <a href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 13px;">博客搭建</a> <a href="/blog/tags/%E5%9D%8E%E6%99%AE/" style="font-size: 13px;">坎普</a> <a href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" style="font-size: 13px;">威胁情报</a> <a href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" style="font-size: 13px;">安全运营</a> <a href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" style="font-size: 13px;">应急响应</a> <a href="/blog/tags/%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF/" style="font-size: 13px;">技术路线</a> <a href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" style="font-size: 13px;">折叠车</a> <a href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 13px;">渗透测试</a> <a href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" style="font-size: 13px;">漏洞挖掘</a> <a href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="font-size: 13px;">版本控制</a> <a href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" style="font-size: 13px;">红蓝对抗</a> <a href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" style="font-size: 13px;">网安业务</a> <a href="/blog/tags/%E9%A3%8E%E8%A1%8C/" style="font-size: 13px;">风行</a>
+            <a href="/blog/tags/A2A/" style="font-size: 13px;">A2A</a> <a href="/blog/tags/AI-Coding/" style="font-size: 13px;">AI Coding</a> <a href="/blog/tags/ATT-CK/" style="font-size: 13px;">ATT&CK</a> <a href="/blog/tags/Agent/" style="font-size: 15.33px;">Agent</a> <a href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" style="font-size: 17.67px;">Agent开发</a> <a href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">C2框架</a> <a href="/blog/tags/DeepAgents/" style="font-size: 13px;">DeepAgents</a> <a href="/blog/tags/Git/" style="font-size: 13px;">Git</a> <a href="/blog/tags/GitHub/" style="font-size: 13px;">GitHub</a> <a href="/blog/tags/GitHub-Pages/" style="font-size: 13px;">GitHub Pages</a> <a href="/blog/tags/HTTP/" style="font-size: 13px;">HTTP</a> <a href="/blog/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">Loop工程</a> <a href="/blog/tags/MCP/" style="font-size: 20px;">MCP</a> <a href="/blog/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/blog/tags/Prompt/" style="font-size: 13px;">Prompt</a> <a href="/blog/tags/Pull-Request/" style="font-size: 13px;">Pull Request</a> <a href="/blog/tags/Python/" style="font-size: 13px;">Python</a> <a href="/blog/tags/RAG/" style="font-size: 13px;">RAG</a> <a href="/blog/tags/ReAct/" style="font-size: 13px;">ReAct</a> <a href="/blog/tags/SRAM/" style="font-size: 13px;">SRAM</a> <a href="/blog/tags/STIX/" style="font-size: 13px;">STIX</a> <a href="/blog/tags/Skill/" style="font-size: 13px;">Skill</a> <a href="/blog/tags/Skills/" style="font-size: 15.33px;">Skills</a> <a href="/blog/tags/Superpowers/" style="font-size: 13px;">Superpowers</a> <a href="/blog/tags/TDD/" style="font-size: 13px;">TDD</a> <a href="/blog/tags/Token/" style="font-size: 13px;">Token</a> <a href="/blog/tags/Tool-Calling/" style="font-size: 15.33px;">Tool Calling</a> <a href="/blog/tags/Workflow/" style="font-size: 13px;">Workflow</a> <a href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">上下文工程</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" style="font-size: 13px;">代码协作</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" style="font-size: 15.33px;">代码审计</a> <a href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" style="font-size: 13px;">公路车</a> <a href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 13px;">博客搭建</a> <a href="/blog/tags/%E5%9D%8E%E6%99%AE/" style="font-size: 13px;">坎普</a> <a href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" style="font-size: 13px;">威胁情报</a> <a href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" style="font-size: 13px;">安全运营</a> <a href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" style="font-size: 13px;">应急响应</a> <a href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" style="font-size: 13px;">折叠车</a> <a href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 13px;">渗透测试</a> <a href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" style="font-size: 13px;">漏洞挖掘</a> <a href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="font-size: 13px;">版本控制</a> <a href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" style="font-size: 13px;">红蓝对抗</a> <a href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" style="font-size: 13px;">网安业务</a> <a href="/blog/tags/%E9%A3%8E%E8%A1%8C/" style="font-size: 13px;">风行</a>
         </div>
     </div>
 
