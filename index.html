@@ -562,7 +562,7 @@ var _hmt = _hmt || [];
                     <div class="article-date">
                         <i class="fa fa-calendar"></i>
                         <a href="/blog/2026/07/agent-dev-quick-intro2.html">
-                            <time datetime="2026-07-04T04:00:00.000Z" itemprop="datePublished">2026-07-04</time>
+                            <time datetime="2026-07-06T04:00:00.000Z" itemprop="datePublished">2026-07-06</time>
                         </a>
                     </div>
                     
@@ -595,9 +595,7 @@ var _hmt = _hmt || [];
             </header>
             <div class="article-entry" itemprop="articleBody">
                 
-                    <p>这篇文章不依赖任何框架（LangChain &#x2F; CrewAI &#x2F; AutoGen），只用用纯 Python 把 Agent 的核心骨架、工具调用、MCP 集成、记忆管理、多 Agent 协作到生产部署讲透。<br>读完你会理解：Agent 的业务逻辑到底是什么，以及如何从零构建一个能在生产环境中可靠运行的 Agent。</p>
-<hr>
-<h1 id="Agent开发快速入门"><a href="#Agent开发快速入门" class="headerlink" title="Agent开发快速入门"></a>Agent开发快速入门</h1><h2 id="一、Agent-相关概念简介"><a href="#一、Agent-相关概念简介" class="headerlink" title="一、Agent 相关概念简介"></a>一、Agent 相关概念简介</h2><h3 id="（一）基础：Token-与-Context-Window"><a href="#（一）基础：Token-与-Context-Window" class="headerlink" title="（一）基础：Token 与 Context Window"></a>（一）基础：Token 与 Context Window</h3><p>在聊所有高级概念之前，先搞清楚 AI 最底层的两个限制——它们决定了 AI 能”想”多少。</p>
+                    <h2 id="一、Agent-相关概念简介"><a href="#一、Agent-相关概念简介" class="headerlink" title="一、Agent 相关概念简介"></a>一、Agent 相关概念简介</h2><h3 id="（一）基础：Token-与-Context-Window"><a href="#（一）基础：Token-与-Context-Window" class="headerlink" title="（一）基础：Token 与 Context Window"></a>（一）基础：Token 与 Context Window</h3><p>在聊所有高级概念之前，先搞清楚 AI 最底层的两个限制——它们决定了 AI 能”想”多少。</p>
 <h4 id="1-1-Token-—-文字的最小单元"><a href="#1-1-Token-—-文字的最小单元" class="headerlink" title="1.1 Token — 文字的最小单元"></a>1.1 Token — 文字的最小单元</h4><table>
 <thead>
 <tr>
@@ -1359,378 +1357,6 @@ var _hmt = _hmt || [];
         </div>
     </article>
 
-    <article id="post-ai-coding-best-practices" class="article article-type-post" itemscope itemprop="blogPost">
-        <div class="article-inner">
-            <header class="article-header">
-                <h1 itemprop="name">
-                    <a class="article-title" href="/blog/2026/07/ai-coding-best-practices.html">AI Coding 最佳实践快速入门</a>
-                </h1>
-                <div class="article-meta">
-                    <div class="article-date">
-                        <i class="fa fa-calendar"></i>
-                        <a href="/blog/2026/07/ai-coding-best-practices.html">
-                            <time datetime="2026-07-03T06:00:00.000Z" itemprop="datePublished">2026-07-03</time>
-                        </a>
-                    </div>
-                    
-                    <div class="article-category">
-                        <i class="fa fa-folder"></i>
-                        
-                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><i class="fa fa-angle-right"></i>
-                        
-                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a>
-                        
-                    </div>
-                    
-                    
-                    <div class="article-tag">
-                        <i class="fa fa-tag"></i>
-                        
-                            <a class="tag-link" href="/blog/tags/AI-Coding/">AI Coding</a>
-                        
-                            <a class="tag-link" href="/blog/tags/Superpowers/">Superpowers</a>
-                        
-                            <a class="tag-link" href="/blog/tags/TDD/">TDD</a>
-                        
-                            <a class="tag-link" href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/">Loop工程</a>
-                        
-                    </div>
-                    
-                </div>
-            </header>
-            <div class="article-entry" itemprop="articleBody">
-                
-                    <p>AI 让代码的生成从“稀缺“变得“泛滥“，这意味着代码的验证、审查变得更加困难，系统”看起来对，跑起来炸”变成常态。问题不在 AI，而在于<strong>缺少工程规范</strong>。这篇文章介绍 2026 年 AI Coding 的工程化最佳实践——从”一句话需求直接写代码”到”Spec → Plan → Execute → Review 闭环工程”。</p>
-<p>核心公式：<strong>需求规格化 → 任务计划化 → 执行自动化 → 验证标准化</strong>。</p>
-<hr>
-<h2 id="一、AI-Coding-的核心挑战与进化路径"><a href="#一、AI-Coding-的核心挑战与进化路径" class="headerlink" title="一、AI Coding 的核心挑战与进化路径"></a>一、AI Coding 的核心挑战与进化路径</h2><h3 id="1-1-为什么-AI-写的代码经常”跑起来炸”？"><a href="#1-1-为什么-AI-写的代码经常”跑起来炸”？" class="headerlink" title="1.1 为什么 AI 写的代码经常”跑起来炸”？"></a>1.1 为什么 AI 写的代码经常”跑起来炸”？</h3><p>AI 写代码有三个核心痛点，每个都致命：</p>
-<table>
-<thead>
-<tr>
-<th>痛点</th>
-<th>表现</th>
-<th>后果</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>缺乏设计</strong></td>
-<td>直接写代码，不先想清楚”到底要做什么”</td>
-<td>架构混乱、难以扩展</td>
-</tr>
-<tr>
-<td><strong>缺乏计划</strong></td>
-<td>跳跃式开发，想到哪写到哪</td>
-<td>文件间不协调，接口对不上</td>
-</tr>
-<tr>
-<td><strong>缺乏验证</strong></td>
-<td>写完就算，不测试、不审查</td>
-<td>看起来对，跑起来炸</td>
-</tr>
-</tbody></table>
-<p>这三个痛点对应一个缺失——<strong>工程规范</strong>。解决方案就是四阶段公式：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">需求规格化 → 任务计划化 → 执行自动化 → 验证标准化</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-2-AI-Coding-进化路径"><a href="#1-2-AI-Coding-进化路径" class="headerlink" title="1.2 AI Coding 进化路径"></a>1.2 AI Coding 进化路径</h3><p>AI Coding 不是一蹴而就的，它经历了四个阶段：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">原始 Vibe Coding</span><br><span class="line">  用户 → 一句话需求 → AI 直接写代码 → 逐步调优</span><br><span class="line">  问题：缺乏设计、缺乏计划、缺乏验证</span><br><span class="line"></span><br><span class="line">+ Spec（先约定再执行）+ Plan（想清楚再动手）</span><br><span class="line">  用户 → Spec（需求对齐）→ Plan（任务拆解）→ AI 按计划执行</span><br><span class="line">  效果：质量和可控性显著提升</span><br><span class="line"></span><br><span class="line">+ Superpowers（强制走流程）</span><br><span class="line">  用户 → 自动触发 Brainstorm → Plan → TDD → Review</span><br><span class="line">  效果：工程级质量，每个环节有门禁</span><br><span class="line"></span><br><span class="line">+ Loop Engineering（闭环自动化）</span><br><span class="line">  用户设定目标 → AI 自主循环：行动 → 检查 → 调整 → 继续</span><br><span class="line">  效果：持续交付，AI 自主迭代优化</span><br></pre></td></tr></table></figure>
-
-<p><strong>当前你在哪一阶段？</strong> 大多数开发者还在 Vibe Coding 和 Spec+Plan 之间。这篇文章的目标是带你走到 Superpowers 阶段，并理解 Loop Engineering 的方向。</p>
-<hr>
-<h2 id="二、Superpowers-是什么"><a href="#二、Superpowers-是什么" class="headerlink" title="二、Superpowers 是什么"></a>二、Superpowers 是什么</h2><p><strong>Superpowers</strong> 是由 Jesse Vincent（obra）创建的开源 <strong>Agentic Skills 框架</strong>。它不是一个 IDE 插件，也不是一个平台——而是一组<strong>强制性的软件开发方法论 + 可组合的 Skills 技能包</strong>。</p>
-<h3 id="2-1-定位"><a href="#2-1-定位" class="headerlink" title="2.1 定位"></a>2.1 定位</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Superpowers = 你的 AI 编程工具 + 强制性工程流程</span><br></pre></td></tr></table></figure>
-
-<p>它不改变你用什么 IDE 或 AI 工具，而是改变<strong>你与 AI 协作的方式</strong>：从”你指挥 AI 写代码”变成”AI 按工程流程自动推进”。</p>
-<h3 id="2-2-核心理念"><a href="#2-2-核心理念" class="headerlink" title="2.2 核心理念"></a>2.2 核心理念</h3><table>
-<thead>
-<tr>
-<th>理念</th>
-<th>含义</th>
-<th>在 Superpowers 中的体现</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>TDD</strong></td>
-<td>测试驱动开发</td>
-<td>每个任务必须先写失败测试，再写实现</td>
-</tr>
-<tr>
-<td><strong>YAGNI</strong></td>
-<td>You Aren’t Gonna Need It</td>
-<td>Spec 阶段只设计当前需要的，不提前设计</td>
-</tr>
-<tr>
-<td><strong>DRY</strong></td>
-<td>Don’t Repeat Yourself</td>
-<td>Skills 复用，不重复写相同的指令</td>
-</tr>
-<tr>
-<td><strong>小步快跑</strong></td>
-<td>每个任务 2-5 分钟可完成</td>
-<td>Plan 阶段强制拆分为小任务</td>
-</tr>
-</tbody></table>
-<p>它通过 Skills（技能包） 的形式，强制你的 AI 在写代码前走流程：</p>
-<ul>
-<li>先头脑风暴出 Spec → 再拆解成 Plan → 再按 TDD 执行 → 最后自动 Review</li>
-<li>每个 Skill 会在合适的时机自动触发，你不需要手动调用</li>
-</ul>
-<h3 id="2-3-安装（以-Claude-Code-为例）"><a href="#2-3-安装（以-Claude-Code-为例）" class="headerlink" title="2.3 安装（以 Claude Code 为例）"></a>2.3 安装（以 Claude Code 为例）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 克隆 Superpowers 仓库</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/obra/superpowers.git ~/.superpowers</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在 Claude Code 中启用（将 skills 目录链接到项目）</span></span><br><span class="line"><span class="built_in">cd</span> your-project</span><br><span class="line"><span class="built_in">mkdir</span> -p .claude</span><br><span class="line"><span class="built_in">ln</span> -s ~/.superpowers/skills .claude/skills</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>不同工具的配置方式不同，具体请参考 <a target="_blank" rel="noopener" href="https://github.com/obra/superpowers">Superpowers 官方仓库</a> 的安装说明。</p>
-</blockquote>
-<p>安装后，Claude Code 启动时会自动加载 Superpowers 的 Skills，包括 Brainstorming、Writing Plans、TDD、Code Review 等。</p>
-<hr>
-<h2 id="三、Superpowers-怎么干"><a href="#三、Superpowers-怎么干" class="headerlink" title="三、Superpowers 怎么干"></a>三、Superpowers 怎么干</h2><h3 id="3-1-Brainstorming：头脑风暴-→-Spec"><a href="#3-1-Brainstorming：头脑风暴-→-Spec" class="headerlink" title="3.1 Brainstorming：头脑风暴 → Spec"></a>3.1 Brainstorming：头脑风暴 → Spec</h3><p>传统方式：你给 AI 一句话需求，AI 直接写代码。</p>
-<p>Superpowers 方式：你给出需求方向，AI <strong>不写代码</strong>，而是先和你讨论：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">你：我想做一个用户登录功能</span><br><span class="line"></span><br><span class="line">AI（Brainstorming 模式）：</span><br><span class="line">  好的，我先不写代码。让我们讨论一下需求：</span><br><span class="line">  1. 认证方式：用户名密码？邮箱？手机号？OAuth？</span><br><span class="line">  2. 会话管理：JWT 还是 Session？</span><br><span class="line">  3. 安全要求：是否支持 MFA？登录失败锁定？</span><br><span class="line">  4. 边界情况：多次失败锁定、密码重置、记住我...</span><br><span class="line">  </span><br><span class="line">  我建议分几个模块讨论，你觉得呢？</span><br></pre></td></tr></table></figure>
-
-<p>AI 会产出<strong>结构化的 Spec 文档</strong>，分块展示，等你逐块确认。<strong>你不确认，AI 不进入下一步</strong>。</p>
-<h3 id="3-2-Writing-Plans：写计划-→-Plan"><a href="#3-2-Writing-Plans：写计划-→-Plan" class="headerlink" title="3.2 Writing Plans：写计划 → Plan"></a>3.2 Writing Plans：写计划 → Plan</h3><p>Spec 确认后，AI 产出<strong>详细实现计划</strong>。每个任务满足：</p>
-<ul>
-<li><strong>2-5 分钟可完成</strong>（太大就继续拆；包含 AI 生成代码 + 验证时间）</li>
-<li><strong>只涉及 1-2 个文件</strong>（确保任务足够小、足够独立）</li>
-<li><strong>精确到文件路径</strong>（<code>src/auth/login.ts</code>，不是”auth 模块”）</li>
-<li><strong>包含完整可运行代码</strong>（不是伪代码，是可直接运行的代码）</li>
-<li><strong>包含验证步骤</strong>（怎么跑测试、怎么确认完成）</li>
-</ul>
-<p>示例 Plan：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## Task 1: 创建数据库模型</span></span><br><span class="line"><span class="bullet">-</span> 文件：<span class="code">`src/models/user.ts`</span></span><br><span class="line"><span class="bullet">-</span> 内容：User 模型，包含 id/username/password<span class="emphasis">_hash/created_</span>at</span><br><span class="line"><span class="bullet">-</span> 验证：<span class="code">`npm test -- models/user.test.ts`</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Task 2: 实现密码哈希</span></span><br><span class="line"><span class="bullet">-</span> 文件：<span class="code">`src/utils/crypto.ts`</span></span><br><span class="line"><span class="bullet">-</span> 内容：hashPassword() / verifyPassword()，使用 bcrypt</span><br><span class="line"><span class="bullet">-</span> 验证：<span class="code">`npm test -- utils/crypto.test.ts`</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Task 3: 实现登录 API</span></span><br><span class="line"><span class="bullet">-</span> 文件：<span class="code">`src/api/auth.ts`</span></span><br><span class="line"><span class="bullet">-</span> 内容：POST /login，接收 username+password，返回 JWT</span><br><span class="line"><span class="bullet">-</span> 验证：<span class="code">`curl -X POST localhost:3000/login -d &#x27;&#123;&quot;username&quot;:&quot;test&quot;,&quot;password&quot;:&quot;123&quot;&#125;&#x27;`</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-3-Subagent-Driven-Development：子-Agent-执行"><a href="#3-3-Subagent-Driven-Development：子-Agent-执行" class="headerlink" title="3.3 Subagent-Driven Development：子 Agent 执行"></a>3.3 Subagent-Driven Development：子 Agent 执行</h3><p>Plan 确认后，AI 对每个任务启动一个<strong>独立的子 Agent</strong> 来执行。每个子 Agent：</p>
-<ul>
-<li>拥有独立的上下文窗口（不受其他任务干扰）</li>
-<li>经过两阶段审查：<ol>
-<li><strong>Spec 合规检查</strong>：代码是否符合 Spec 的设计？</li>
-<li><strong>代码质量检查</strong>：是否符合 TDD 要求？是否有测试？</li>
-</ol>
-</li>
-</ul>
-<p>多个子 Agent 可以<strong>并行执行</strong>。</p>
-<blockquote>
-<p><strong>注意</strong>：子 Agent 并行执行需要工具支持。Claude Code 和 Cursor 原生支持任务委派；如果需要真正的并行执行，需要配合多 Agent 框架（如 LangGraph、CrewAI）。</p>
-</blockquote>
-<h3 id="3-4-Test-Driven-Development：测试驱动开发"><a href="#3-4-Test-Driven-Development：测试驱动开发" class="headerlink" title="3.4 Test-Driven Development：测试驱动开发"></a>3.4 Test-Driven Development：测试驱动开发</h3><p>Superpowers 强制每个任务走 TDD 流程：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RED   → 先写失败测试</span><br><span class="line">GREEN → 写最小代码让测试通过</span><br><span class="line">REFACTOR → 重构优化，保持测试绿色</span><br></pre></td></tr></table></figure>
-
-<p><strong>TDD 不可跳过</strong>——没写测试，任务不算完成。这是 Superpowers 最核心的约束。</p>
-<blockquote>
-<p><strong>说明</strong>：在探索性开发或 UI 原型阶段，可以先用”写代码 + 补测试”的方式快速迭代，待方案稳定后再严格走 TDD。但<strong>功能开发的最终交付必须包含测试</strong>。</p>
-</blockquote>
-<h3 id="3-5-Code-Review：代码审查"><a href="#3-5-Code-Review：代码审查" class="headerlink" title="3.5 Code Review：代码审查"></a>3.5 Code Review：代码审查</h3><p>每个任务完成后，AI 自动进行代码审查：</p>
-<table>
-<thead>
-<tr>
-<th>审查维度</th>
-<th>检查内容</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>Spec 合规</strong></td>
-<td>代码是否实现了 Spec 中的所有要求？</td>
-</tr>
-<tr>
-<td><strong>Plan 合规</strong></td>
-<td>文件路径、函数签名是否与 Plan 一致？</td>
-</tr>
-<tr>
-<td><strong>测试覆盖</strong></td>
-<td>是否有测试？测试是否通过？</td>
-</tr>
-<tr>
-<td><strong>代码规范</strong></td>
-<td>命名、结构、注释是否符合规范？</td>
-</tr>
-<tr>
-<td><strong>基础安全检查</strong></td>
-<td>是否有硬编码密钥、SQL 注入、明文密码等明显安全漏洞？</td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>级别</th>
-<th>行为</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>Critical</strong></td>
-<td>阻塞进度，必须修复</td>
-</tr>
-<tr>
-<td><strong>Warning</strong></td>
-<td>报告问题，建议修复</td>
-</tr>
-<tr>
-<td><strong>Info</strong></td>
-<td>记录，不阻塞</td>
-</tr>
-</tbody></table>
-<p><strong>严重问题会阻塞进度</strong>，直到修复为止。</p>
-<h3 id="3-6-Finishing：收尾"><a href="#3-6-Finishing：收尾" class="headerlink" title="3.6 Finishing：收尾"></a>3.6 Finishing：收尾</h3><p>全部任务完成后：</p>
-<ol>
-<li>运行完整测试套件</li>
-<li>生成变更摘要</li>
-<li>选择：合并到主分支 &#x2F; 创建 PR &#x2F; 保留在分支 &#x2F; 丢弃</li>
-</ol>
-<hr>
-<h2 id="四、Loop-工程：让-AI-持续正确地写代码"><a href="#四、Loop-工程：让-AI-持续正确地写代码" class="headerlink" title="四、Loop 工程：让 AI 持续正确地写代码"></a>四、Loop 工程：让 AI 持续正确地写代码</h2><h3 id="4-1-双层循环模型"><a href="#4-1-双层循环模型" class="headerlink" title="4.1 双层循环模型"></a>4.1 双层循环模型</h3><p>Superpowers 的核心是<strong>双层循环</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">外层循环（功能级）：Spec → Plan → Execute → Review → 交付</span><br><span class="line">     ↑                                              |</span><br><span class="line">     └──────────────────────────────────────────────┘</span><br><span class="line"></span><br><span class="line">内层循环（任务级）：RED → GREEN → REFACTOR → 下一个任务</span><br><span class="line">     ↑                              |</span><br><span class="line">     └──────────────────────────────┘</span><br></pre></td></tr></table></figure>
-
-<p><strong>外层循环</strong>保证方向正确，<strong>内层循环</strong>保证每个任务质量过关。</p>
-<h3 id="4-2-关键原则"><a href="#4-2-关键原则" class="headerlink" title="4.2 关键原则"></a>4.2 关键原则</h3><table>
-<thead>
-<tr>
-<th>原则</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>小步快跑</strong></td>
-<td>每个任务 2-5 分钟，改完立即验证</td>
-</tr>
-<tr>
-<td><strong>每次循环可验证</strong></td>
-<td>每个循环结束必须有可运行的产物</td>
-</tr>
-<tr>
-<td><strong>Review 是门禁</strong></td>
-<td>审查不过，不进入下一步</td>
-</tr>
-<tr>
-<td><strong>失败隔离</strong></td>
-<td>一个任务失败不影响其他任务</td>
-</tr>
-</tbody></table>
-<h3 id="4-3-Loop-Engineering-的终极形态"><a href="#4-3-Loop-Engineering-的终极形态" class="headerlink" title="4.3 Loop Engineering 的终极形态"></a>4.3 Loop Engineering 的终极形态</h3><p>当你把外层循环也自动化后，就进入了 Loop Engineering 阶段：</p>
-<p><img src="/blog/images/Gemini_Generated_Image_cb9wptcb9wptcb9w.png" alt="AI coding 进化路径"></p>
-<p>在 Loop Engineering 阶段，AI 不仅执行你指定的任务，还能：</p>
-<ul>
-<li>发现测试失败后自动分析原因并修复</li>
-<li>发现 Spec 不清晰时自动提出问题</li>
-<li>在多个实现方案中自动选择最优解</li>
-</ul>
-<p><strong>但核心不变</strong>：AI 负责”执行”和”建议”，人负责”判断”和”决策”。</p>
-<hr>
-<h2 id="五、实战：用-Superpowers-从零构建一个功能"><a href="#五、实战：用-Superpowers-从零构建一个功能" class="headerlink" title="五、实战：用 Superpowers 从零构建一个功能"></a>五、实战：用 Superpowers 从零构建一个功能</h2><p>以构建一个”用户认证模块”为例，完整走一遍 Superpowers 流程。</p>
-<h3 id="5-1-启动-Claude-Code-Superpowers"><a href="#5-1-启动-Claude-Code-Superpowers" class="headerlink" title="5.1 启动 Claude Code + Superpowers"></a>5.1 启动 Claude Code + Superpowers</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> my-project</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;superpowers&quot;</span> &gt; .claude/skills</span><br><span class="line">claude</span><br></pre></td></tr></table></figure>
-
-<h3 id="5-2-Brainstorming：产出-Spec"><a href="#5-2-Brainstorming：产出-Spec" class="headerlink" title="5.2 Brainstorming：产出 Spec"></a>5.2 Brainstorming：产出 Spec</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">👤 你：我需要一个用户认证模块，支持邮箱注册和登录</span><br><span class="line"></span><br><span class="line">🤖 Claude（Brainstorming 模式）：</span><br><span class="line">  好的，让我们先讨论需求，不写代码。</span><br><span class="line"></span><br><span class="line">  第一块：注册流程</span><br><span class="line">  - 用户输入邮箱和密码</span><br><span class="line">  - 密码要求：至少 8 位，包含大小写字母和数字</span><br><span class="line">  - 发送验证邮件，点击链接激活账号</span><br><span class="line">  - 你觉得这个流程可以吗？</span><br><span class="line"></span><br><span class="line">  👤 你：可以，但暂时不需要邮件验证，注册后直接可用</span><br><span class="line"></span><br><span class="line">  🤖 Claude：明白。第二块：登录流程</span><br><span class="line">  - 用户输入邮箱和密码</span><br><span class="line">  - 验证通过后返回 JWT</span><br><span class="line">  - 登录失败 5 次后锁定 15 分钟</span><br><span class="line">  - 可以吗？</span><br><span class="line"></span><br><span class="line">  👤 你：锁定改为 3 次失败后锁定 10 分钟</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  🤖 Claude：确认完毕。以下是完整 Spec：</span><br><span class="line">  [展示结构化 Spec 文档]</span><br><span class="line">  </span><br><span class="line">  👤 你：确认 ✓</span><br></pre></td></tr></table></figure>
-
-<h3 id="5-3-Writing-Plan：产出实现计划"><a href="#5-3-Writing-Plan：产出实现计划" class="headerlink" title="5.3 Writing Plan：产出实现计划"></a>5.3 Writing Plan：产出实现计划</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">🤖 Claude：基于 Spec，我来拆解为实现计划：</span><br><span class="line"></span><br><span class="line">  Task 1：创建 User 模型（3 分钟）</span><br><span class="line">    文件：src/models/user.ts</span><br><span class="line">    验证：npm test -- models/user.test.ts</span><br><span class="line"></span><br><span class="line">  Task 2：实现密码哈希工具（2 分钟）</span><br><span class="line">    文件：src/utils/crypto.ts</span><br><span class="line">    验证：npm test -- utils/crypto.test.ts</span><br><span class="line"></span><br><span class="line">  Task 3：实现注册 API（4 分钟）</span><br><span class="line">    文件：src/api/auth.ts</span><br><span class="line">    验证：curl -X POST localhost:3000/register</span><br><span class="line"></span><br><span class="line">  Task 4：实现登录 API（4 分钟）</span><br><span class="line">    文件：src/api/auth.ts（追加）</span><br><span class="line">    验证：curl -X POST localhost:3000/login</span><br><span class="line"></span><br><span class="line">  Task 5：实现登录失败锁定（3 分钟）</span><br><span class="line">    文件：src/middleware/rateLimit.ts</span><br><span class="line">    验证：连续 3 次错误密码后第 4 次被拒绝</span><br><span class="line"></span><br><span class="line">  确认后我开始执行。</span><br><span class="line"></span><br><span class="line">  👤 你：确认 ✓</span><br></pre></td></tr></table></figure>
-
-<h3 id="5-4-Execution：自动执行"><a href="#5-4-Execution：自动执行" class="headerlink" title="5.4 Execution：自动执行"></a>5.4 Execution：自动执行</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">🤖 Claude：开始执行 Task 1...</span><br><span class="line"></span><br><span class="line">  [SubAgent-1] 创建 src/models/user.ts</span><br><span class="line">  [SubAgent-1] 先写测试：src/__tests__/models/user.test.ts</span><br><span class="line">  [SubAgent-1] RED：测试失败 ✓</span><br><span class="line">  [SubAgent-1] 写实现代码</span><br><span class="line">  [SubAgent-1] GREEN：测试通过 ✓</span><br><span class="line">  [SubAgent-1] REFACTOR：代码结构优化</span><br><span class="line">  [SubAgent-1] Task 1 完成 ✓</span><br><span class="line"></span><br><span class="line">  [SubAgent-2] 开始 Task 2...</span><br><span class="line">  [SubAgent-3] 开始 Task 3（并行）...</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
-
-<h3 id="5-5-Review-Finish"><a href="#5-5-Review-Finish" class="headerlink" title="5.5 Review &amp; Finish"></a>5.5 Review &amp; Finish</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">🤖 Claude：全部 5 个任务完成。审查结果：</span><br><span class="line"></span><br><span class="line">  Task 1 ✓  测试通过，Spec 合规</span><br><span class="line">  Task 2 ✓  测试通过，Spec 合规</span><br><span class="line">  Task 3 ✓  测试通过，Spec 合规</span><br><span class="line">  Task 4 ✓  测试通过，Spec 合规</span><br><span class="line">  Task 5 ⚠️  锁定时间实现为 15 分钟，Spec 要求 10 分钟</span><br><span class="line">        → 需要人工确认：接受此偏差 / 要求修复</span><br><span class="line"></span><br><span class="line">  👤 你：要求修复，按 Spec 改为 10 分钟</span><br><span class="line">  </span><br><span class="line">  🤖 Claude：已修复，重新验证通过 ✓</span><br><span class="line"></span><br><span class="line">  全部测试通过（12/12）</span><br><span class="line">  变更摘要：新增 5 个文件，修改 0 个文件</span><br><span class="line"></span><br><span class="line">  要创建 PR 吗？</span><br><span class="line"></span><br><span class="line">  👤 你：创建 PR</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="六、最佳实践总结"><a href="#六、最佳实践总结" class="headerlink" title="六、最佳实践总结"></a>六、最佳实践总结</h2><table>
-<thead>
-<tr>
-<th>原则</th>
-<th>为什么</th>
-<th>反例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>永远先 Spec 再 Plan 再 Code</strong></td>
-<td>方向错了，写得越快错得越多</td>
-<td>“帮我写个登录功能”→ 直接写代码</td>
-</tr>
-<tr>
-<td><strong>每个任务 2-3 分钟</strong></td>
-<td>太大容易失控，太小效率低</td>
-<td>一个任务拆成 50 个文件</td>
-</tr>
-<tr>
-<td><strong>TDD 不可跳过</strong></td>
-<td>没测试的代码 &#x3D; 不可验证的代码</td>
-<td>写完功能再加测试</td>
-</tr>
-<tr>
-<td><strong>Review 是门禁</strong></td>
-<td>审查不过不进下一步，防止问题累积</td>
-<td>Review 走过场，发现的问题”下次再改”</td>
-</tr>
-<tr>
-<td><strong>小步提交</strong></td>
-<td>每完成一个任务就提交一次</td>
-<td>写了一天代码，一次 commit 全部</td>
-</tr>
-<tr>
-<td><strong>子 Agent 委派</strong></td>
-<td>独立任务委派执行，效率翻倍</td>
-<td>串行执行所有任务</td>
-</tr>
-</tbody></table>
-<h3 id="常见反模式"><a href="#常见反模式" class="headerlink" title="常见反模式"></a>常见反模式</h3><table>
-<thead>
-<tr>
-<th>反模式</th>
-<th>表现</th>
-<th>为什么有害</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>Prompt 堆砌</strong></td>
-<td>在一个 prompt 里塞 5000 字需求</td>
-<td>AI 注意力分散，遗漏关键点</td>
-</tr>
-<tr>
-<td><strong>过度信任</strong></td>
-<td>AI 说”完成了”就信，不验证</td>
-<td>幻觉代码、逻辑漏洞</td>
-</tr>
-<tr>
-<td><strong>无版本控制</strong></td>
-<td>直接让 AI 修改生产代码</td>
-<td>无法回滚，风险极高</td>
-</tr>
-<tr>
-<td><strong>跳过 Spec</strong></td>
-<td>需求不明确就开始写代码</td>
-<td>方向错误，推倒重来</td>
-</tr>
-</tbody></table>
-<h3 id="什么时候不适合用这套流程"><a href="#什么时候不适合用这套流程" class="headerlink" title="什么时候不适合用这套流程"></a>什么时候不适合用这套流程</h3><p>这套流程虽然强大，但并非万能：</p>
-<ul>
-<li><strong>算法竞赛&#x2F;面试题</strong>：AI 可能给出复杂度过高的解，需要人工判断</li>
-<li><strong>安全关键系统</strong>（医疗、金融核心）：必须人工主导，AI 辅助而非替代</li>
-<li><strong>遗留代码大规模重构</strong>：上下文太大，AI 容易理解偏差，需分阶段推进</li>
-<li><strong>探索性原型</strong>：严格 Spec 会束缚创造力，先用 Vibe Coding 快速验证，确定方向后再走流程</li>
-</ul>
-<h3 id="Superpowers-的局限性"><a href="#Superpowers-的局限性" class="headerlink" title="Superpowers 的局限性"></a>Superpowers 的局限性</h3><table>
-<thead>
-<tr>
-<th>局限</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>学习成本</strong></td>
-<td>从”直接写代码”到”先 Spec 再 Plan 再 Code”，需要适应期</td>
-</tr>
-<tr>
-<td><strong>流程刚性</strong></td>
-<td>对非常小的改动（如修一个 typo），严格走流程可能过于”重”</td>
-</tr>
-<tr>
-<td><strong>需要人工判断</strong></td>
-<td>Spec 确认、Review 否决、HITL 审批都需要人的参与，不是全自动</td>
-</tr>
-</tbody></table>
-<h3 id="进化路径回顾"><a href="#进化路径回顾" class="headerlink" title="进化路径回顾"></a>进化路径回顾</h3><p><img src="/blog/images/Gemini_Generated_Image_ntxieantxieantxi.png" alt="AI coding 进化路径"></p>
-<p><strong>你现在在哪一步？</strong> 不管在哪，下一步都是往右走——从”写代码”变成”建流程”。</p>
-<blockquote>
-<p><strong>小结</strong>：AI Coding 的核心不是”AI 有多聪明”，而是”你与 AI 的协作流程有多好”。四阶段公式——<strong>需求规格化 → 任务计划化 → 执行自动化 → 验证标准化</strong>——是贯穿始终的主线。Superpowers 把这条公式变成了强制执行的工程流程，Loop Engineering 是它的终极形态。</p>
-</blockquote>
-
-                
-            </div>
-            <footer class="article-footer"></footer>
-        </div>
-    </article>
-
     <article id="post-agent-quick-intro2" class="article article-type-post" itemscope itemprop="blogPost">
         <div class="article-inner">
             <header class="article-header">
@@ -1741,7 +1367,7 @@ var _hmt = _hmt || [];
                     <div class="article-date">
                         <i class="fa fa-calendar"></i>
                         <a href="/blog/2026/07/agent-quick-intro2.html">
-                            <time datetime="2026-07-02T02:00:00.000Z" itemprop="datePublished">2026-07-02</time>
+                            <time datetime="2026-07-05T02:00:00.000Z" itemprop="datePublished">2026-07-05</time>
                         </a>
                     </div>
                     
@@ -1783,7 +1409,7 @@ var _hmt = _hmt || [];
                     <p>想入门网络安全，但被各种名词搞晕了？渗透测试、代码审计、漏洞挖掘、红蓝对抗、SOC……它们到底有什么区别？各自具体干什么？彼此之间又是什么关系？</p>
 <p>这篇文章帮你理清网安行业的业务全貌，每个业务都配有详细的工作流程拆解。</p>
 <hr>
-<h1 id="网络安全业务快速入门"><a href="#网络安全业务快速入门" class="headerlink" title="网络安全业务快速入门"></a>网络安全业务快速入门</h1><h2 id="一、网络安全业务简介"><a href="#一、网络安全业务简介" class="headerlink" title="一、网络安全业务简介"></a>一、网络安全业务简介</h2><h3 id="（一）按视角划分为四大板块"><a href="#（一）按视角划分为四大板块" class="headerlink" title="（一）按视角划分为四大板块"></a>（一）按视角划分为四大板块</h3><p><img src="/blog/images/Gemini_Generated_Image_xmrm6gxmrm6gxmrm.png" alt="网络安全业务全景图"></p>
+<h2 id="一、网络安全业务简介"><a href="#一、网络安全业务简介" class="headerlink" title="一、网络安全业务简介"></a>一、网络安全业务简介</h2><h3 id="（一）按视角划分为四大板块"><a href="#（一）按视角划分为四大板块" class="headerlink" title="（一）按视角划分为四大板块"></a>（一）按视角划分为四大板块</h3><p><img src="/blog/images/Gemini_Generated_Image_xmrm6gxmrm6gxmrm.png" alt="网络安全业务全景图"></p>
 <h4 id="1-攻击视角-—-红队技术"><a href="#1-攻击视角-—-红队技术" class="headerlink" title="1. 攻击视角 — 红队技术"></a>1. 攻击视角 — 红队技术</h4><table>
 <thead>
 <tr>
@@ -2660,6 +2286,378 @@ var _hmt = _hmt || [];
 <li><strong>等保测评</strong>：包含了渗透测试+代码审计+风险评估，是合规驱动的综合测评</li>
 <li><strong>SDL&#x2F;DevSecOps</strong>：将安全左移到开发阶段，从源头减少漏洞</li>
 </ol>
+
+                
+            </div>
+            <footer class="article-footer"></footer>
+        </div>
+    </article>
+
+    <article id="post-ai-coding-best-practices" class="article article-type-post" itemscope itemprop="blogPost">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 itemprop="name">
+                    <a class="article-title" href="/blog/2026/07/ai-coding-best-practices.html">AI Coding 最佳实践快速入门</a>
+                </h1>
+                <div class="article-meta">
+                    <div class="article-date">
+                        <i class="fa fa-calendar"></i>
+                        <a href="/blog/2026/07/ai-coding-best-practices.html">
+                            <time datetime="2026-07-03T06:00:00.000Z" itemprop="datePublished">2026-07-03</time>
+                        </a>
+                    </div>
+                    
+                    <div class="article-category">
+                        <i class="fa fa-folder"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><i class="fa fa-angle-right"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a>
+                        
+                    </div>
+                    
+                    
+                    <div class="article-tag">
+                        <i class="fa fa-tag"></i>
+                        
+                            <a class="tag-link" href="/blog/tags/AI-Coding/">AI Coding</a>
+                        
+                            <a class="tag-link" href="/blog/tags/Superpowers/">Superpowers</a>
+                        
+                            <a class="tag-link" href="/blog/tags/TDD/">TDD</a>
+                        
+                            <a class="tag-link" href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/">Loop工程</a>
+                        
+                    </div>
+                    
+                </div>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                
+                    <p>AI 让代码的生成从“稀缺“变得“泛滥“，这意味着代码的验证、审查变得更加困难，系统”看起来对，跑起来炸”变成常态。问题不在 AI，而在于<strong>缺少工程规范</strong>。这篇文章介绍 2026 年 AI Coding 的工程化最佳实践——从”一句话需求直接写代码”到”Spec → Plan → Execute → Review 闭环工程”。</p>
+<p>核心公式：<strong>需求规格化 → 任务计划化 → 执行自动化 → 验证标准化</strong>。</p>
+<hr>
+<h2 id="一、AI-Coding-的核心挑战与进化路径"><a href="#一、AI-Coding-的核心挑战与进化路径" class="headerlink" title="一、AI Coding 的核心挑战与进化路径"></a>一、AI Coding 的核心挑战与进化路径</h2><h3 id="1-1-为什么-AI-写的代码经常”跑起来炸”？"><a href="#1-1-为什么-AI-写的代码经常”跑起来炸”？" class="headerlink" title="1.1 为什么 AI 写的代码经常”跑起来炸”？"></a>1.1 为什么 AI 写的代码经常”跑起来炸”？</h3><p>AI 写代码有三个核心痛点，每个都致命：</p>
+<table>
+<thead>
+<tr>
+<th>痛点</th>
+<th>表现</th>
+<th>后果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>缺乏设计</strong></td>
+<td>直接写代码，不先想清楚”到底要做什么”</td>
+<td>架构混乱、难以扩展</td>
+</tr>
+<tr>
+<td><strong>缺乏计划</strong></td>
+<td>跳跃式开发，想到哪写到哪</td>
+<td>文件间不协调，接口对不上</td>
+</tr>
+<tr>
+<td><strong>缺乏验证</strong></td>
+<td>写完就算，不测试、不审查</td>
+<td>看起来对，跑起来炸</td>
+</tr>
+</tbody></table>
+<p>这三个痛点对应一个缺失——<strong>工程规范</strong>。解决方案就是四阶段公式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">需求规格化 → 任务计划化 → 执行自动化 → 验证标准化</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-AI-Coding-进化路径"><a href="#1-2-AI-Coding-进化路径" class="headerlink" title="1.2 AI Coding 进化路径"></a>1.2 AI Coding 进化路径</h3><p>AI Coding 不是一蹴而就的，它经历了四个阶段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">原始 Vibe Coding</span><br><span class="line">  用户 → 一句话需求 → AI 直接写代码 → 逐步调优</span><br><span class="line">  问题：缺乏设计、缺乏计划、缺乏验证</span><br><span class="line"></span><br><span class="line">+ Spec（先约定再执行）+ Plan（想清楚再动手）</span><br><span class="line">  用户 → Spec（需求对齐）→ Plan（任务拆解）→ AI 按计划执行</span><br><span class="line">  效果：质量和可控性显著提升</span><br><span class="line"></span><br><span class="line">+ Superpowers（强制走流程）</span><br><span class="line">  用户 → 自动触发 Brainstorm → Plan → TDD → Review</span><br><span class="line">  效果：工程级质量，每个环节有门禁</span><br><span class="line"></span><br><span class="line">+ Loop Engineering（闭环自动化）</span><br><span class="line">  用户设定目标 → AI 自主循环：行动 → 检查 → 调整 → 继续</span><br><span class="line">  效果：持续交付，AI 自主迭代优化</span><br></pre></td></tr></table></figure>
+
+<p><strong>当前你在哪一阶段？</strong> 大多数开发者还在 Vibe Coding 和 Spec+Plan 之间。这篇文章的目标是带你走到 Superpowers 阶段，并理解 Loop Engineering 的方向。</p>
+<hr>
+<h2 id="二、Superpowers-是什么"><a href="#二、Superpowers-是什么" class="headerlink" title="二、Superpowers 是什么"></a>二、Superpowers 是什么</h2><p><strong>Superpowers</strong> 是由 Jesse Vincent（obra）创建的开源 <strong>Agentic Skills 框架</strong>。它不是一个 IDE 插件，也不是一个平台——而是一组<strong>强制性的软件开发方法论 + 可组合的 Skills 技能包</strong>。</p>
+<h3 id="2-1-定位"><a href="#2-1-定位" class="headerlink" title="2.1 定位"></a>2.1 定位</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Superpowers = 你的 AI 编程工具 + 强制性工程流程</span><br></pre></td></tr></table></figure>
+
+<p>它不改变你用什么 IDE 或 AI 工具，而是改变<strong>你与 AI 协作的方式</strong>：从”你指挥 AI 写代码”变成”AI 按工程流程自动推进”。</p>
+<h3 id="2-2-核心理念"><a href="#2-2-核心理念" class="headerlink" title="2.2 核心理念"></a>2.2 核心理念</h3><table>
+<thead>
+<tr>
+<th>理念</th>
+<th>含义</th>
+<th>在 Superpowers 中的体现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>TDD</strong></td>
+<td>测试驱动开发</td>
+<td>每个任务必须先写失败测试，再写实现</td>
+</tr>
+<tr>
+<td><strong>YAGNI</strong></td>
+<td>You Aren’t Gonna Need It</td>
+<td>Spec 阶段只设计当前需要的，不提前设计</td>
+</tr>
+<tr>
+<td><strong>DRY</strong></td>
+<td>Don’t Repeat Yourself</td>
+<td>Skills 复用，不重复写相同的指令</td>
+</tr>
+<tr>
+<td><strong>小步快跑</strong></td>
+<td>每个任务 2-5 分钟可完成</td>
+<td>Plan 阶段强制拆分为小任务</td>
+</tr>
+</tbody></table>
+<p>它通过 Skills（技能包） 的形式，强制你的 AI 在写代码前走流程：</p>
+<ul>
+<li>先头脑风暴出 Spec → 再拆解成 Plan → 再按 TDD 执行 → 最后自动 Review</li>
+<li>每个 Skill 会在合适的时机自动触发，你不需要手动调用</li>
+</ul>
+<h3 id="2-3-安装（以-Claude-Code-为例）"><a href="#2-3-安装（以-Claude-Code-为例）" class="headerlink" title="2.3 安装（以 Claude Code 为例）"></a>2.3 安装（以 Claude Code 为例）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 克隆 Superpowers 仓库</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/obra/superpowers.git ~/.superpowers</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在 Claude Code 中启用（将 skills 目录链接到项目）</span></span><br><span class="line"><span class="built_in">cd</span> your-project</span><br><span class="line"><span class="built_in">mkdir</span> -p .claude</span><br><span class="line"><span class="built_in">ln</span> -s ~/.superpowers/skills .claude/skills</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>不同工具的配置方式不同，具体请参考 <a target="_blank" rel="noopener" href="https://github.com/obra/superpowers">Superpowers 官方仓库</a> 的安装说明。</p>
+</blockquote>
+<p>安装后，Claude Code 启动时会自动加载 Superpowers 的 Skills，包括 Brainstorming、Writing Plans、TDD、Code Review 等。</p>
+<hr>
+<h2 id="三、Superpowers-怎么干"><a href="#三、Superpowers-怎么干" class="headerlink" title="三、Superpowers 怎么干"></a>三、Superpowers 怎么干</h2><h3 id="3-1-Brainstorming：头脑风暴-→-Spec"><a href="#3-1-Brainstorming：头脑风暴-→-Spec" class="headerlink" title="3.1 Brainstorming：头脑风暴 → Spec"></a>3.1 Brainstorming：头脑风暴 → Spec</h3><p>传统方式：你给 AI 一句话需求，AI 直接写代码。</p>
+<p>Superpowers 方式：你给出需求方向，AI <strong>不写代码</strong>，而是先和你讨论：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">你：我想做一个用户登录功能</span><br><span class="line"></span><br><span class="line">AI（Brainstorming 模式）：</span><br><span class="line">  好的，我先不写代码。让我们讨论一下需求：</span><br><span class="line">  1. 认证方式：用户名密码？邮箱？手机号？OAuth？</span><br><span class="line">  2. 会话管理：JWT 还是 Session？</span><br><span class="line">  3. 安全要求：是否支持 MFA？登录失败锁定？</span><br><span class="line">  4. 边界情况：多次失败锁定、密码重置、记住我...</span><br><span class="line">  </span><br><span class="line">  我建议分几个模块讨论，你觉得呢？</span><br></pre></td></tr></table></figure>
+
+<p>AI 会产出<strong>结构化的 Spec 文档</strong>，分块展示，等你逐块确认。<strong>你不确认，AI 不进入下一步</strong>。</p>
+<h3 id="3-2-Writing-Plans：写计划-→-Plan"><a href="#3-2-Writing-Plans：写计划-→-Plan" class="headerlink" title="3.2 Writing Plans：写计划 → Plan"></a>3.2 Writing Plans：写计划 → Plan</h3><p>Spec 确认后，AI 产出<strong>详细实现计划</strong>。每个任务满足：</p>
+<ul>
+<li><strong>2-5 分钟可完成</strong>（太大就继续拆；包含 AI 生成代码 + 验证时间）</li>
+<li><strong>只涉及 1-2 个文件</strong>（确保任务足够小、足够独立）</li>
+<li><strong>精确到文件路径</strong>（<code>src/auth/login.ts</code>，不是”auth 模块”）</li>
+<li><strong>包含完整可运行代码</strong>（不是伪代码，是可直接运行的代码）</li>
+<li><strong>包含验证步骤</strong>（怎么跑测试、怎么确认完成）</li>
+</ul>
+<p>示例 Plan：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## Task 1: 创建数据库模型</span></span><br><span class="line"><span class="bullet">-</span> 文件：<span class="code">`src/models/user.ts`</span></span><br><span class="line"><span class="bullet">-</span> 内容：User 模型，包含 id/username/password<span class="emphasis">_hash/created_</span>at</span><br><span class="line"><span class="bullet">-</span> 验证：<span class="code">`npm test -- models/user.test.ts`</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Task 2: 实现密码哈希</span></span><br><span class="line"><span class="bullet">-</span> 文件：<span class="code">`src/utils/crypto.ts`</span></span><br><span class="line"><span class="bullet">-</span> 内容：hashPassword() / verifyPassword()，使用 bcrypt</span><br><span class="line"><span class="bullet">-</span> 验证：<span class="code">`npm test -- utils/crypto.test.ts`</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Task 3: 实现登录 API</span></span><br><span class="line"><span class="bullet">-</span> 文件：<span class="code">`src/api/auth.ts`</span></span><br><span class="line"><span class="bullet">-</span> 内容：POST /login，接收 username+password，返回 JWT</span><br><span class="line"><span class="bullet">-</span> 验证：<span class="code">`curl -X POST localhost:3000/login -d &#x27;&#123;&quot;username&quot;:&quot;test&quot;,&quot;password&quot;:&quot;123&quot;&#125;&#x27;`</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-Subagent-Driven-Development：子-Agent-执行"><a href="#3-3-Subagent-Driven-Development：子-Agent-执行" class="headerlink" title="3.3 Subagent-Driven Development：子 Agent 执行"></a>3.3 Subagent-Driven Development：子 Agent 执行</h3><p>Plan 确认后，AI 对每个任务启动一个<strong>独立的子 Agent</strong> 来执行。每个子 Agent：</p>
+<ul>
+<li>拥有独立的上下文窗口（不受其他任务干扰）</li>
+<li>经过两阶段审查：<ol>
+<li><strong>Spec 合规检查</strong>：代码是否符合 Spec 的设计？</li>
+<li><strong>代码质量检查</strong>：是否符合 TDD 要求？是否有测试？</li>
+</ol>
+</li>
+</ul>
+<p>多个子 Agent 可以<strong>并行执行</strong>。</p>
+<blockquote>
+<p><strong>注意</strong>：子 Agent 并行执行需要工具支持。Claude Code 和 Cursor 原生支持任务委派；如果需要真正的并行执行，需要配合多 Agent 框架（如 LangGraph、CrewAI）。</p>
+</blockquote>
+<h3 id="3-4-Test-Driven-Development：测试驱动开发"><a href="#3-4-Test-Driven-Development：测试驱动开发" class="headerlink" title="3.4 Test-Driven Development：测试驱动开发"></a>3.4 Test-Driven Development：测试驱动开发</h3><p>Superpowers 强制每个任务走 TDD 流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RED   → 先写失败测试</span><br><span class="line">GREEN → 写最小代码让测试通过</span><br><span class="line">REFACTOR → 重构优化，保持测试绿色</span><br></pre></td></tr></table></figure>
+
+<p><strong>TDD 不可跳过</strong>——没写测试，任务不算完成。这是 Superpowers 最核心的约束。</p>
+<blockquote>
+<p><strong>说明</strong>：在探索性开发或 UI 原型阶段，可以先用”写代码 + 补测试”的方式快速迭代，待方案稳定后再严格走 TDD。但<strong>功能开发的最终交付必须包含测试</strong>。</p>
+</blockquote>
+<h3 id="3-5-Code-Review：代码审查"><a href="#3-5-Code-Review：代码审查" class="headerlink" title="3.5 Code Review：代码审查"></a>3.5 Code Review：代码审查</h3><p>每个任务完成后，AI 自动进行代码审查：</p>
+<table>
+<thead>
+<tr>
+<th>审查维度</th>
+<th>检查内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Spec 合规</strong></td>
+<td>代码是否实现了 Spec 中的所有要求？</td>
+</tr>
+<tr>
+<td><strong>Plan 合规</strong></td>
+<td>文件路径、函数签名是否与 Plan 一致？</td>
+</tr>
+<tr>
+<td><strong>测试覆盖</strong></td>
+<td>是否有测试？测试是否通过？</td>
+</tr>
+<tr>
+<td><strong>代码规范</strong></td>
+<td>命名、结构、注释是否符合规范？</td>
+</tr>
+<tr>
+<td><strong>基础安全检查</strong></td>
+<td>是否有硬编码密钥、SQL 注入、明文密码等明显安全漏洞？</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Critical</strong></td>
+<td>阻塞进度，必须修复</td>
+</tr>
+<tr>
+<td><strong>Warning</strong></td>
+<td>报告问题，建议修复</td>
+</tr>
+<tr>
+<td><strong>Info</strong></td>
+<td>记录，不阻塞</td>
+</tr>
+</tbody></table>
+<p><strong>严重问题会阻塞进度</strong>，直到修复为止。</p>
+<h3 id="3-6-Finishing：收尾"><a href="#3-6-Finishing：收尾" class="headerlink" title="3.6 Finishing：收尾"></a>3.6 Finishing：收尾</h3><p>全部任务完成后：</p>
+<ol>
+<li>运行完整测试套件</li>
+<li>生成变更摘要</li>
+<li>选择：合并到主分支 &#x2F; 创建 PR &#x2F; 保留在分支 &#x2F; 丢弃</li>
+</ol>
+<hr>
+<h2 id="四、Loop-工程：让-AI-持续正确地写代码"><a href="#四、Loop-工程：让-AI-持续正确地写代码" class="headerlink" title="四、Loop 工程：让 AI 持续正确地写代码"></a>四、Loop 工程：让 AI 持续正确地写代码</h2><h3 id="4-1-双层循环模型"><a href="#4-1-双层循环模型" class="headerlink" title="4.1 双层循环模型"></a>4.1 双层循环模型</h3><p>Superpowers 的核心是<strong>双层循环</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">外层循环（功能级）：Spec → Plan → Execute → Review → 交付</span><br><span class="line">     ↑                                              |</span><br><span class="line">     └──────────────────────────────────────────────┘</span><br><span class="line"></span><br><span class="line">内层循环（任务级）：RED → GREEN → REFACTOR → 下一个任务</span><br><span class="line">     ↑                              |</span><br><span class="line">     └──────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>外层循环</strong>保证方向正确，<strong>内层循环</strong>保证每个任务质量过关。</p>
+<h3 id="4-2-关键原则"><a href="#4-2-关键原则" class="headerlink" title="4.2 关键原则"></a>4.2 关键原则</h3><table>
+<thead>
+<tr>
+<th>原则</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>小步快跑</strong></td>
+<td>每个任务 2-5 分钟，改完立即验证</td>
+</tr>
+<tr>
+<td><strong>每次循环可验证</strong></td>
+<td>每个循环结束必须有可运行的产物</td>
+</tr>
+<tr>
+<td><strong>Review 是门禁</strong></td>
+<td>审查不过，不进入下一步</td>
+</tr>
+<tr>
+<td><strong>失败隔离</strong></td>
+<td>一个任务失败不影响其他任务</td>
+</tr>
+</tbody></table>
+<h3 id="4-3-Loop-Engineering-的终极形态"><a href="#4-3-Loop-Engineering-的终极形态" class="headerlink" title="4.3 Loop Engineering 的终极形态"></a>4.3 Loop Engineering 的终极形态</h3><p>当你把外层循环也自动化后，就进入了 Loop Engineering 阶段：</p>
+<p><img src="/blog/images/Gemini_Generated_Image_cb9wptcb9wptcb9w.png" alt="AI coding 进化路径"></p>
+<p>在 Loop Engineering 阶段，AI 不仅执行你指定的任务，还能：</p>
+<ul>
+<li>发现测试失败后自动分析原因并修复</li>
+<li>发现 Spec 不清晰时自动提出问题</li>
+<li>在多个实现方案中自动选择最优解</li>
+</ul>
+<p><strong>但核心不变</strong>：AI 负责”执行”和”建议”，人负责”判断”和”决策”。</p>
+<hr>
+<h2 id="五、实战：用-Superpowers-从零构建一个功能"><a href="#五、实战：用-Superpowers-从零构建一个功能" class="headerlink" title="五、实战：用 Superpowers 从零构建一个功能"></a>五、实战：用 Superpowers 从零构建一个功能</h2><p>以构建一个”用户认证模块”为例，完整走一遍 Superpowers 流程。</p>
+<h3 id="5-1-启动-Claude-Code-Superpowers"><a href="#5-1-启动-Claude-Code-Superpowers" class="headerlink" title="5.1 启动 Claude Code + Superpowers"></a>5.1 启动 Claude Code + Superpowers</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> my-project</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;superpowers&quot;</span> &gt; .claude/skills</span><br><span class="line">claude</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-Brainstorming：产出-Spec"><a href="#5-2-Brainstorming：产出-Spec" class="headerlink" title="5.2 Brainstorming：产出 Spec"></a>5.2 Brainstorming：产出 Spec</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">👤 你：我需要一个用户认证模块，支持邮箱注册和登录</span><br><span class="line"></span><br><span class="line">🤖 Claude（Brainstorming 模式）：</span><br><span class="line">  好的，让我们先讨论需求，不写代码。</span><br><span class="line"></span><br><span class="line">  第一块：注册流程</span><br><span class="line">  - 用户输入邮箱和密码</span><br><span class="line">  - 密码要求：至少 8 位，包含大小写字母和数字</span><br><span class="line">  - 发送验证邮件，点击链接激活账号</span><br><span class="line">  - 你觉得这个流程可以吗？</span><br><span class="line"></span><br><span class="line">  👤 你：可以，但暂时不需要邮件验证，注册后直接可用</span><br><span class="line"></span><br><span class="line">  🤖 Claude：明白。第二块：登录流程</span><br><span class="line">  - 用户输入邮箱和密码</span><br><span class="line">  - 验证通过后返回 JWT</span><br><span class="line">  - 登录失败 5 次后锁定 15 分钟</span><br><span class="line">  - 可以吗？</span><br><span class="line"></span><br><span class="line">  👤 你：锁定改为 3 次失败后锁定 10 分钟</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  🤖 Claude：确认完毕。以下是完整 Spec：</span><br><span class="line">  [展示结构化 Spec 文档]</span><br><span class="line">  </span><br><span class="line">  👤 你：确认 ✓</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-Writing-Plan：产出实现计划"><a href="#5-3-Writing-Plan：产出实现计划" class="headerlink" title="5.3 Writing Plan：产出实现计划"></a>5.3 Writing Plan：产出实现计划</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">🤖 Claude：基于 Spec，我来拆解为实现计划：</span><br><span class="line"></span><br><span class="line">  Task 1：创建 User 模型（3 分钟）</span><br><span class="line">    文件：src/models/user.ts</span><br><span class="line">    验证：npm test -- models/user.test.ts</span><br><span class="line"></span><br><span class="line">  Task 2：实现密码哈希工具（2 分钟）</span><br><span class="line">    文件：src/utils/crypto.ts</span><br><span class="line">    验证：npm test -- utils/crypto.test.ts</span><br><span class="line"></span><br><span class="line">  Task 3：实现注册 API（4 分钟）</span><br><span class="line">    文件：src/api/auth.ts</span><br><span class="line">    验证：curl -X POST localhost:3000/register</span><br><span class="line"></span><br><span class="line">  Task 4：实现登录 API（4 分钟）</span><br><span class="line">    文件：src/api/auth.ts（追加）</span><br><span class="line">    验证：curl -X POST localhost:3000/login</span><br><span class="line"></span><br><span class="line">  Task 5：实现登录失败锁定（3 分钟）</span><br><span class="line">    文件：src/middleware/rateLimit.ts</span><br><span class="line">    验证：连续 3 次错误密码后第 4 次被拒绝</span><br><span class="line"></span><br><span class="line">  确认后我开始执行。</span><br><span class="line"></span><br><span class="line">  👤 你：确认 ✓</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-4-Execution：自动执行"><a href="#5-4-Execution：自动执行" class="headerlink" title="5.4 Execution：自动执行"></a>5.4 Execution：自动执行</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">🤖 Claude：开始执行 Task 1...</span><br><span class="line"></span><br><span class="line">  [SubAgent-1] 创建 src/models/user.ts</span><br><span class="line">  [SubAgent-1] 先写测试：src/__tests__/models/user.test.ts</span><br><span class="line">  [SubAgent-1] RED：测试失败 ✓</span><br><span class="line">  [SubAgent-1] 写实现代码</span><br><span class="line">  [SubAgent-1] GREEN：测试通过 ✓</span><br><span class="line">  [SubAgent-1] REFACTOR：代码结构优化</span><br><span class="line">  [SubAgent-1] Task 1 完成 ✓</span><br><span class="line"></span><br><span class="line">  [SubAgent-2] 开始 Task 2...</span><br><span class="line">  [SubAgent-3] 开始 Task 3（并行）...</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-5-Review-Finish"><a href="#5-5-Review-Finish" class="headerlink" title="5.5 Review &amp; Finish"></a>5.5 Review &amp; Finish</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">🤖 Claude：全部 5 个任务完成。审查结果：</span><br><span class="line"></span><br><span class="line">  Task 1 ✓  测试通过，Spec 合规</span><br><span class="line">  Task 2 ✓  测试通过，Spec 合规</span><br><span class="line">  Task 3 ✓  测试通过，Spec 合规</span><br><span class="line">  Task 4 ✓  测试通过，Spec 合规</span><br><span class="line">  Task 5 ⚠️  锁定时间实现为 15 分钟，Spec 要求 10 分钟</span><br><span class="line">        → 需要人工确认：接受此偏差 / 要求修复</span><br><span class="line"></span><br><span class="line">  👤 你：要求修复，按 Spec 改为 10 分钟</span><br><span class="line">  </span><br><span class="line">  🤖 Claude：已修复，重新验证通过 ✓</span><br><span class="line"></span><br><span class="line">  全部测试通过（12/12）</span><br><span class="line">  变更摘要：新增 5 个文件，修改 0 个文件</span><br><span class="line"></span><br><span class="line">  要创建 PR 吗？</span><br><span class="line"></span><br><span class="line">  👤 你：创建 PR</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、最佳实践总结"><a href="#六、最佳实践总结" class="headerlink" title="六、最佳实践总结"></a>六、最佳实践总结</h2><table>
+<thead>
+<tr>
+<th>原则</th>
+<th>为什么</th>
+<th>反例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>永远先 Spec 再 Plan 再 Code</strong></td>
+<td>方向错了，写得越快错得越多</td>
+<td>“帮我写个登录功能”→ 直接写代码</td>
+</tr>
+<tr>
+<td><strong>每个任务 2-3 分钟</strong></td>
+<td>太大容易失控，太小效率低</td>
+<td>一个任务拆成 50 个文件</td>
+</tr>
+<tr>
+<td><strong>TDD 不可跳过</strong></td>
+<td>没测试的代码 &#x3D; 不可验证的代码</td>
+<td>写完功能再加测试</td>
+</tr>
+<tr>
+<td><strong>Review 是门禁</strong></td>
+<td>审查不过不进下一步，防止问题累积</td>
+<td>Review 走过场，发现的问题”下次再改”</td>
+</tr>
+<tr>
+<td><strong>小步提交</strong></td>
+<td>每完成一个任务就提交一次</td>
+<td>写了一天代码，一次 commit 全部</td>
+</tr>
+<tr>
+<td><strong>子 Agent 委派</strong></td>
+<td>独立任务委派执行，效率翻倍</td>
+<td>串行执行所有任务</td>
+</tr>
+</tbody></table>
+<h3 id="常见反模式"><a href="#常见反模式" class="headerlink" title="常见反模式"></a>常见反模式</h3><table>
+<thead>
+<tr>
+<th>反模式</th>
+<th>表现</th>
+<th>为什么有害</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Prompt 堆砌</strong></td>
+<td>在一个 prompt 里塞 5000 字需求</td>
+<td>AI 注意力分散，遗漏关键点</td>
+</tr>
+<tr>
+<td><strong>过度信任</strong></td>
+<td>AI 说”完成了”就信，不验证</td>
+<td>幻觉代码、逻辑漏洞</td>
+</tr>
+<tr>
+<td><strong>无版本控制</strong></td>
+<td>直接让 AI 修改生产代码</td>
+<td>无法回滚，风险极高</td>
+</tr>
+<tr>
+<td><strong>跳过 Spec</strong></td>
+<td>需求不明确就开始写代码</td>
+<td>方向错误，推倒重来</td>
+</tr>
+</tbody></table>
+<h3 id="什么时候不适合用这套流程"><a href="#什么时候不适合用这套流程" class="headerlink" title="什么时候不适合用这套流程"></a>什么时候不适合用这套流程</h3><p>这套流程虽然强大，但并非万能：</p>
+<ul>
+<li><strong>算法竞赛&#x2F;面试题</strong>：AI 可能给出复杂度过高的解，需要人工判断</li>
+<li><strong>安全关键系统</strong>（医疗、金融核心）：必须人工主导，AI 辅助而非替代</li>
+<li><strong>遗留代码大规模重构</strong>：上下文太大，AI 容易理解偏差，需分阶段推进</li>
+<li><strong>探索性原型</strong>：严格 Spec 会束缚创造力，先用 Vibe Coding 快速验证，确定方向后再走流程</li>
+</ul>
+<h3 id="Superpowers-的局限性"><a href="#Superpowers-的局限性" class="headerlink" title="Superpowers 的局限性"></a>Superpowers 的局限性</h3><table>
+<thead>
+<tr>
+<th>局限</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>学习成本</strong></td>
+<td>从”直接写代码”到”先 Spec 再 Plan 再 Code”，需要适应期</td>
+</tr>
+<tr>
+<td><strong>流程刚性</strong></td>
+<td>对非常小的改动（如修一个 typo），严格走流程可能过于”重”</td>
+</tr>
+<tr>
+<td><strong>需要人工判断</strong></td>
+<td>Spec 确认、Review 否决、HITL 审批都需要人的参与，不是全自动</td>
+</tr>
+</tbody></table>
+<h3 id="进化路径回顾"><a href="#进化路径回顾" class="headerlink" title="进化路径回顾"></a>进化路径回顾</h3><p><img src="/blog/images/Gemini_Generated_Image_ntxieantxieantxi.png" alt="AI coding 进化路径"></p>
+<p><strong>你现在在哪一步？</strong> 不管在哪，下一步都是往右走——从”写代码”变成”建流程”。</p>
+<blockquote>
+<p><strong>小结</strong>：AI Coding 的核心不是”AI 有多聪明”，而是”你与 AI 的协作流程有多好”。四阶段公式——<strong>需求规格化 → 任务计划化 → 执行自动化 → 验证标准化</strong>——是贯穿始终的主线。Superpowers 把这条公式变成了强制执行的工程流程，Loop Engineering 是它的终极形态。</p>
+</blockquote>
 
                 
             </div>
@@ -6184,7 +6182,19 @@ var _hmt = _hmt || [];
                         </div>
                         <div class="item-inner">
                             <p class="item-title"><a href="/blog/2026/07/agent-dev-quick-intro2.html" class="title">Agent 开发快速入门（简版）</a></p>
-                            <p class="item-date"><time datetime="2026-07-04T04:00:00.000Z">2026-07-04</time></p>
+                            <p class="item-date"><time datetime="2026-07-06T04:00:00.000Z">2026-07-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/07/agent-quick-intro2.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/07/agent-quick-intro2.html" class="title">网络安全业务快速入门（简版）</a></p>
+                            <p class="item-date"><time datetime="2026-07-05T02:00:00.000Z">2026-07-05</time></p>
                         </div>
                     </li>
                 
@@ -6197,18 +6207,6 @@ var _hmt = _hmt || [];
                         <div class="item-inner">
                             <p class="item-title"><a href="/blog/2026/07/ai-coding-best-practices.html" class="title">AI Coding 最佳实践快速入门</a></p>
                             <p class="item-date"><time datetime="2026-07-03T06:00:00.000Z">2026-07-03</time></p>
-                        </div>
-                    </li>
-                
-                    <li>
-                        <div class="item-thumbnail">
-                            <a href="/blog/2026/07/agent-quick-intro2.html" class="thumbnail">
-                                <span class="thumbnail-image thumbnail-none"></span>
-                            </a>
-                        </div>
-                        <div class="item-inner">
-                            <p class="item-title"><a href="/blog/2026/07/agent-quick-intro2.html" class="title">网络安全业务快速入门（简版）</a></p>
-                            <p class="item-date"><time datetime="2026-07-02T02:00:00.000Z">2026-07-02</time></p>
                         </div>
                     </li>
                 
