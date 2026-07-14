@@ -1,6 +1,6 @@
 ---
 title: Agent 开发快速入门（简版）
-date: 2026-07-04 12:00:00
+date: 2026-07-06 12:00:00
 categories:
   - 技术
   - AI
@@ -11,13 +11,6 @@ tags:
   - MCP
   - Tool Calling
 ---
-
-这篇文章不依赖任何框架（LangChain / CrewAI / AutoGen），只用用纯 Python 把 Agent 的核心骨架、工具调用、MCP 集成、记忆管理、多 Agent 协作到生产部署讲透。
-读完你会理解：Agent 的业务逻辑到底是什么，以及如何从零构建一个能在生产环境中可靠运行的 Agent。
-
----
-
-# Agent开发快速入门
 
 ## 一、Agent 相关概念简介
 ### （一）基础：Token 与 Context Window
