@@ -155,11 +155,11 @@ var _hmt = _hmt || [];
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                15
+                16
                 <span>posts</span>
             </div>
             <div class="article-info-block">
-                45
+                47
                 <span>tag</span>
             </div>
         </div>
@@ -182,6 +182,1183 @@ var _hmt = _hmt || [];
 </aside>
 
             <section id="main">
+
+    <article id="post-mitre-attack-stix-guide" class="article article-type-post" itemscope itemprop="blogPost">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 itemprop="name">
+                    <a class="article-title" href="/blog/2026/07/mitre-attack-stix-guide.html">MITRE ATT&amp;CK Enterprise STIX 数据详解</a>
+                </h1>
+                <div class="article-meta">
+                    <div class="article-date">
+                        <i class="fa fa-calendar"></i>
+                        <a href="/blog/2026/07/mitre-attack-stix-guide.html">
+                            <time datetime="2026-07-15T12:00:00.000Z" itemprop="datePublished">2026-07-15</time>
+                        </a>
+                    </div>
+                    
+                    <div class="article-category">
+                        <i class="fa fa-folder"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><i class="fa fa-angle-right"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a>
+                        
+                    </div>
+                    
+                    
+                    <div class="article-tag">
+                        <i class="fa fa-tag"></i>
+                        
+                            <a class="tag-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/">威胁情报</a>
+                        
+                            <a class="tag-link" href="/blog/tags/STIX/">STIX</a>
+                        
+                            <a class="tag-link" href="/blog/tags/ATT-CK/">ATT&amp;CK</a>
+                        
+                            <a class="tag-link" href="/blog/tags/MITRE/">MITRE</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a>
+                        
+                    </div>
+                    
+                </div>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                
+                    <blockquote>
+<p>基于 MITRE 官方仓库 <code>mitre-attack/attack-stix-data</code>（master 分支 <code>enterprise-attack/enterprise-attack.json</code>）的结构化解析。</p>
+</blockquote>
+<hr>
+<h2 id="一、概述与数据来源"><a href="#一、概述与数据来源" class="headerlink" title="一、概述与数据来源"></a>一、概述与数据来源</h2><p><strong>MITRE ATT&amp;CK</strong>（Adversarial Tactics, Techniques, and Common Knowledge）是基于真实世界观察的全球可访问对抗战术和技术知识库，被安全社区广泛用于威胁检测、威胁狩猎、红蓝队演练和安全控制验证。</p>
+<p>ATT&amp;CK 框架分为三个域：</p>
+<ul>
+<li><strong>Enterprise</strong>：企业 IT 环境（Windows &#x2F; Linux &#x2F; macOS &#x2F; 云 &#x2F; 容器等）</li>
+<li><strong>Mobile</strong>：移动设备环境</li>
+<li><strong>ICS</strong>：工业控制系统环境</li>
+</ul>
+<p>本文解析的是 <strong>Enterprise 域</strong>的 STIX 数据。</p>
+<h3 id="数据来源"><a href="#数据来源" class="headerlink" title="数据来源"></a>数据来源</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>仓库地址</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/mitre-attack/attack-stix-data">mitre-attack&#x2F;attack-stix-data</a></td>
+</tr>
+<tr>
+<td>文件路径</td>
+<td><code>enterprise-attack/enterprise-attack.json</code>（master 分支）</td>
+</tr>
+<tr>
+<td>文件大小</td>
+<td>~53MB</td>
+</tr>
+<tr>
+<td>STIX 版本（spec_version）</td>
+<td><strong>2.1</strong></td>
+</tr>
+<tr>
+<td>对象总数（objects）</td>
+<td>25,843</td>
+</tr>
+<tr>
+<td>对象类型数（distinct type）</td>
+<td>16</td>
+</tr>
+<tr>
+<td>关系对象数（relationship）</td>
+<td>21,025</td>
+</tr>
+</tbody></table>
+<p><strong>文件本质</strong>：一个 STIX <code>Bundle</code>，顶层只有 <code>type</code> &#x2F; <code>id</code> &#x2F; <code>objects</code> 三个键，<code>objects</code> 是对象数组。</p>
+<p><strong>数据用途</strong>：作为机器可读的”单一事实源”，供安全产品（SIEM、EDR、威胁情报平台）导入、检索与可视化，也适合用脚本批量提取（如生成中文对照表、构建攻击图谱）。</p>
+<hr>
+<h2 id="二、STIX-2-1-核心概念"><a href="#二、STIX-2-1-核心概念" class="headerlink" title="二、STIX 2.1 核心概念"></a>二、STIX 2.1 核心概念</h2><p>STIX（Structured Threat Information Expression）是一种结构化网络威胁情报表达标准，采用 JSON 格式。STIX 2.1 用两类对象描述威胁信息：</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>全称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SDO</strong></td>
+<td>STIX Domain Object（域对象）</td>
+<td>描述”事物”本身，如攻击模式（<code>attack-pattern</code>）、恶意软件（<code>malware</code>）、威胁组织（<code>intrusion-set</code>）、身份（<code>identity</code>）等</td>
+</tr>
+<tr>
+<td><strong>SRO</strong></td>
+<td>STIX Relationship Object（关系对象）</td>
+<td>描述”事物之间的联系”，即 <code>relationship</code> 类型，用 <code>source_ref</code> &#x2F; <code>target_ref</code> 指向两个对象的 ID</td>
+</tr>
+<tr>
+<td><strong>Bundle</strong></td>
+<td>STIX 包</td>
+<td>把一批 SDO&#x2F;SRO 打包成一个 JSON 文档，即本文件的形态</td>
+</tr>
+</tbody></table>
+<h3 id="2-1-公共属性"><a href="#2-1-公共属性" class="headerlink" title="2.1 公共属性"></a>2.1 公共属性</h3><p>几乎每个对象都带如下公共字段：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>type</code></td>
+<td>对象类型，如 <code>attack-pattern</code>、<code>relationship</code></td>
+</tr>
+<tr>
+<td><code>spec_version</code></td>
+<td>STIX 规范版本，通常为 <code>2.1</code></td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td>STIX ID，形如 <code>attack-pattern--&lt;UUID&gt;</code>；全局唯一</td>
+</tr>
+<tr>
+<td><code>created</code> &#x2F; <code>modified</code></td>
+<td>创建&#x2F;修改时间（ISO 8601）</td>
+</tr>
+<tr>
+<td><code>created_by_ref</code></td>
+<td>创建者引用，通常指向一个 <code>identity</code> 对象</td>
+</tr>
+<tr>
+<td><code>object_marking_refs</code></td>
+<td>标记引用数组，指向 <code>marking-definition</code>（如 TLP 分级）</td>
+</tr>
+<tr>
+<td><code>external_references</code></td>
+<td>外部引用数组；ATT&amp;CK 通过它挂载官方 ID 与网址</td>
+</tr>
+<tr>
+<td><code>x_mitre_*</code> 前缀字段</td>
+<td>ATT&amp;CK 对 STIX 的专有扩展字段</td>
+</tr>
+<tr>
+<td><code>revoked</code></td>
+<td>布尔；为 <code>true</code> 表示该对象已被新版本取代</td>
+</tr>
+<tr>
+<td><code>x_mitre_deprecated</code></td>
+<td>布尔；为 <code>true</code> 表示该对象已弃用</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-ATT-CK-ID-提取方法"><a href="#2-2-ATT-CK-ID-提取方法" class="headerlink" title="2.2 ATT&amp;CK ID 提取方法"></a>2.2 ATT&amp;CK ID 提取方法</h3><p>ATT&amp;CK 的”人读 ID”（如 <code>T1059</code>、<code>TA0002</code>）并不在对象的 <code>id</code> 字段里（那里是 UUID），而是通过 <code>external_references</code> 挂载：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;external_references&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;source_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mitre-attack&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;external_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;T1059&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://attack.mitre.org/techniques/T1059&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>解析时，遍历 <code>external_references</code>，取 <code>source_name == &quot;mitre-attack&quot;</code> 的 <code>external_id</code>，即可拿到 <code>Txxxx</code> &#x2F; <code>TAxxxx</code>。这是把对象与其 ATT&amp;CK 编号对应的<strong>关键步骤</strong>。</p>
+<h3 id="2-3-marking-definition-与-identity"><a href="#2-3-marking-definition-与-identity" class="headerlink" title="2.3 marking-definition 与 identity"></a>2.3 marking-definition 与 identity</h3><ul>
+<li><strong>marking-definition</strong>（本文件 1 个）：描述数据标记，最常见的是 <strong>TLP（Traffic Light Protocol）</strong> 分级，控制信息的共享范围（如 WHITE &#x2F; GREEN &#x2F; AMBER &#x2F; RED）。</li>
+<li><strong>identity</strong>（本文件 1 个）：描述数据归属方。本文件中即 MITRE 自身，通过 <code>created_by_ref</code> 关联到各对象，表示”这条 ATT&amp;CK 条目由 MITRE 发布”。</li>
+</ul>
+<h3 id="2-4-x-mitre-自定义扩展字段"><a href="#2-4-x-mitre-自定义扩展字段" class="headerlink" title="2.4 x-mitre-* 自定义扩展字段"></a>2.4 x-mitre-* 自定义扩展字段</h3><p>ATT&amp;CK 在标准 STIX 基础上增加了 <code>x-mitre-*</code> 前缀的自定义字段，常见的有：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>x_mitre_shortname</code></td>
+<td>战术短名称（小写），用于技术-战术关联</td>
+</tr>
+<tr>
+<td><code>x_mitre_platforms</code></td>
+<td>适用平台列表</td>
+</tr>
+<tr>
+<td><code>x_mitre_domains</code></td>
+<td>所属域（如 <code>enterprise-attack</code>）</td>
+</tr>
+<tr>
+<td><code>x_mitre_is_subtechnique</code></td>
+<td>是否为子技术</td>
+</tr>
+<tr>
+<td><code>x_mitre_data_sources</code></td>
+<td>可检测该技术的数据源</td>
+</tr>
+<tr>
+<td><code>x_mitre_deprecated</code></td>
+<td>是否已弃用</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、ATT-CK-对象类型详解"><a href="#三、ATT-CK-对象类型详解" class="headerlink" title="三、ATT&amp;CK 对象类型详解"></a>三、ATT&amp;CK 对象类型详解</h2><h3 id="3-1-战术（Tactic）—-x-mitre-tactic"><a href="#3-1-战术（Tactic）—-x-mitre-tactic" class="headerlink" title="3.1 战术（Tactic）— x-mitre-tactic"></a>3.1 战术（Tactic）— x-mitre-tactic</h3><p>战术代表攻击者在攻击过程中的<strong>战术目标</strong>，是攻击链的各个阶段。</p>
+<table>
+<thead>
+<tr>
+<th>关键字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>英文名称，如 <code>Execution</code></td>
+</tr>
+<tr>
+<td><code>x_mitre_shortname</code></td>
+<td>短名（小写），如 <code>execution</code>；是技术↔战术的<strong>关联键</strong></td>
+</tr>
+<tr>
+<td><code>external_references[].external_id</code></td>
+<td>战术编号 <code>TAxxxx</code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>该阶段的目标描述</td>
+</tr>
+</tbody></table>
+<h4 id="15-个战术完整列表（按攻击链顺序）"><a href="#15-个战术完整列表（按攻击链顺序）" class="headerlink" title="15 个战术完整列表（按攻击链顺序）"></a>15 个战术完整列表（按攻击链顺序）</h4><table>
+<thead>
+<tr>
+<th>TA_ID</th>
+<th>英文名称</th>
+<th>中文名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TA0043</td>
+<td>Reconnaissance</td>
+<td>侦察</td>
+<td>攻击者在试图利用目标之前收集信息</td>
+</tr>
+<tr>
+<td>TA0042</td>
+<td>Resource Development</td>
+<td>资源开发</td>
+<td>攻击者建立可用于攻击的资源（基础设施、账号、能力）</td>
+</tr>
+<tr>
+<td>TA0001</td>
+<td>Initial Access</td>
+<td>初始访问</td>
+<td>攻击者试图进入你的网络（钓鱼、利用公网应用等）</td>
+</tr>
+<tr>
+<td>TA0002</td>
+<td>Execution</td>
+<td>执行</td>
+<td>攻击者试图在你的系统上运行恶意代码</td>
+</tr>
+<tr>
+<td>TA0003</td>
+<td>Persistence</td>
+<td>持久化</td>
+<td>攻击者试图保持访问权限（重启、改密码后仍能访问）</td>
+</tr>
+<tr>
+<td>TA0004</td>
+<td>Privilege Escalation</td>
+<td>权限提升</td>
+<td>攻击者试图获得更高的系统权限</td>
+</tr>
+<tr>
+<td>TA0112</td>
+<td>Defense Impairment</td>
+<td>防御削弱</td>
+<td>攻击者主动禁用&#x2F;破坏防御机制（v16 新增）</td>
+</tr>
+<tr>
+<td>TA0005</td>
+<td>Stealth</td>
+<td>隐蔽</td>
+<td>攻击者通过隐藏行为避免被检测（原 Defense Evasion 改名）</td>
+</tr>
+<tr>
+<td>TA0006</td>
+<td>Credential Access</td>
+<td>凭证访问</td>
+<td>攻击者试图窃取账户名和密码</td>
+</tr>
+<tr>
+<td>TA0007</td>
+<td>Discovery</td>
+<td>发现</td>
+<td>攻击者试图了解你的环境（系统、网络、用户等）</td>
+</tr>
+<tr>
+<td>TA0008</td>
+<td>Lateral Movement</td>
+<td>横向移动</td>
+<td>攻击者试图在网络中从一台主机移动到另一台</td>
+</tr>
+<tr>
+<td>TA0009</td>
+<td>Collection</td>
+<td>收集</td>
+<td>攻击者试图从环境中收集目标数据</td>
+</tr>
+<tr>
+<td>TA0011</td>
+<td>Command and Control</td>
+<td>命令与控制</td>
+<td>攻击者试图与被控系统通信</td>
+</tr>
+<tr>
+<td>TA0010</td>
+<td>Exfiltration</td>
+<td>数据渗出</td>
+<td>攻击者试图从你的网络中窃取数据</td>
+</tr>
+<tr>
+<td>TA0040</td>
+<td>Impact</td>
+<td>影响</td>
+<td>攻击者试图操纵、中断或破坏系统和数据</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>版本变更说明</strong>：最新版（v16）中，原 <code>TA0005 Defense Evasion（防御规避）</code> 拆分为两个战术：</p>
+<ul>
+<li><strong>TA0112 Defense Impairment（防御削弱）</strong>：主动禁用&#x2F;破坏防御机制</li>
+<li><strong>TA0005 Stealth（隐蔽）</strong>：隐藏行为避免检测</li>
+</ul>
+<p>解析战术时不要假设编号与旧版名称一一对应。</p>
+</blockquote>
+<p>战术对象关键字段示例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;x-mitre-tactic&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;x-mitre-tactic--4ca45d45-df4d-4613-8980-bf49ef4e7f56&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Execution&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;x_mitre_shortname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;execution&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;x_mitre_domains&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;enterprise-attack&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;external_references&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;source_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mitre-attack&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;external_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;TA0002&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://attack.mitre.org/tactics/TA0002&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-技术-子技术（Technique-Sub-technique）—-attack-pattern"><a href="#3-2-技术-子技术（Technique-Sub-technique）—-attack-pattern" class="headerlink" title="3.2 技术&#x2F;子技术（Technique &#x2F; Sub-technique）— attack-pattern"></a>3.2 技术&#x2F;子技术（Technique &#x2F; Sub-technique）— attack-pattern</h3><p>技术代表攻击者如何实现战术目标的<strong>具体方法</strong>；子技术是某技术的更细粒度划分。</p>
+<table>
+<thead>
+<tr>
+<th>关键字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>英文名称，如 <code>Command and Scripting Interpreter</code></td>
+</tr>
+<tr>
+<td><code>x_mitre_is_subtechnique</code></td>
+<td>布尔；<code>true</code> 表示子技术</td>
+</tr>
+<tr>
+<td><code>external_references[].external_id</code></td>
+<td>编号：<code>T1059</code>（技术）或 <code>T1059.001</code>（子技术）</td>
+</tr>
+<tr>
+<td><code>kill_chain_phases</code></td>
+<td>数组，每项 <code>phase_name</code> 为战术 <code>shortname</code>（如 <code>execution</code>）</td>
+</tr>
+<tr>
+<td><code>x_mitre_platforms</code></td>
+<td>适用平台，如 <code>Windows</code> &#x2F; <code>Linux</code> &#x2F; <code>macOS</code></td>
+</tr>
+<tr>
+<td><code>x_mitre_data_sources</code></td>
+<td>可检测该技术的数据源</td>
+</tr>
+<tr>
+<td><code>x_mitre_defense_bypassed</code></td>
+<td>该技术可绕过的防御机制</td>
+</tr>
+<tr>
+<td><code>x_mitre_detection</code></td>
+<td>检测建议</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>技术描述与示例</td>
+</tr>
+</tbody></table>
+<p>本文件原始 <code>attack-pattern</code> 共 858 个，其中包含已弃用&#x2F;已撤销对象；过滤后实际有效：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>有效数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>技术（Technique）</td>
+<td>222</td>
+</tr>
+<tr>
+<td>子技术（Sub-technique）</td>
+<td>475</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>697</strong></td>
+</tr>
+</tbody></table>
+<h4 id="平台分布统计"><a href="#平台分布统计" class="headerlink" title="平台分布统计"></a>平台分布统计</h4><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>技术数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Windows</td>
+<td>474</td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>356</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>355</td>
+</tr>
+<tr>
+<td>ESXi</td>
+<td>117</td>
+</tr>
+<tr>
+<td>IaaS</td>
+<td>104</td>
+</tr>
+<tr>
+<td>Network Devices</td>
+<td>100</td>
+</tr>
+<tr>
+<td>PRE（攻击准备）</td>
+<td>96</td>
+</tr>
+<tr>
+<td>Office Suite</td>
+<td>78</td>
+</tr>
+<tr>
+<td>SaaS</td>
+<td>70</td>
+</tr>
+<tr>
+<td>Containers</td>
+<td>48</td>
+</tr>
+<tr>
+<td>Identity Provider</td>
+<td>48</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注：一个技术可能支持多个平台，因此总数大于技术总数。</p>
+</blockquote>
+<h4 id="子技术示例"><a href="#子技术示例" class="headerlink" title="子技术示例"></a>子技术示例</h4><table>
+<thead>
+<tr>
+<th>父技术</th>
+<th>子技术</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T1059 命令和脚本解释器</td>
+<td>T1059.001 PowerShell</td>
+</tr>
+<tr>
+<td></td>
+<td>T1059.002 AppleScript</td>
+</tr>
+<tr>
+<td></td>
+<td>T1059.003 Windows Command Shell</td>
+</tr>
+<tr>
+<td></td>
+<td>T1059.004 Unix Shell</td>
+</tr>
+<tr>
+<td></td>
+<td>T1059.005 Visual Basic</td>
+</tr>
+<tr>
+<td></td>
+<td>T1059.006 Python</td>
+</tr>
+<tr>
+<td></td>
+<td>T1059.007 JavaScript</td>
+</tr>
+</tbody></table>
+<h3 id="3-3-矩阵（Matrix）—-x-mitre-matrix"><a href="#3-3-矩阵（Matrix）—-x-mitre-matrix" class="headerlink" title="3.3 矩阵（Matrix）— x-mitre-matrix"></a>3.3 矩阵（Matrix）— x-mitre-matrix</h3><p><code>x-mitre-matrix</code> 只有 <strong>1</strong> 个，它用 <code>tactic_refs</code>（战术 ID 数组）声明 Enterprise 矩阵的战术从左到右的排列顺序，是构建可视化矩阵的<strong>骨架</strong>。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;x-mitre-matrix&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;x-mitre-matrix--eafc1b4c-b985-4bd0-9a37-cc6052a3b596&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Enterprise ATT&amp;CK&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tactic_refs&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;x-mitre-tactic--2558fd61-8c75-4730-94c4-11926db2a263&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;x-mitre-tactic--d3920665-1c55-4aee-a49e-07e0ca09e065&quot;</span><span class="punctuation">,</span></span><br><span class="line">    ...</span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>tactic_refs</code> 数组的顺序即 ATT&amp;CK 官网上矩阵从左到右的战术列顺序。解析时应以 <code>tactic_refs</code> 而非 <code>external_id</code> 的数字大小来决定战术排列。</p>
+<h3 id="3-4-威胁组织（Intrusion-Set）—-intrusion-set"><a href="#3-4-威胁组织（Intrusion-Set）—-intrusion-set" class="headerlink" title="3.4 威胁组织（Intrusion Set）— intrusion-set"></a>3.4 威胁组织（Intrusion Set）— intrusion-set</h3><p>威胁组织（也称为 APT 组织、威胁团伙）代表已知的威胁行为者，是具有共同归因的一组恶意活动。</p>
+<table>
+<thead>
+<tr>
+<th>关键字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>组织名称（MITRE 命名，如 APT28）</td>
+</tr>
+<tr>
+<td><code>aliases</code></td>
+<td>别名列表（厂商命名、公开名称等）</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>组织背景、活动时间、目标行业等</td>
+</tr>
+</tbody></table>
+<p>本文件活跃入侵组织 <strong>174</strong> 个（含弃用共 189 个），包括知名的 APT28、APT29、Lazarus Group、FIN7 等。</p>
+<p>组织通过 <code>uses</code> 关系关联使用的技术和软件，通过 <code>attributed-to</code> 关系关联战役。</p>
+<h3 id="3-5-软件（Software）—-malware-tool"><a href="#3-5-软件（Software）—-malware-tool" class="headerlink" title="3.5 软件（Software）— malware + tool"></a>3.5 软件（Software）— malware + tool</h3><p>软件分为两类：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>STIX type</th>
+<th>活跃数量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>恶意软件</td>
+<td><code>malware</code></td>
+<td>726</td>
+<td>RAT、木马、勒索软件、后门等（含弃用共 729）</td>
+</tr>
+<tr>
+<td>工具</td>
+<td><code>tool</code></td>
+<td>95</td>
+<td>合法工具被攻击者滥用（PsExec、Mimikatz 等）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td></td>
+<td><strong>821</strong></td>
+<td></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注：Mimikatz 在 ATT&amp;CK 中归类为 Tool（工具），不是 Malware。</p>
+</blockquote>
+<p>软件对象关键字段：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>is_family</code></td>
+<td>是否为恶意软件家族（布尔值）</td>
+</tr>
+<tr>
+<td><code>x_mitre_platforms</code></td>
+<td>支持平台</td>
+</tr>
+<tr>
+<td><code>x_mitre_aliases</code></td>
+<td>别名</td>
+</tr>
+</tbody></table>
+<p>软件通过 <code>uses</code> 关系关联到使用的技术。</p>
+<h3 id="3-6-战役（Campaign）—-campaign"><a href="#3-6-战役（Campaign）—-campaign" class="headerlink" title="3.6 战役（Campaign）— campaign"></a>3.6 战役（Campaign）— campaign</h3><p>战役是一组在特定时间窗口内针对特定目标发生的、具有共同归因的恶意活动。</p>
+<ul>
+<li>活跃数量：<strong>56</strong> 个</li>
+<li>有明确的时间范围（<code>first_seen</code>、<code>last_seen</code>）</li>
+<li>通过 <code>attributed-to</code> 关系归属到组织</li>
+<li>通过 <code>uses</code> 关系关联使用的技术和软件</li>
+</ul>
+<h3 id="3-7-缓解措施（Course-of-Action）—-course-of-action"><a href="#3-7-缓解措施（Course-of-Action）—-course-of-action" class="headerlink" title="3.7 缓解措施（Course of Action）— course-of-action"></a>3.7 缓解措施（Course of Action）— course-of-action</h3><p>缓解措施代表可以防止技术成功执行的安全配置、最佳实践或工具。</p>
+<ul>
+<li><strong>活跃数量：44 个</strong>（含弃用共 268 个）</li>
+<li>通过 <code>mitigates</code> 关系关联到对应的技术</li>
+</ul>
+<p>常见缓解措施：</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M1049</td>
+<td>Antivirus&#x2F;Antimalware</td>
+</tr>
+<tr>
+<td>M1042</td>
+<td>Disable or Remove Feature or Program</td>
+</tr>
+<tr>
+<td>M1038</td>
+<td>Execution Prevention</td>
+</tr>
+<tr>
+<td>M1026</td>
+<td>Privileged Account Management</td>
+</tr>
+<tr>
+<td>M1017</td>
+<td>User Training</td>
+</tr>
+<tr>
+<td>M1051</td>
+<td>Update Software</td>
+</tr>
+<tr>
+<td>M1032</td>
+<td>Multi-factor Authentication</td>
+</tr>
+</tbody></table>
+<h3 id="3-8-数据源体系（Data-Source-Data-Component）"><a href="#3-8-数据源体系（Data-Source-Data-Component）" class="headerlink" title="3.8 数据源体系（Data Source &#x2F; Data Component）"></a>3.8 数据源体系（Data Source &#x2F; Data Component）</h3><p>数据源代表可用于检测行为的信息来源，数据组件是数据源下的具体事件类型。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>ID 前缀</th>
+<th>数量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Data Source</td>
+<td>DSxxxx</td>
+<td>38</td>
+<td>如 Process、File、Network、Registry 等</td>
+</tr>
+<tr>
+<td>Data Component</td>
+<td>无单独 ID</td>
+<td>109</td>
+<td>如 Process Creation、File Modification 等</td>
+</tr>
+</tbody></table>
+<p>数据组件是技术 <code>x_mitre_data_sources</code> 字段实际引用的单位，通过 <code>detects</code> 关系关联到技术。</p>
+<p>主要数据源分类：</p>
+<ul>
+<li><strong>进程相关</strong>：Process Creation、Process Termination、Process Access</li>
+<li><strong>文件相关</strong>：File Creation、File Modification、File Deletion</li>
+<li><strong>网络相关</strong>：Network Connection、Network Traffic、DNS Query</li>
+<li><strong>注册表相关</strong>：Registry Key Creation、Registry Value Modification</li>
+<li><strong>认证相关</strong>：Logon Session、Authentication Event</li>
+<li><strong>命令行相关</strong>：Command Execution、Script Execution</li>
+</ul>
+<h3 id="3-9-分析与检测（Analytic-Detection-Strategy-Collection）"><a href="#3-9-分析与检测（Analytic-Detection-Strategy-Collection）" class="headerlink" title="3.9 分析与检测（Analytic &#x2F; Detection Strategy &#x2F; Collection）"></a>3.9 分析与检测（Analytic &#x2F; Detection Strategy &#x2F; Collection）</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>数量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>x-mitre-analytic</code></td>
+<td>1,758</td>
+<td>具体的检测分析逻辑（如 Sigma 规则片段）</td>
+</tr>
+<tr>
+<td><code>x-mitre-detection-strategy</code></td>
+<td>699</td>
+<td>检测策略，通过 <code>detects</code> 关系指向被检测的技术</td>
+</tr>
+<tr>
+<td><code>x-mitre-collection</code></td>
+<td>1</td>
+<td>数据集合元信息</td>
+</tr>
+</tbody></table>
+<p>检测对象描述了如何利用数据源检测特定技术，包含检测逻辑、所需数据源、误报说明和检测置信度等。</p>
+<hr>
+<h2 id="四、对象间关联关系（SRO）"><a href="#四、对象间关联关系（SRO）" class="headerlink" title="四、对象间关联关系（SRO）"></a>四、对象间关联关系（SRO）</h2><p>ATT&amp;CK 的知识价值很大程度来自对象之间的 <code>relationship</code>。</p>
+<h3 id="4-1-核心关系类型"><a href="#4-1-核心关系类型" class="headerlink" title="4.1 核心关系类型"></a>4.1 核心关系类型</h3><table>
+<thead>
+<tr>
+<th>relationship_type</th>
+<th>含义</th>
+<th>source（起点）</th>
+<th>target（终点）</th>
+<th align="right">数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>uses</code></td>
+<td>采用</td>
+<td>组织&#x2F;软件&#x2F;战役</td>
+<td>技术&#x2F;子技术&#x2F;软件</td>
+<td align="right">18,220</td>
+</tr>
+<tr>
+<td><code>mitigates</code></td>
+<td>缓解</td>
+<td>缓解措施</td>
+<td>技术&#x2F;子技术</td>
+<td align="right">1,448</td>
+</tr>
+<tr>
+<td><code>detects</code></td>
+<td>检测</td>
+<td>检测策略</td>
+<td>技术&#x2F;子技术</td>
+<td align="right">697</td>
+</tr>
+<tr>
+<td><code>subtechnique-of</code></td>
+<td>属于</td>
+<td>子技术</td>
+<td>父技术</td>
+<td align="right">477</td>
+</tr>
+<tr>
+<td><code>revoked-by</code></td>
+<td>被取代</td>
+<td>旧对象</td>
+<td>新对象</td>
+<td align="right">157</td>
+</tr>
+<tr>
+<td><code>attributed-to</code></td>
+<td>归属</td>
+<td>战役</td>
+<td>威胁组织</td>
+<td align="right">26</td>
+</tr>
+</tbody></table>
+<h3 id="4-2-关系方向与知识图谱"><a href="#4-2-关系方向与知识图谱" class="headerlink" title="4.2 关系方向与知识图谱"></a>4.2 关系方向与知识图谱</h3><p>关系是有方向的，<code>source_ref</code>（源）和 <code>target_ref</code>（目标）不要搞反。通过关系可以构建完整的攻击知识图谱：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">组织(Gxxxx)</span><br><span class="line">    ↓ uses</span><br><span class="line">技术(Txxxx) ← mitigates ← 缓解措施(Mxxxx)</span><br><span class="line">    ↑                        ↑</span><br><span class="line">    │ subtechnique-of        │ detects</span><br><span class="line">    │                        │</span><br><span class="line">子技术(Txxxx.xxx)        数据组件(DSxxxx)</span><br><span class="line">    ↑ uses</span><br><span class="line">软件(Sxxxx)</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-三种核心导航路径"><a href="#4-3-三种核心导航路径" class="headerlink" title="4.3 三种核心导航路径"></a>4.3 三种核心导航路径</h3><ol>
+<li><strong>技术 ↔ 战术</strong>：技术对象内 <code>kill_chain_phases[].phase_name</code> 与战术的 <code>x_mitre_shortname</code> 对应，<strong>无需经过 relationship</strong></li>
+<li><strong>子技术 ↔ 父技术</strong>：通过 <code>subtechnique-of</code> 关系（source&#x3D;子技术，target&#x3D;父技术）</li>
+<li><strong>组织&#x2F;软件 → 技术</strong>：通过 <code>uses</code> 关系</li>
+</ol>
+<h3 id="4-4-典型查询路径"><a href="#4-4-典型查询路径" class="headerlink" title="4.4 典型查询路径"></a>4.4 典型查询路径</h3><table>
+<thead>
+<tr>
+<th>查询场景</th>
+<th>关系路径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>某组织使用的技术</td>
+<td><code>intrusion-set --uses--&gt; attack-pattern</code></td>
+</tr>
+<tr>
+<td>某技术的检测方法</td>
+<td><code>detection-strategy --detects--&gt; attack-pattern</code></td>
+</tr>
+<tr>
+<td>某技术的缓解措施</td>
+<td><code>course-of-action --mitigates--&gt; attack-pattern</code></td>
+</tr>
+<tr>
+<td>某恶意软件使用的技术</td>
+<td><code>malware --uses--&gt; attack-pattern</code></td>
+</tr>
+<tr>
+<td>某技术的子技术</td>
+<td><code>sub_attack-pattern --subtechnique-of--&gt; parent_attack-pattern</code></td>
+</tr>
+</tbody></table>
+<h3 id="4-5-external-references-详解"><a href="#4-5-external-references-详解" class="headerlink" title="4.5 external_references 详解"></a>4.5 external_references 详解</h3><p><code>external_references</code> 数组中常见的 <code>source_name</code>：</p>
+<table>
+<thead>
+<tr>
+<th>source_name</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mitre-attack</code></td>
+<td>ATT&amp;CK 官方引用（包含 ID）</td>
+<td><code>&quot;external_id&quot;: &quot;T1059&quot;</code></td>
+</tr>
+<tr>
+<td><code>capec</code></td>
+<td>CAPEC 攻击模式分类</td>
+<td><code>&quot;external_id&quot;: &quot;CAPEC-555&quot;</code></td>
+</tr>
+<tr>
+<td><code>cve</code></td>
+<td>CVE 漏洞编号</td>
+<td><code>&quot;external_id&quot;: &quot;CVE-2021-44228&quot;</code></td>
+</tr>
+<tr>
+<td>厂商名称</td>
+<td>Microsoft、FireEye、CrowdStrike 等</td>
+<td>技术报告、博客链接</td>
+</tr>
+</tbody></table>
+<p>关系对象示例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;relationship&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;relationship--xxxx&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;relationship_type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uses&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;source_ref&quot;</span><span class="punctuation">:</span> <span class="string">&quot;intrusion-set--899ce53f-1df9-4d77-920c-86a0d49a2c1f&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;target_ref&quot;</span><span class="punctuation">:</span> <span class="string">&quot;attack-pattern--d3619aa1-c2e1-488d-8d99-0f27d0b29f35&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;APT28 has used PowerShell for execution.&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、实战解析"><a href="#五、实战解析" class="headerlink" title="五、实战解析"></a>五、实战解析</h2><h3 id="5-1-Python-解析脚本"><a href="#5-1-Python-解析脚本" class="headerlink" title="5.1 Python 解析脚本"></a>5.1 Python 解析脚本</h3><p>以下脚本可直接读取 <code>enterprise-attack.json</code> 并输出统计（Python 3.8+，仅标准库）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line">SRC = <span class="string">&quot;enterprise-attack.json&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">load</span>(<span class="params">path</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;加载 STIX JSON，返回 objects 数组&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(path, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">return</span> json.load(f)[<span class="string">&quot;objects&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">ext_id</span>(<span class="params">o</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;从 external_references 提取 ATT&amp;CK ID&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> r <span class="keyword">in</span> o.get(<span class="string">&quot;external_references&quot;</span>, []):</span><br><span class="line">        <span class="keyword">if</span> r.get(<span class="string">&quot;source_name&quot;</span>) == <span class="string">&quot;mitre-attack&quot;</span>:</span><br><span class="line">            <span class="keyword">return</span> r.get(<span class="string">&quot;external_id&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">active</span>(<span class="params">o</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;判断对象是否为活跃状态（未弃用且未撤销）&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">not</span> o.get(<span class="string">&quot;x_mitre_deprecated&quot;</span>) <span class="keyword">and</span> <span class="keyword">not</span> o.get(<span class="string">&quot;revoked&quot;</span>)</span><br><span class="line"></span><br><span class="line">objs = load(SRC)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1) 对象类型计数</span></span><br><span class="line">type_counts = Counter(o.get(<span class="string">&quot;type&quot;</span>) <span class="keyword">for</span> o <span class="keyword">in</span> objs)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;总对象数:&quot;</span>, <span class="built_in">len</span>(objs))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;关系数:&quot;</span>, type_counts.get(<span class="string">&quot;relationship&quot;</span>, <span class="number">0</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2) 过滤出有效战术/技术/子技术</span></span><br><span class="line">tactics = [o <span class="keyword">for</span> o <span class="keyword">in</span> objs <span class="keyword">if</span> o.get(<span class="string">&quot;type&quot;</span>) == <span class="string">&quot;x-mitre-tactic&quot;</span> <span class="keyword">and</span> active(o)]</span><br><span class="line">techs = [o <span class="keyword">for</span> o <span class="keyword">in</span> objs <span class="keyword">if</span> o.get(<span class="string">&quot;type&quot;</span>) == <span class="string">&quot;attack-pattern&quot;</span> <span class="keyword">and</span> active(o)</span><br><span class="line">         <span class="keyword">and</span> <span class="keyword">not</span> o.get(<span class="string">&quot;x_mitre_is_subtechnique&quot;</span>)]</span><br><span class="line">subs  = [o <span class="keyword">for</span> o <span class="keyword">in</span> objs <span class="keyword">if</span> o.get(<span class="string">&quot;type&quot;</span>) == <span class="string">&quot;attack-pattern&quot;</span> <span class="keyword">and</span> active(o)</span><br><span class="line">         <span class="keyword">and</span> o.get(<span class="string">&quot;x_mitre_is_subtechnique&quot;</span>)]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;战术:&quot;</span>, <span class="built_in">len</span>(tactics), <span class="string">&quot;| 技术:&quot;</span>, <span class="built_in">len</span>(techs), <span class="string">&quot;| 子技术:&quot;</span>, <span class="built_in">len</span>(subs))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3) 技术 -&gt; 战术（通过 kill_chain_phases）</span></span><br><span class="line">tac_short = &#123;t[<span class="string">&quot;x_mitre_shortname&quot;</span>]: ext_id(t) <span class="keyword">for</span> t <span class="keyword">in</span> tactics&#125;</span><br><span class="line">t1059 = <span class="built_in">next</span>(o <span class="keyword">for</span> o <span class="keyword">in</span> techs <span class="keyword">if</span> ext_id(o) == <span class="string">&quot;T1059&quot;</span>)</span><br><span class="line">phases = [p[<span class="string">&quot;phase_name&quot;</span>] <span class="keyword">for</span> p <span class="keyword">in</span> t1059.get(<span class="string">&quot;kill_chain_phases&quot;</span>, [])]</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;T1059 所属战术:&quot;</span>, phases)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;T1059 平台:&quot;</span>, t1059.get(<span class="string">&quot;x_mitre_platforms&quot;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4) 子技术（通过 subtechnique-of 关系）</span></span><br><span class="line">id_map = &#123;o[<span class="string">&quot;id&quot;</span>]: o <span class="keyword">for</span> o <span class="keyword">in</span> objs&#125;</span><br><span class="line">sub_names = []</span><br><span class="line"><span class="keyword">for</span> o <span class="keyword">in</span> objs:</span><br><span class="line">    <span class="keyword">if</span> o.get(<span class="string">&quot;type&quot;</span>) == <span class="string">&quot;relationship&quot;</span> <span class="keyword">and</span> o.get(<span class="string">&quot;relationship_type&quot;</span>) == <span class="string">&quot;subtechnique-of&quot;</span>:</span><br><span class="line">        <span class="keyword">if</span> ext_id(id_map.get(o[<span class="string">&quot;target_ref&quot;</span>])) == <span class="string">&quot;T1059&quot;</span>:</span><br><span class="line">            s = id_map.get(o[<span class="string">&quot;source_ref&quot;</span>])</span><br><span class="line">            sub_names.append((ext_id(s), s.get(<span class="string">&quot;name&quot;</span>)))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;T1059 子技术:&quot;</span>, sub_names)</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-T1059-完整-Walkthrough：顺关系游走"><a href="#5-2-T1059-完整-Walkthrough：顺关系游走" class="headerlink" title="5.2 T1059 完整 Walkthrough：顺关系游走"></a>5.2 T1059 完整 Walkthrough：顺关系游走</h3><p>以 <code>T1059 Command and Scripting Interpreter（命令和脚本解释器）</code> 为例，展示如何从一个技术节点出发，沿关系网络游走重建完整上下文。</p>
+<p><strong>第 1 步：定位技术对象</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;attack-pattern&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;attack-pattern--7385dfaf-6886-4229-9ecd-6fd678040830&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Command and Scripting Interpreter&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;x_mitre_is_subtechnique&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;kill_chain_phases&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span> <span class="attr">&quot;kill_chain_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mitre-attack&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;phase_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;execution&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;x_mitre_platforms&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;Containers&quot;</span><span class="punctuation">,</span> <span class="string">&quot;ESXi&quot;</span><span class="punctuation">,</span> <span class="string">&quot;IaaS&quot;</span><span class="punctuation">,</span> <span class="string">&quot;Identity Provider&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;Linux&quot;</span><span class="punctuation">,</span> <span class="string">&quot;macOS&quot;</span><span class="punctuation">,</span> <span class="string">&quot;Network Devices&quot;</span><span class="punctuation">,</span> <span class="string">&quot;Office Suite&quot;</span><span class="punctuation">,</span> <span class="string">&quot;SaaS&quot;</span><span class="punctuation">,</span> <span class="string">&quot;Windows&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第 2 步：战术归属</strong></p>
+<p><code>kill_chain_phases.phase_name = execution</code> → 对应战术 <strong>TA0002 Execution</strong>。</p>
+<p><strong>第 3 步：子技术（subtechnique-of）</strong></p>
+<p>T1059 共有 <strong>13</strong> 个子技术：</p>
+<table>
+<thead>
+<tr>
+<th>子技术 ID</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T1059.001</td>
+<td>PowerShell</td>
+</tr>
+<tr>
+<td>T1059.002</td>
+<td>AppleScript</td>
+</tr>
+<tr>
+<td>T1059.003</td>
+<td>Windows Command Shell</td>
+</tr>
+<tr>
+<td>T1059.004</td>
+<td>Unix Shell</td>
+</tr>
+<tr>
+<td>T1059.005</td>
+<td>Visual Basic</td>
+</tr>
+<tr>
+<td>T1059.006</td>
+<td>Python</td>
+</tr>
+<tr>
+<td>T1059.007</td>
+<td>JavaScript</td>
+</tr>
+<tr>
+<td>T1059.008</td>
+<td>Network Device CLI</td>
+</tr>
+<tr>
+<td>T1059.009</td>
+<td>Cloud API</td>
+</tr>
+<tr>
+<td>T1059.010</td>
+<td>AutoHotKey &amp; AutoIT</td>
+</tr>
+<tr>
+<td>T1059.011</td>
+<td>Lua</td>
+</tr>
+<tr>
+<td>T1059.012</td>
+<td>Hypervisor CLI</td>
+</tr>
+<tr>
+<td>T1059.013</td>
+<td>Container CLI&#x2F;API</td>
+</tr>
+</tbody></table>
+<p><strong>第 4 步：采用该技术的软件（uses，source&#x3D;malware&#x2F;tool）</strong></p>
+<p>共有 <strong>23</strong> 个软件 uses 了 T1059（展示前 12 个）：DarkComet、StarProxy、CHOPSTICK、Donut、FIVEHANDS、Matryoshka、Imminent Monitor、Kessel、ZeroCleare、gh0st RAT、P.A.S. Webshell、WINERACK。</p>
+<p><strong>第 5 步：采用该技术的威胁组织（uses，source&#x3D;intrusion-set）</strong></p>
+<p>共有 <strong>17</strong> 个组织 uses 了 T1059（展示前 12 个）：Fox Kitten、Stealth Falcon、Winter Vivern、FIN7、FIN6、FIN5、APT19、APT32、Dragonfly、Saint Bear、Whitefly、APT39。</p>
+<p><strong>第 6 步：缓解措施（mitigates）</strong></p>
+<p>共有 <strong>9</strong> 条缓解措施 mitigates T1059：</p>
+<table>
+<thead>
+<tr>
+<th>缓解措施</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Limit Software Installation</td>
+</tr>
+<tr>
+<td>Code Signing</td>
+</tr>
+<tr>
+<td>Disable or Remove Feature or Program</td>
+</tr>
+<tr>
+<td>Execution Prevention</td>
+</tr>
+<tr>
+<td>Antivirus&#x2F;Antimalware</td>
+</tr>
+<tr>
+<td>Privileged Account Management</td>
+</tr>
+<tr>
+<td>Audit</td>
+</tr>
+<tr>
+<td>Restrict Web-Based Content</td>
+</tr>
+<tr>
+<td>Behavior Prevention on Endpoint</td>
+</tr>
+</tbody></table>
+<p><strong>第 7 步：检测策略（detects）</strong></p>
+<p>共有 <strong>1</strong> 个检测策略 detects T1059：</p>
+<table>
+<thead>
+<tr>
+<th>检测策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Behavioral Detection of Command and Scripting Interpreter Abuse</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>通过这七个步骤，你可以从一个技术节点出发，完整重建它在 ATT&amp;CK 知识图谱中的上下文——这正是安全产品做”技术影响面分析”和”检测覆盖度评估”的基础。</p>
+</blockquote>
+<h3 id="5-3-废弃与撤销对象处理"><a href="#5-3-废弃与撤销对象处理" class="headerlink" title="5.3 废弃与撤销对象处理"></a>5.3 废弃与撤销对象处理</h3><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>字段</th>
+<th>处理方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Deprecated（废弃）</td>
+<td><code>x_mitre_deprecated: true</code></td>
+<td>该技术已不再推荐使用（合并或拆分）</td>
+</tr>
+<tr>
+<td>Revoked（撤销）</td>
+<td><code>revoked: true</code></td>
+<td>该 ID 已被撤销，通过 <code>revoked-by</code> 关系指向新对象</td>
+</tr>
+</tbody></table>
+<p><strong>处理建议</strong>：</p>
+<ol>
+<li>解析时过滤掉这两类对象，不展示给用户</li>
+<li>如需兼容旧 ID，通过 <code>revoked-by</code> 关系链映射到新 ID</li>
+<li>本文件有 157 个 <code>revoked-by</code> 关系</li>
+</ol>
+<h3 id="5-4-ATT-CK-矩阵可视化原理"><a href="#5-4-ATT-CK-矩阵可视化原理" class="headerlink" title="5.4 ATT&amp;CK 矩阵可视化原理"></a>5.4 ATT&amp;CK 矩阵可视化原理</h3><p>ATT&amp;CK 矩阵是一个二维表格：</p>
+<ul>
+<li><strong>列</strong>：战术（按 <code>x-mitre-matrix</code> 的 <code>tactic_refs</code> 顺序排列）</li>
+<li><strong>行</strong>：技术</li>
+<li><strong>单元格</strong>：属于该战术的技术</li>
+</ul>
+<p>构建步骤：</p>
+<ol>
+<li>获取 <code>x-mitre-matrix</code> 对象的 <code>tactic_refs</code> 数组，确定战术列顺序</li>
+<li>对每个技术，根据 <code>kill_chain_phases</code> 中的 <code>phase_name</code> 分配到对应战术列</li>
+<li>子技术显示在父技术下方（缩进）</li>
+<li>已废弃&#x2F;已撤销的对象不显示</li>
+</ol>
+<hr>
+<h2 id="六、速查表与常见坑"><a href="#六、速查表与常见坑" class="headerlink" title="六、速查表与常见坑"></a>六、速查表与常见坑</h2><h3 id="6-1-对象类型速查"><a href="#6-1-对象类型速查" class="headerlink" title="6.1 对象类型速查"></a>6.1 对象类型速查</h3><table>
+<thead>
+<tr>
+<th>type</th>
+<th>含义</th>
+<th align="right">有效&#x2F;总数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>x-mitre-tactic</code></td>
+<td>战术</td>
+<td align="right">15</td>
+</tr>
+<tr>
+<td><code>attack-pattern</code></td>
+<td>技术&#x2F;子技术</td>
+<td align="right">697 &#x2F; 858</td>
+</tr>
+<tr>
+<td><code>x-mitre-matrix</code></td>
+<td>矩阵</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td><code>course-of-action</code></td>
+<td>缓解措施</td>
+<td align="right">44 &#x2F; 268</td>
+</tr>
+<tr>
+<td><code>intrusion-set</code></td>
+<td>威胁组织</td>
+<td align="right">174 &#x2F; 189</td>
+</tr>
+<tr>
+<td><code>malware</code></td>
+<td>恶意软件</td>
+<td align="right">726 &#x2F; 729</td>
+</tr>
+<tr>
+<td><code>tool</code></td>
+<td>工具</td>
+<td align="right">95</td>
+</tr>
+<tr>
+<td><code>campaign</code></td>
+<td>战役</td>
+<td align="right">56</td>
+</tr>
+<tr>
+<td><code>x-mitre-data-source</code></td>
+<td>数据源</td>
+<td align="right">38</td>
+</tr>
+<tr>
+<td><code>x-mitre-data-component</code></td>
+<td>数据组件</td>
+<td align="right">109</td>
+</tr>
+<tr>
+<td><code>x-mitre-analytic</code></td>
+<td>分析逻辑</td>
+<td align="right">1,758</td>
+</tr>
+<tr>
+<td><code>x-mitre-detection-strategy</code></td>
+<td>检测策略</td>
+<td align="right">699</td>
+</tr>
+<tr>
+<td><code>x-mitre-collection</code></td>
+<td>集合元信息</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td><code>identity</code></td>
+<td>身份&#x2F;归属方</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td><code>marking-definition</code></td>
+<td>标记（TLP）</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td><code>relationship</code></td>
+<td>关系</td>
+<td align="right">21,025</td>
+</tr>
+</tbody></table>
+<h3 id="6-2-关系类型速查"><a href="#6-2-关系类型速查" class="headerlink" title="6.2 关系类型速查"></a>6.2 关系类型速查</h3><table>
+<thead>
+<tr>
+<th>relationship_type</th>
+<th>含义</th>
+<th align="right">数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>uses</code></td>
+<td>采用</td>
+<td align="right">18,220</td>
+</tr>
+<tr>
+<td><code>mitigates</code></td>
+<td>缓解</td>
+<td align="right">1,448</td>
+</tr>
+<tr>
+<td><code>detects</code></td>
+<td>检测</td>
+<td align="right">697</td>
+</tr>
+<tr>
+<td><code>subtechnique-of</code></td>
+<td>属于</td>
+<td align="right">477</td>
+</tr>
+<tr>
+<td><code>revoked-by</code></td>
+<td>被取代</td>
+<td align="right">157</td>
+</tr>
+<tr>
+<td><code>attributed-to</code></td>
+<td>归属</td>
+<td align="right">26</td>
+</tr>
+</tbody></table>
+<h3 id="6-3-ATT-CK-ID-前缀速查"><a href="#6-3-ATT-CK-ID-前缀速查" class="headerlink" title="6.3 ATT&amp;CK ID 前缀速查"></a>6.3 ATT&amp;CK ID 前缀速查</h3><table>
+<thead>
+<tr>
+<th>前缀</th>
+<th>对象类型</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TA</td>
+<td>战术</td>
+<td>TA0002 Execution</td>
+</tr>
+<tr>
+<td>T</td>
+<td>技术</td>
+<td>T1059 Command and Scripting Interpreter</td>
+</tr>
+<tr>
+<td>T.xxxx</td>
+<td>子技术</td>
+<td>T1059.001 PowerShell</td>
+</tr>
+<tr>
+<td>G</td>
+<td>组织</td>
+<td>G0007 APT28</td>
+</tr>
+<tr>
+<td>S</td>
+<td>软件</td>
+<td>S0002 PsExec</td>
+</tr>
+<tr>
+<td>C</td>
+<td>战役</td>
+<td>C0027</td>
+</tr>
+<tr>
+<td>M</td>
+<td>缓解措施</td>
+<td>M1049 Antivirus</td>
+</tr>
+<tr>
+<td>DS</td>
+<td>数据源</td>
+<td>DS0009 Process</td>
+</tr>
+</tbody></table>
+<h3 id="6-4-常见坑"><a href="#6-4-常见坑" class="headerlink" title="6.4 常见坑"></a>6.4 常见坑</h3><ol>
+<li><strong>务必过滤 <code>revoked</code> &#x2F; <code>x_mitre_deprecated</code></strong>：否则统计数字虚高（如原始 attack-pattern 858 个，过滤后仅 697 个有效）</li>
+<li><strong>STIX 版本是 2.1 不是 2.0</strong>：<code>enterprise-attack.json</code> 的 <code>spec_version</code> 为 <code>2.1</code></li>
+<li><strong>版本间改名&#x2F;新增</strong>：如 <code>defense-evasion</code> → <code>stealth</code>、新增 <code>TA0112 Defense Impairment</code>。不要硬编码战术名称或编号映射</li>
+<li><strong>关系方向</strong>：<code>source_ref</code> 和 <code>target_ref</code> 有方向，不要搞反（如 <code>uses</code> 的 source 是组织&#x2F;软件，target 是技术）</li>
+<li><strong>多战术归属</strong>：一个技术可能属于多个战术（<code>kill_chain_phases</code> 是数组），不要假设一对一关系</li>
+<li><strong>子技术平台可不同</strong>：子技术会继承父技术的一些属性，但平台等字段可能与父技术不同</li>
+<li><strong>官方数据无中文</strong>：STIX 导出仅含英文，中文翻译需依赖社区资源（如 <code>seccmd/Attack_CN</code> 项目）</li>
+<li><strong>HTML 清理</strong>：<code>description</code> 字段包含 HTML 标签，展示前需要清理</li>
+</ol>
+<hr>
+<p><em>基于 MITRE ATT&amp;CK Enterprise STIX 数据（spec_version 2.1）</em><br><em>数据来源：<a target="_blank" rel="noopener" href="https://github.com/mitre-attack/attack-stix-data">mitre-attack&#x2F;attack-stix-data</a></em></p>
+
+                
+            </div>
+            <footer class="article-footer"></footer>
+        </div>
+    </article>
 
     <article id="post-red-blue-purple-agent-comm" class="article article-type-post" itemscope itemprop="blogPost">
         <div class="article-inner">
@@ -453,7 +1630,7 @@ var _hmt = _hmt || [];
 </tr>
 <tr>
 <td><strong>C2 通信</strong></td>
-<td>红队 C2 服务器与被控 Agent 之间的指令流量，蓝队通过 DNS &#x2F; HTTP 日志捕获</td>
+<td>红队 C2 服务器与被控终端之间的指令流量，蓝队通过 DNS &#x2F; HTTP 日志捕获</td>
 <td>DNS &#x2F; HTTPS</td>
 </tr>
 </tbody></table>
@@ -6034,117 +7211,6 @@ var _hmt = _hmt || [];
         </div>
     </article>
 
-    <article id="post-why-pull-request-name" class="article article-type-post" itemscope itemprop="blogPost">
-        <div class="article-inner">
-            <header class="article-header">
-                <h1 itemprop="name">
-                    <a class="article-title" href="/blog/2026/05/why-pull-request-name.html">为什么新的代码更改叫 Pull Request？</a>
-                </h1>
-                <div class="article-meta">
-                    <div class="article-date">
-                        <i class="fa fa-calendar"></i>
-                        <a href="/blog/2026/05/why-pull-request-name.html">
-                            <time datetime="2026-05-20T02:00:00.000Z" itemprop="datePublished">2026-05-20</time>
-                        </a>
-                    </div>
-                    
-                    <div class="article-category">
-                        <i class="fa fa-folder"></i>
-                        
-                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><i class="fa fa-angle-right"></i>
-                        
-                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a>
-                        
-                    </div>
-                    
-                    
-                    <div class="article-tag">
-                        <i class="fa fa-tag"></i>
-                        
-                            <a class="tag-link" href="/blog/tags/Git/">Git</a>
-                        
-                            <a class="tag-link" href="/blog/tags/GitHub/">GitHub</a>
-                        
-                            <a class="tag-link" href="/blog/tags/Pull-Request/">Pull Request</a>
-                        
-                            <a class="tag-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/">版本控制</a>
-                        
-                            <a class="tag-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/">代码协作</a>
-                        
-                    </div>
-                    
-                </div>
-            </header>
-            <div class="article-entry" itemprop="articleBody">
-                
-                    <p>在 GitHub、GitLab 等平台上，每当我们要向项目提交代码变更时，操作的对象叫 <strong>Pull Request（PR）</strong>。  这个名字乍看有点反直觉——明明是我”推送”代码，为什么叫”拉取请求”？</p>
-<hr>
-<h2 id="一句话解释"><a href="#一句话解释" class="headerlink" title="一句话解释"></a>一句话解释</h2><blockquote>
-<p><strong>Pull Request 的意思是：我请求你（项目维护者）从我的仓库里”拉取”我刚刚推送的代码变更。</strong></p>
-</blockquote>
-<hr>
-<h2 id="为什么不是-“Push-Request”？"><a href="#为什么不是-“Push-Request”？" class="headerlink" title="为什么不是 “Push Request”？"></a>为什么不是 “Push Request”？</h2><p>我们先用一张图看懂 Git 协作的基本模型：</p>
-<p><img src="/blog/images/Gemini_Generated_Image_fnavp4fnavp4fnav.png" alt="Git 协作模型示意图"></p>
-<blockquote>
-<p><em>图中展示了 Fork、Clone、Push、Pull Request、Merge 的基本流向</em></p>
-</blockquote>
-<h3 id="关键点拆解"><a href="#关键点拆解" class="headerlink" title="关键点拆解"></a>关键点拆解</h3><table>
-<thead>
-<tr>
-<th>角色</th>
-<th>动作</th>
-<th>权限</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>普通开发者</td>
-<td>Fork + Clone + Push（到自己的远程仓库）</td>
-<td>只有自己仓库的写权限</td>
-</tr>
-<tr>
-<td>项目维护者</td>
-<td>Pull（从你的仓库拉取） + Merge</td>
-<td>拥有主仓库的写权限</td>
-</tr>
-</tbody></table>
-<p><strong>Pull Request 的本质是一个”请求”</strong>：</p>
-<blockquote>
-<p>“我无权直接改主仓库，请你（维护者）执行 <code>git pull</code> 把我的改动合进去。”</p>
-</blockquote>
-<p>如果把”拉取请求”改成 <strong>“推送请求（Push Request）”</strong>，语义会变成：  </p>
-<blockquote>
-<p>“请求获得直接向主仓库推送的权限”  </p>
-</blockquote>
-<p>但这并不是代码评审流程的真实情况。</p>
-<hr>
-<h2 id="一次完整-Pull-Request-的动作拆解"><a href="#一次完整-Pull-Request-的动作拆解" class="headerlink" title="一次完整 Pull Request 的动作拆解"></a>一次完整 Pull Request 的动作拆解</h2><p>下面这张图展示了从本地修改到 PR 合并的全过程：</p>
-<p><img src="/blog/images/Gemini_Generated_Image_on38eqon38eqon38.png" alt="PR 工作流程图"></p>
-<h3 id="分步说明"><a href="#分步说明" class="headerlink" title="分步说明"></a>分步说明</h3><ol>
-<li><strong>Fork</strong> 主仓库 → 获得自己的远程副本  </li>
-<li><strong>Clone</strong> 到本地 → 创建分支并写代码  </li>
-<li><strong>Push</strong> → 把新分支推送到<strong>自己的远程仓库</strong>  </li>
-<li>打开 GitHub → 点击 <strong>New Pull Request</strong>  </li>
-<li>系统自动比较：  <ul>
-<li>基础分支：主仓库的 <code>main</code>  </li>
-<li>对比分支：你仓库的 <code>feature-x</code></li>
-</ul>
-</li>
-<li>你发出请求 → 维护者看到 <strong>“有人请求我拉取他的代码”</strong>  </li>
-<li>维护者执行合并（<code>git pull</code> 或点击 Merge）</li>
-</ol>
-<hr>
-<h2 id="为什么这个命名是合理的？"><a href="#为什么这个命名是合理的？" class="headerlink" title="为什么这个命名是合理的？"></a>为什么这个命名是合理的？</h2><h3 id="从-Git-命令角度理解"><a href="#从-Git-命令角度理解" class="headerlink" title="从 Git 命令角度理解"></a>从 Git 命令角度理解</h3><p>如果维护者在命令行手动合并一个 PR，他会这样做：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout main</span><br><span class="line">git pull https://github.com/你的用户名/你的仓库.git feature-x</span><br></pre></td></tr></table></figure>
-
-<p>你看，动作正是 pull——拉取别人的远程分支到自己的本地仓库。</p>
-<p>因此，Pull Request 准确描述了维护者将要执行的操作，而不是贡献者的动作。</p>
-
-                
-            </div>
-            <footer class="article-footer"></footer>
-        </div>
-    </article>
-
 </section>
 
 <nav id="page-nav">
@@ -6161,6 +7227,18 @@ var _hmt = _hmt || [];
         <h3 class="widget-title">最新文章</h3>
         <div class="widget">
             <ul id="recent-post" class="">
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/07/mitre-attack-stix-guide.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/07/mitre-attack-stix-guide.html" class="title">MITRE ATT&amp;CK Enterprise STIX 数据详解</a></p>
+                            <p class="item-date"><time datetime="2026-07-15T12:00:00.000Z">2026-07-15</time></p>
+                        </div>
+                    </li>
                 
                     <li>
                         <div class="item-thumbnail">
@@ -6210,18 +7288,6 @@ var _hmt = _hmt || [];
                         </div>
                     </li>
                 
-                    <li>
-                        <div class="item-thumbnail">
-                            <a href="/blog/2026/06/deepagents-code-audit.html" class="thumbnail">
-                                <span class="thumbnail-image thumbnail-none"></span>
-                            </a>
-                        </div>
-                        <div class="item-inner">
-                            <p class="item-title"><a href="/blog/2026/06/deepagents-code-audit.html" class="title">DeepAgents 快速入门</a></p>
-                            <p class="item-date"><time datetime="2026-06-30T02:00:00.000Z">2026-06-30</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -6230,7 +7296,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/">博客</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/">骑行</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/%E8%A3%85%E5%A4%87/">装备</a><span class="category-list-count">1</span></li></ul></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/">博客</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/">骑行</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/%E8%A3%85%E5%A4%87/">装备</a><span class="category-list-count">1</span></li></ul></li></ul>
         </div>
     </div>
 
@@ -6238,7 +7304,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/07/">七月 2026</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/06/">六月 2026</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/05/">五月 2026</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/07/">七月 2026</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/06/">六月 2026</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/05/">五月 2026</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -6246,7 +7312,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">标签</h3>
         <div class="widget">
-            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/A2A/" rel="tag">A2A</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/AI-Coding/" rel="tag">AI Coding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ATT-CK/" rel="tag">ATT&amp;CK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent/" rel="tag">Agent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" rel="tag">Agent开发</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" rel="tag">C2框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DeepAgents/" rel="tag">DeepAgents</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub/" rel="tag">GitHub</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub-Pages/" rel="tag">GitHub Pages</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HTTP/" rel="tag">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" rel="tag">Loop工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCP/" rel="tag">MCP</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Prompt/" rel="tag">Prompt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pull-Request/" rel="tag">Pull Request</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Python/" rel="tag">Python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/RAG/" rel="tag">RAG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ReAct/" rel="tag">ReAct</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/SRAM/" rel="tag">SRAM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/STIX/" rel="tag">STIX</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skill/" rel="tag">Skill</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skills/" rel="tag">Skills</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Superpowers/" rel="tag">Superpowers</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/TDD/" rel="tag">TDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Tool-Calling/" rel="tag">Tool Calling</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Workflow/" rel="tag">Workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" rel="tag">上下文工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" rel="tag">代码协作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">代码审计</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" rel="tag">公路车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%9D%8E%E6%99%AE/" rel="tag">坎普</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" rel="tag">威胁情报</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" rel="tag">安全运营</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="tag">应急响应</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" rel="tag">折叠车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="tag">漏洞挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" rel="tag">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" rel="tag">红蓝对抗</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" rel="tag">网安业务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E9%A3%8E%E8%A1%8C/" rel="tag">风行</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/A2A/" rel="tag">A2A</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/AI-Coding/" rel="tag">AI Coding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ATT-CK/" rel="tag">ATT&amp;CK</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent/" rel="tag">Agent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" rel="tag">Agent开发</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" rel="tag">C2框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DeepAgents/" rel="tag">DeepAgents</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub/" rel="tag">GitHub</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub-Pages/" rel="tag">GitHub Pages</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HTTP/" rel="tag">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" rel="tag">Loop工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCP/" rel="tag">MCP</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MITRE/" rel="tag">MITRE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Prompt/" rel="tag">Prompt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pull-Request/" rel="tag">Pull Request</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Python/" rel="tag">Python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/RAG/" rel="tag">RAG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ReAct/" rel="tag">ReAct</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/SRAM/" rel="tag">SRAM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/STIX/" rel="tag">STIX</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skill/" rel="tag">Skill</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skills/" rel="tag">Skills</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Superpowers/" rel="tag">Superpowers</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/TDD/" rel="tag">TDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Tool-Calling/" rel="tag">Tool Calling</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Workflow/" rel="tag">Workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" rel="tag">上下文工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" rel="tag">代码协作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">代码审计</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" rel="tag">公路车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%9D%8E%E6%99%AE/" rel="tag">坎普</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" rel="tag">威胁情报</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" rel="tag">安全运营</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="tag">应急响应</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" rel="tag">折叠车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="tag">漏洞挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" rel="tag">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" rel="tag">红蓝对抗</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" rel="tag">网安业务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag">网络安全</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E9%A3%8E%E8%A1%8C/" rel="tag">风行</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -6254,7 +7320,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">标签云</h3>
         <div class="widget tagcloud">
-            <a href="/blog/tags/A2A/" style="font-size: 13px;">A2A</a> <a href="/blog/tags/AI-Coding/" style="font-size: 13px;">AI Coding</a> <a href="/blog/tags/ATT-CK/" style="font-size: 13px;">ATT&CK</a> <a href="/blog/tags/Agent/" style="font-size: 14.75px;">Agent</a> <a href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" style="font-size: 18.25px;">Agent开发</a> <a href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">C2框架</a> <a href="/blog/tags/DeepAgents/" style="font-size: 13px;">DeepAgents</a> <a href="/blog/tags/Git/" style="font-size: 13px;">Git</a> <a href="/blog/tags/GitHub/" style="font-size: 13px;">GitHub</a> <a href="/blog/tags/GitHub-Pages/" style="font-size: 13px;">GitHub Pages</a> <a href="/blog/tags/HTTP/" style="font-size: 13px;">HTTP</a> <a href="/blog/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">Loop工程</a> <a href="/blog/tags/MCP/" style="font-size: 20px;">MCP</a> <a href="/blog/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/blog/tags/Prompt/" style="font-size: 13px;">Prompt</a> <a href="/blog/tags/Pull-Request/" style="font-size: 13px;">Pull Request</a> <a href="/blog/tags/Python/" style="font-size: 14.75px;">Python</a> <a href="/blog/tags/RAG/" style="font-size: 13px;">RAG</a> <a href="/blog/tags/ReAct/" style="font-size: 14.75px;">ReAct</a> <a href="/blog/tags/SRAM/" style="font-size: 13px;">SRAM</a> <a href="/blog/tags/STIX/" style="font-size: 13px;">STIX</a> <a href="/blog/tags/Skill/" style="font-size: 13px;">Skill</a> <a href="/blog/tags/Skills/" style="font-size: 14.75px;">Skills</a> <a href="/blog/tags/Superpowers/" style="font-size: 13px;">Superpowers</a> <a href="/blog/tags/TDD/" style="font-size: 13px;">TDD</a> <a href="/blog/tags/Token/" style="font-size: 13px;">Token</a> <a href="/blog/tags/Tool-Calling/" style="font-size: 16.5px;">Tool Calling</a> <a href="/blog/tags/Workflow/" style="font-size: 13px;">Workflow</a> <a href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">上下文工程</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" style="font-size: 13px;">代码协作</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" style="font-size: 16.5px;">代码审计</a> <a href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" style="font-size: 13px;">公路车</a> <a href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 13px;">博客搭建</a> <a href="/blog/tags/%E5%9D%8E%E6%99%AE/" style="font-size: 13px;">坎普</a> <a href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" style="font-size: 14.75px;">威胁情报</a> <a href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" style="font-size: 14.75px;">安全运营</a> <a href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" style="font-size: 14.75px;">应急响应</a> <a href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" style="font-size: 13px;">折叠车</a> <a href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 14.75px;">渗透测试</a> <a href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" style="font-size: 14.75px;">漏洞挖掘</a> <a href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="font-size: 13px;">版本控制</a> <a href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" style="font-size: 14.75px;">红蓝对抗</a> <a href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" style="font-size: 14.75px;">网安业务</a> <a href="/blog/tags/%E9%A3%8E%E8%A1%8C/" style="font-size: 13px;">风行</a>
+            <a href="/blog/tags/A2A/" style="font-size: 13px;">A2A</a> <a href="/blog/tags/AI-Coding/" style="font-size: 13px;">AI Coding</a> <a href="/blog/tags/ATT-CK/" style="font-size: 14.75px;">ATT&CK</a> <a href="/blog/tags/Agent/" style="font-size: 14.75px;">Agent</a> <a href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" style="font-size: 18.25px;">Agent开发</a> <a href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">C2框架</a> <a href="/blog/tags/DeepAgents/" style="font-size: 13px;">DeepAgents</a> <a href="/blog/tags/Git/" style="font-size: 13px;">Git</a> <a href="/blog/tags/GitHub/" style="font-size: 13px;">GitHub</a> <a href="/blog/tags/GitHub-Pages/" style="font-size: 13px;">GitHub Pages</a> <a href="/blog/tags/HTTP/" style="font-size: 13px;">HTTP</a> <a href="/blog/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">Loop工程</a> <a href="/blog/tags/MCP/" style="font-size: 20px;">MCP</a> <a href="/blog/tags/MITRE/" style="font-size: 13px;">MITRE</a> <a href="/blog/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/blog/tags/Prompt/" style="font-size: 13px;">Prompt</a> <a href="/blog/tags/Pull-Request/" style="font-size: 13px;">Pull Request</a> <a href="/blog/tags/Python/" style="font-size: 14.75px;">Python</a> <a href="/blog/tags/RAG/" style="font-size: 13px;">RAG</a> <a href="/blog/tags/ReAct/" style="font-size: 14.75px;">ReAct</a> <a href="/blog/tags/SRAM/" style="font-size: 13px;">SRAM</a> <a href="/blog/tags/STIX/" style="font-size: 14.75px;">STIX</a> <a href="/blog/tags/Skill/" style="font-size: 13px;">Skill</a> <a href="/blog/tags/Skills/" style="font-size: 14.75px;">Skills</a> <a href="/blog/tags/Superpowers/" style="font-size: 13px;">Superpowers</a> <a href="/blog/tags/TDD/" style="font-size: 13px;">TDD</a> <a href="/blog/tags/Token/" style="font-size: 13px;">Token</a> <a href="/blog/tags/Tool-Calling/" style="font-size: 16.5px;">Tool Calling</a> <a href="/blog/tags/Workflow/" style="font-size: 13px;">Workflow</a> <a href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">上下文工程</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" style="font-size: 13px;">代码协作</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" style="font-size: 16.5px;">代码审计</a> <a href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" style="font-size: 13px;">公路车</a> <a href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 13px;">博客搭建</a> <a href="/blog/tags/%E5%9D%8E%E6%99%AE/" style="font-size: 13px;">坎普</a> <a href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" style="font-size: 16.5px;">威胁情报</a> <a href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" style="font-size: 14.75px;">安全运营</a> <a href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" style="font-size: 14.75px;">应急响应</a> <a href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" style="font-size: 13px;">折叠车</a> <a href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 14.75px;">渗透测试</a> <a href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" style="font-size: 14.75px;">漏洞挖掘</a> <a href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="font-size: 13px;">版本控制</a> <a href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" style="font-size: 14.75px;">红蓝对抗</a> <a href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" style="font-size: 14.75px;">网安业务</a> <a href="/blog/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" style="font-size: 13px;">网络安全</a> <a href="/blog/tags/%E9%A3%8E%E8%A1%8C/" style="font-size: 13px;">风行</a>
         </div>
     </div>
 
