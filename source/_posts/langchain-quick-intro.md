@@ -18,7 +18,7 @@ tags:
 
 ## 一、LangChain 是什么
 
-**[LangChain](https://github.com/langchain-ai/langchain) 是 LLM 应用的"标准库"**——把大模型调用、Prompt 模板、工具定义、文档检索、输出解析统一为可组合的组件，让你不用每次都从零写胶水代码。
+**[LangChain](https://github.com/langchain-ai/langchain) 是 LLM 应用的"标准库"** —— 把大模型调用、Prompt 模板、工具定义、文档检索、输出解析统一为可组合的组件，让你不用每次都从零写胶水代码。
 
 如果你用纯 Python 写 Agent ，需要自己处理：
 - OpenAI / Anthropic API 的调用封装
@@ -31,26 +31,13 @@ LangChain 把这些全部抽象成了**统一接口**，每个环节都是可插
 
 ### 1.1 LangChain 在 [langchain-ai](https://github.com/langchain-ai) 生态中的位置
 
-```
-┌──────────────────────────────────────────────────────┐
-│  LangChain（create_agent：高层 API，入门首选）           │
-│  ──────────────────────────────────────────────────  │
-│  LangGraph（底层运行时：StateGraph，需要自定义时用）      │
-├──────────────────────────────────────────────────────┤
-│  LangSmith（可观测性、评估、监控，贯穿全链路）            │
-├──────────────────────────────────────────────────────┤
-│  DeepAgents（batteries-included：预装文件系统/子Agent）  │
-└──────────────────────────────────────────────────────┘
-```
-
-> LangChain 的 `create_agent` 底层就是 LangGraph 运行时，传入 `checkpointer` 即可获得持久化、流式输出、Human-in-the-Loop 等能力。
 
 | 层 | 职责 | 覆盖文章 |
 |----|------|--------|
 | LangChain | `create_agent` 高层 API + LLM/Prompt/Tool 标准组件 | 本篇 |
 | LangGraph | 用状态图编排 Agent Loop 和多 Agent 协作 | 下一篇 |
 | LangSmith | Trace、评估、监控 | 第六章 |
-| [DeepAgents](https://docs.langchain.com/oss/python/deepagents/overview/) | 预装文件系统、子 Agent、上下文压缩的 batteries-included 底盘 | 再下一篇 |
+| DeepAgents | 预装文件系统、子 Agent、上下文压缩的 batteries-included 底盘 | 再下一篇 |
 
 ### 1.2 2026 年模块化架构
 
@@ -65,17 +52,15 @@ LangChain 已经从"大一统包"拆分为模块化架构：
 | `langchain-text-splitters` | 文本分割器（RAG 分块用） |
 | `langchain-community` | 社区贡献的集成（向量库、Loader 等） |
 
+> 旧版链式 API（`LLMChain`、`ConversationalRetrievalChain` 等）已迁移到 `langchain-classic` 包中作为兼容层维护，新开发请优先使用 `create_agent` 或 LCEL。
+
 ### 1.3 安装
 
 ```bash
 pip install langchain "langchain[openai]" langchain-community langchain-text-splitters
 # 可选：向量库（第四章 RAG 需要）
 pip install faiss-cpu
-# 可选：本地模型（Ollama）
-pip install langchain-ollama
 ```
-
-当前版本：`langchain-core` v1.5.x（2026 年 7 月）。LangChain 与 LangGraph 于 2025 年 10 月联合发布 1.0 GA。
 
 ### 1.4 核心设计哲学：Runnable 接口
 
@@ -87,8 +72,6 @@ LangChain 的一切组件（LLM、Prompt、Parser、Retriever、Tool）都实现
 | `ainvoke(input)` | 异步调用 |
 | `batch(inputs)` | 批量调用 |
 | `stream(input)` | 流式输出 |
-
-写一个组件，自动获得四种运行模式——不需要手动实现。
 
 ---
 
@@ -366,27 +349,17 @@ print(result["messages"][-1].content)
 `create_agent` 通过 **middleware** 机制扩展 Agent 行为。LangChain 提供了多个内置 middleware：
 
 ```python
-from deepagents.middleware import FilesystemMiddleware, SummarizationMiddleware
-from deepagents.backends import StateBackend
+from langchain.agents.middleware import ModelRetryMiddleware, ToolRetryMiddleware, PIIMiddleware
 
-backend = StateBackend()
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[read_file, check_sql_injection],
     system_prompt="你是代码安全审计专家。",
     middleware=[
-        FilesystemMiddleware(backend=backend),              # 文件系统访问
-        SummarizationMiddleware(model="openai:gpt-4o", backend=backend),  # 上下文压缩
+        ModelRetryMiddleware(max_retries=3),   # 模型调用失败自动重试
+        ToolRetryMiddleware(max_retries=2),    # 工具调用失败自动重试
+        PIIMiddleware("email"),               # 自动脱敏邮件地址
     ],
-)
-
-# 模型层面的 Fallback：主模型不可用时切换
-# create_agent 支持传入 model_provider 动态选择
-agent_fallback = create_agent(
-    model="openai:gpt-4o",       # 主模型
-    # 如果 OpenAI 不可用，切换 model="anthropic:claude-sonnet-4-6"
-    tools=[read_file, check_sql_injection],
-    system_prompt="你是代码安全审计专家。",
 )
 ```
 
@@ -516,6 +489,7 @@ audit_agent = create_agent(
 - 每个漏洞包含：漏洞名称、CWE 编号、严重等级、文件位置、代码片段、攻击场景、修复代码
 - 按严重等级排序（严重 > 高危 > 中危 > 低危）
 - 最后给出审计摘要""",
+    response_format=AuditReport,  # 直接返回结构化审计报告
 )
 ```
 
@@ -525,7 +499,15 @@ audit_agent = create_agent(
 result = audit_agent.invoke({
     "messages": [{"role": "user", "content": "审计 ./src/api/auth.py 的安全性，生成完整审计报告"}]
 })
-print(result["messages"][-1].content)
+
+# response_format=AuditReport 使得结果直接是 Pydantic 对象
+report = result["structured_response"]  # AuditReport 对象
+print(f"文件：{report.file}")
+for finding in report.findings:
+    print(f"[{finding.severity}] {finding.vulnerability} ({finding.cwe_id})")
+    print(f"  位置：{finding.location}")
+    print(f"  修复：{finding.fix[:80]}...")
+print(f"\n摘要：{report.summary}")
 ```
 
 **运行日志**：
@@ -787,10 +769,10 @@ LangSmith 帮你看到：每次审计的完整调用链、每个工具的耗时�
 |------|------|
 | 模型 Fallback | 准备备用模型（如 `anthropic:claude-sonnet-4-6`），主模型不可用时切换 |
 | 成本追踪 | 通过 LangSmith 查看每次审计的 Token 消耗分布 |
-| Middleware | 使用内置 middleware 添加错误重试、防护栏、路由等 |
+| Middleware | 使用 `ModelRetryMiddleware`、`PIIMiddleware` 等内置 middleware 添加重试、脱敏、防护栏 |
 | 超时控制 | 在调用层设置超时，防止单次审计卡死 |
 | 沙箱执行 | 审计不可信代码时，使用 Docker 沙箱隔离 |
-| 检查点 | `create_agent` 底层自动支持 checkpointing，可恢复中断的审计 |
+| 检查点 | 传入 `checkpointer=InMemorySaver()` 启用 checkpointing，可恢复中断的审计 |
 
 ### 6.4 从 LangChain 到 LangGraph
 
