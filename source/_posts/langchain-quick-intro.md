@@ -9,19 +9,18 @@ tags:
   - LangChain
   - 代码审计
   - RAG
-  - Python
   - LangSmith
 ---
 
-> 本文是 Agent 开发系列的第三篇。前两篇分别讲了 [Agent 概念入门](/blog/2026/06/agent-quick-intro/) 和 [纯 Python 从零实现 Agent](/blog/2026/06/agent-dev-quick-intro/)。本篇切换到框架视角，用 LangChain 构建一个**代码安全审计 Agent**——自动检测 SQL 注入、XSS、硬编码凭据，并结合 RAG 注入漏洞知识库提升审计准确性。下一篇 [LangGraph 快速入门](/blog/2026/07/langgraph-quick-intro/) 将在此基础上引入多 Agent 图编排。
+> 本篇用 LangChain 构建一个**代码安全审计 Agent**——自动检测 SQL 注入、XSS、硬编码凭据，并结合 RAG 注入漏洞知识库提升审计准确性。下一篇 [LangGraph 快速入门](/blog/2026/07/langgraph-quick-intro/) 将在此基础上引入多 Agent 图编排。
 
 ---
 
 ## 一、LangChain 是什么
 
-**LangChain 是 LLM 应用的"标准库"**——把大模型调用、Prompt 模板、工具定义、文档检索、输出解析统一为可组合的组件，让你不用每次都从零写胶水代码。
+**[LangChain](https://github.com/langchain-ai/langchain) 是 LLM 应用的"标准库"**——把大模型调用、Prompt 模板、工具定义、文档检索、输出解析统一为可组合的组件，让你不用每次都从零写胶水代码。
 
-如果你用纯 Python 写 Agent（参考[上一篇](/blog/2026/06/agent-dev-quick-intro/)），需要自己处理：
+如果你用纯 Python 写 Agent ，需要自己处理：
 - OpenAI / Anthropic API 的调用封装
 - JSON Schema 工具定义
 - ReAct 循环控制
@@ -30,18 +29,28 @@ tags:
 
 LangChain 把这些全部抽象成了**统一接口**，每个环节都是可插拔的组件。
 
-### 1.1 LangChain 在 Agent 生态中的位置
+### 1.1 LangChain 在 [langchain-ai](https://github.com/langchain-ai) 生态中的位置
 
 ```
-LangChain（组件层）→ LangGraph（编排层）→ LangSmith（可观测层）→ DeepAgents（电池全装好的底盘）
+┌──────────────────────────────────────────────────────┐
+│  LangChain（create_agent：高层 API，入门首选）           │
+│  ──────────────────────────────────────────────────  │
+│  LangGraph（底层运行时：StateGraph，需要自定义时用）      │
+├──────────────────────────────────────────────────────┤
+│  LangSmith（可观测性、评估、监控，贯穿全链路）            │
+├──────────────────────────────────────────────────────┤
+│  DeepAgents（batteries-included：预装文件系统/子Agent）  │
+└──────────────────────────────────────────────────────┘
 ```
+
+> LangChain 的 `create_agent` 底层就是 LangGraph 运行时，自动获得持久化、流式输出、Human-in-the-Loop 等能力。
 
 | 层 | 职责 | 覆盖文章 |
-|----|------|---------|
-| LangChain | LLM 调用、Prompt、Tool、Retriever 等标准组件 | 本篇 |
+|----|------|--------|
+| LangChain | `create_agent` 高层 API + LLM/Prompt/Tool 标准组件 | 本篇 |
 | LangGraph | 用状态图编排 Agent Loop 和多 Agent 协作 | 下一篇 |
 | LangSmith | Trace、评估、监控 | 第六章 |
-| DeepAgents | 预装文件系统、子 Agent、上下文压缩 | 再下一篇 |
+| [DeepAgents](/oss/python/deepagents/overview/) | 预装文件系统、子 Agent、上下文压缩的 batteries-included 底盘 | 再下一篇 |
 
 ### 1.2 2026 年模块化架构
 
@@ -50,20 +59,23 @@ LangChain 已经从"大一统包"拆分为模块化架构：
 | 包名 | 职责 |
 |------|------|
 | `langchain-core` | 抽象接口层：Runnable、ChatModel、Tool 等基类定义 |
-| `langchain` | 实现层：Chain、Agent、Retriever 等组合逻辑 |
-| `langchain-openai` | OpenAI 模型适配（GPT-4o、o1 等） |
-| `langchain-anthropic` | Anthropic 模型适配（Claude 等） |
+| `langchain` | 实现层：`create_agent`、Chain、Retriever 等组合逻辑 |
+| `langchain-openai` | OpenAI 模型适配（GPT-5.5、o1 等） |
+| `langchain-anthropic` | Anthropic 模型适配（Claude Sonnet 4 等） |
+| `langchain-text-splitters` | 文本分割器（RAG 分块用） |
 | `langchain-community` | 社区贡献的集成（向量库、Loader 等） |
 
 ### 1.3 安装
 
 ```bash
-pip install langchain langchain-openai langchain-community
-# 可选：向量库（第五章 RAG 需要）
+pip install langchain "langchain[openai]" langchain-community langchain-text-splitters
+# 可选：向量库（第四章 RAG 需要）
 pip install faiss-cpu
+# 可选：本地模型（Ollama）
+pip install langchain-ollama
 ```
 
-当前版本：`langchain` v0.3.x（2026 年 6 月）。
+当前版本：`langchain-core` v1.5.x（2026 年 7 月）。LangChain 与 LangGraph 于 2025 年 10 月联合发布 1.0 GA。
 
 ### 1.4 核心设计哲学：Runnable 接口
 
@@ -281,98 +293,94 @@ print(response.tool_calls)
 # [{"name": "read_file", "args": {"path": "auth.py"}, "id": "call_xxx"}]
 ```
 
-### 3.2 构建完整 Agent
+### 3.2 构建完整 Agent（`create_agent`）
+
+LangChain 1.0 引入了 `create_agent` 作为 Agent 的高层 API（底层基于 LangGraph 运行时），取代了旧版的 `AgentExecutor`：
 
 ```python
-from langchain_openai import ChatOpenAI
-from langchain_core.tools import tool
-from langchain.agents import create_tool_calling_agent, AgentExecutor
-from langchain_core.prompts import ChatPromptTemplate
+from langchain.agents import create_agent
+from langchain.tools import tool
+import os
 
-# 创建 Prompt
-prompt = ChatPromptTemplate.from_messages([
-    ("system", """你是代码安全审计专家。
+@tool
+def read_file(path: str) -> str:
+    """读取指定路径的文件内容"""
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
+
+# create_agent：一行创建 Agent
+# model 使用 "provider:model" 格式，自动初始化模型
+agent = create_agent(
+    model="openai:gpt-4o",
+    tools=[read_file, check_sql_injection, check_hardcoded_secrets, check_xss],
+    system_prompt="""你是代码安全审计专家。
 使用工具读取代码文件，检测安全漏洞（SQL 注入、硬编码凭据、XSS）。
-对每个发现，给出漏洞名称、CWE 编号、严重等级和修复建议。"""),
-    ("human", "{input}"),
-    ("placeholder", "{agent_scratchpad}")  # Agent 的思考过程
-])
-
-# 工具列表
-tools = [read_file, check_sql_injection, check_hardcoded_secrets, check_xss]
-
-# 创建 Agent
-llm = ChatOpenAI(model="gpt-4o", temperature=0)
-agent = create_tool_calling_agent(llm, tools, prompt)
-
-# 包装为 Executor（负责运行 Agent 循环）
-executor = AgentExecutor(
-    agent=agent,
-    tools=tools,
-    verbose=True,  # 打印每一步执行日志
-    max_iterations=10  # 防止无限循环
+对每个发现，给出漏洞名称、CWE 编号、严重等级和修复建议。""",
 )
 
-# 运行审计
-result = executor.invoke({
-    "input": "审计 ./src/api/auth.py 的安全性，找出所有漏洞"
+# 运行审计（create_agent 底层是 LangGraph，自动获得持久化和流式能力）
+result = agent.invoke({
+    "messages": [{"role": "user", "content": "审计 ./src/api/auth.py 的安全性，找出所有漏洞"}]
 })
-print(result["output"])
+print(result["messages"][-1].content_blocks)
 ```
 
-**AgentExecutor 的 verbose 模式会打印每一步**：
+**运行日志**（LangGraph 运行时自动打印每一步）：
 
 ```
-> Entering new AgentExecutor chain...
-> Invoking: `read_file` with `{'path': './src/api/auth.py'}`
-> [文件内容返回]
-> Invoking: `check_sql_injection` with `{'code': '...'}`
-> 发现 1 处疑似 SQL 注入：f"SELECT * FROM users WHERE name='{username}'"...
-> Invoking: `check_hardcoded_secrets` with `{'code': '...'}`
-> 发现硬编码凭据：DATABASE_URL = "mysql://admin:MyP@ss...
-> 审计完成。发现 2 个漏洞：
-> 1. [严重] CWE-89 SQL 注入（auth.py:47）
-> 2. [严重] CWE-798 硬编码凭据（auth.py:12）
+[LLM] 决定调用 read_file
+  参数：{"path": "./src/api/auth.py"}
+[Tool] read_file 返回文件内容
+[LLM] 决定调用 check_sql_injection
+  参数：{"code": "..."}
+[Tool] 发现 1 处疑似 SQL 注入：f"SELECT * FROM users WHERE name='{username}'"...
+[LLM] 决定调用 check_hardcoded_secrets
+[Tool] 发现硬编码凭据：DATABASE_URL = "mysql://admin:MyP@ss...
+[LLM] 审计完成。发现 2 个漏洞：
+  1. [严重] CWE-89 SQL 注入（auth.py:47）
+  2. [严重] CWE-798 硬编码凭据（auth.py:12）
 ```
 
 ### 3.3 与纯 Python ReAct 循环对比
 
-| 维度 | 纯 Python ReAct | LangChain AgentExecutor |
+| 维度 | 纯 Python ReAct | LangChain `create_agent` |
 |------|----------------|------------------------|
-| 循环控制 | 手写 `while True` | 框架自动 |
+| 循环控制 | 手写 `while True` | LangGraph 运行时自动管理 |
 | Tool 结果注入 | 手动 append message | 自动 |
-| 上下文管理 | 手动截断 | 可配置 |
-| 错误恢复 | 手动 try/except | 内置重试 |
-| 最大迭代 | 手动计数器 | `max_iterations` 参数 |
-| 工具绑定 | 手动 JSON Schema | `bind_tools()` |
+| 状态持久化 | 手动实现 | 内置 checkpointing |
+| 人工介入（HITL） | 手动 `input()` | Human-in-the-loop 原生支持 |
+| 流式输出 | 手动处理 stream | `.stream()` 直接可用 |
+| 错误恢复 | 手动 try/except | 内置重试 + middleware |
+| 工具绑定 | 手动 JSON Schema | `@tool` 自动生成 |
 
-**一句话总结**：LangChain 帮你省了"循环控制 + 上下文管理 + 错误处理"这些胶水代码，让你专注于工具定义和业务逻辑。
+**一句话总结**：`create_agent` 底层就是 LangGraph 运行时，帮你省了"循环控制 + 上下文管理 + 错误处理 + 持久化"这些胶水代码，让你专注于工具定义和业务逻辑。
 
-### 3.4 错误处理：Fallback 机制
+### 3.4 错误处理：Middleware 与 Fallback
+
+`create_agent` 通过 **middleware** 机制扩展 Agent 行为（错误重试、防护栏、路由等）：
 
 ```python
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
+from langchain.agents import create_agent
 
-# 主模型 + 备用模型
-primary_llm = ChatOpenAI(model="gpt-4o")
-fallback_llm = ChatAnthropic(model="claude-sonnet-4-20250514")
+# 通过 middleware 添加错误重试、防护栏等
+agent = create_agent(
+    model="openai:gpt-4o",
+    tools=[read_file, check_sql_injection],
+    system_prompt="你是代码安全审计专家。",
+    middleware=[
+        # 伪码：内置 middleware 示例
+        # RetryMiddleware(max_retries=3)   → 工具调用失败自动重试
+        # GuardrailMiddleware(...)         → 输入/输出安全检查
+    ],
+)
 
-# with_fallbacks：主模型失败时自动切换到备用模型
-robust_llm = primary_llm.with_fallbacks([fallback_llm])
-
-# 工具也可以设置 fallback
-@tool
-def search_web_fallback(query: str) -> str:
-    """备用搜索工具"""
-    return "备用搜索结果..."
-
-# 在 AgentExecutor 中配置错误恢复
-executor = AgentExecutor(
-    agent=agent,
-    tools=tools,
-    handle_parsing_errors=True,  # 自动处理工具调用解析错误
-    max_iterations=10
+# 模型层面的 Fallback：主模型不可用时切换
+# create_agent 支持传入 model_provider 动态选择
+agent_fallback = create_agent(
+    model="openai:gpt-4o",       # 主模型
+    # 如果 OpenAI 不可用，切换 model="anthropic:claude-sonnet-4-6"
+    tools=[read_file, check_sql_injection],
+    system_prompt="你是代码安全审计专家。",
 )
 ```
 
@@ -456,6 +464,8 @@ def check_xss(code: str) -> str:
     return "\n".join(findings) if findings else "未发现 XSS 风险"
 ```
 
+> **免责声明**：本文正则仅用于演示 LangChain 工具定义，生产环境建议使用 [Semgrep](https://semgrep.dev/)、[Bandit](https://github.com/PyCQA/bandit) 等专业静态分析工具，或调用 CodeQL API。
+
 ### 4.3 定义结构化输出
 
 ```python
@@ -481,12 +491,13 @@ class AuditReport(BaseModel):
 ### 4.4 构建审计 Agent
 
 ```python
-from langchain_openai import ChatOpenAI
-from langchain.agents import create_tool_calling_agent, AgentExecutor
-from langchain_core.prompts import ChatPromptTemplate
+from langchain.agents import create_agent
 
-audit_prompt = ChatPromptTemplate.from_messages([
-    ("system", """你是资深代码安全审计专家，精通 OWASP Top 10 和 CWE 标准。
+# create_agent：用 system_prompt 定义审计流程
+audit_agent = create_agent(
+    model="openai:gpt-4o",
+    tools=[read_file, check_sql_injection, check_hardcoded_secrets, check_xss],
+    system_prompt="""你是资深代码安全审计专家，精通 OWASP Top 10 和 CWE 标准。
 
 审计流程：
 1. 使用 read_file 读取目标文件
@@ -496,48 +507,35 @@ audit_prompt = ChatPromptTemplate.from_messages([
 输出格式要求：
 - 每个漏洞包含：漏洞名称、CWE 编号、严重等级、文件位置、代码片段、攻击场景、修复代码
 - 按严重等级排序（严重 > 高危 > 中危 > 低危）
-- 最后给出审计摘要"""),
-    ("human", "{input}"),
-    ("placeholder", "{agent_scratchpad}")
-])
-
-tools = [read_file, check_sql_injection, check_hardcoded_secrets, check_xss]
-llm = ChatOpenAI(model="gpt-4o", temperature=0)
-
-agent = create_tool_calling_agent(llm, tools, audit_prompt)
-audit_executor = AgentExecutor(
-    agent=agent,
-    tools=tools,
-    verbose=True,
-    max_iterations=15
+- 最后给出审计摘要""",
 )
 ```
 
 ### 4.5 运行审计
 
 ```python
-result = audit_executor.invoke({
-    "input": "审计 ./src/api/auth.py 的安全性，生成完整审计报告"
+result = audit_agent.invoke({
+    "messages": [{"role": "user", "content": "审计 ./src/api/auth.py 的安全性，生成完整审计报告"}]
 })
-print(result["output"])
+print(result["messages"][-1].content_blocks)
 ```
 
 **运行日志**：
 
 ```
-> Entering new AgentExecutor chain...
-> Invoking: `read_file` with `{'path': './src/api/auth.py'}`
-> [返回文件内容]
-> Invoking: `check_sql_injection` with `{'code': '...'}`
-> 行 47：f-string 拼接 SQL
->   query = f"SELECT * FROM users WHERE username='{username}'"
-> Invoking: `check_hardcoded_secrets` with `{'code': '...'}`
-> 行 12：数据库连接串含明文密码
->   DATABASE_URL = "mysql://admin:MyP@ssw0rd123@localhost:3306/shopx"
-> Invoking: `check_xss` with `{'code': '...'}`
-> 未发现 XSS 风险
-
-审计报告生成完成：
+[LLM] 决定调用 read_file
+  参数：{"path": "./src/api/auth.py"}
+[Tool] read_file 返回文件内容
+[LLM] 决定调用 check_sql_injection
+  参数：{"code": "..."}
+[Tool] 行 47：f-string 拼接 SQL
+  query = f"SELECT * FROM users WHERE username='{username}'"
+[LLM] 决定调用 check_hardcoded_secrets
+[Tool] 行 12：数据库连接串含明文密码
+  DATABASE_URL = "mysql://admin:MyP@ssw0rd123@localhost:3306/shopx"
+[LLM] 决定调用 check_xss
+[Tool] 未发现 XSS 风险
+[LLM] 审计报告生成完成：
 ```
 
 ### 4.6 RAG 增强：注入漏洞知识库
@@ -603,7 +601,7 @@ answer = rag_audit_chain.invoke(
 
 ### 4.7 审计报告示例
 
-```markdown
+`````markdown
 # 代码安全审计报告
 
 文件：./src/api/auth.py | 审计时间：2026-06-30 | 代码行数：156
@@ -622,10 +620,12 @@ answer = rag_audit_chain.invoke(
 ### [严重] CWE-89 SQL 注入
 
 **位置**：auth.py:47
+
 **代码**：
 ```python
 query = f"SELECT * FROM users WHERE username='{username}'"
 ```
+
 **攻击场景**：攻击者输入 `' OR '1'='1` 可绕过认证，或输入 `' UNION SELECT * FROM admin--` 获取管理员数据。
 **修复**：
 ```python
@@ -660,7 +660,7 @@ except Exception as e:
     logger.error(f"认证失败：{e}")
     return {"error": "认证失败，请检查用户名和密码"}
 ```
-```
+`````
 
 ---
 
@@ -668,14 +668,22 @@ except Exception as e:
 
 ### 5.1 流式输出：实时显示审计进度
 
+`create_agent` 底层是 LangGraph 运行时，支持三种流式模式：
+
 ```python
-# stream：逐 Token 输出审计结果
-for chunk in audit_executor.stream({
-    "input": "审计 ./src/api/auth.py"
-}):
-    # chunk 包含每个节点的输出
-    if "agent" in chunk:
-        print(chunk["agent"]["messages"][-1].content, end="", flush=True)
+# stream_mode="updates"：每步输出状态增量
+for event in audit_agent.stream(
+    {"messages": [{"role": "user", "content": "审计 ./src/api/auth.py"}]},
+    stream_mode="updates"
+):
+    print(event)  # {"agent": {...}, "tools": {...}}
+
+# stream_mode="messages"：逐 Token 流式输出 LLM 生成
+for event in audit_agent.stream(
+    {"messages": [{"role": "user", "content": "审计 ./src/api/auth.py"}]},
+    stream_mode="messages"
+):
+    print(event)  # (AIMessageChunk, metadata)
 ```
 
 ### 5.2 批处理：审计多个文件
@@ -686,20 +694,20 @@ import glob
 # 获取目录下所有 Python 文件
 py_files = glob.glob("./src/api/**/*.py", recursive=True)
 
-# 批量审计
+# 批量审计（每个文件独立调用）
 audit_tasks = [
-    {"input": f"审计 {f} 的安全性，列出所有漏洞"}
+    {"messages": [{"role": "user", "content": f"审计 {f} 的安全性，列出所有漏洞"}]}
     for f in py_files
 ]
 
 # batch：并发审计多个文件
-results = audit_executor.batch(audit_tasks)
+results = audit_agent.batch(audit_tasks)
 
 # 汇总结果
-for task, result in zip(audit_tasks, results):
+for f, result in zip(py_files, results):
     print(f"\n{'='*50}")
-    print(f"文件：{task['input']}")
-    print(result["output"])
+    print(f"文件：{f}")
+    print(result["messages"][-1].content_blocks)
 ```
 
 ### 5.3 异步并发审计
@@ -709,7 +717,7 @@ import asyncio
 
 async def audit_all_files():
     # 异步批量审计
-    results = await audit_executor.abatch(audit_tasks)
+    results = await audit_agent.abatch(audit_tasks)
     return results
 
 # 运行
@@ -734,12 +742,12 @@ results = asyncio.run(audit_all_files())
 
 ```python
 import os
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_API_KEY"] = "your-api-key"
-os.environ["LANGCHAIN_PROJECT"] = "code-audit-agent"
+os.environ["LANGSMITH_TRACING"] = "true"  # 或 "LANGCHAIN_TRACING_V2"
+os.environ["LANGSMITH_API_KEY"] = "your-api-key"
+os.environ["LANGSMITH_PROJECT"] = "code-audit-agent"
 
 # 代码完全不用改——LangChain 自动检测环境变量并上报
-audit_executor.invoke({"input": "审计 auth.py"})
+audit_agent.invoke({"messages": [{"role": "user", "content": "审计 auth.py"}]})
 ```
 
 ### 6.2 Trace 示例
@@ -770,27 +778,27 @@ LangSmith 帮你看到：每次审计的完整调用链、每个工具的耗时�
 
 | 维度 | 建议 |
 |------|------|
-| Fallback 模型 | `primary_llm.with_fallbacks([fallback_llm])` 防止单点故障 |
-| 成本追踪 | 在 AgentExecutor 外层包装 CostTracker（参考 DeepAgents 文章） |
-| 错误重试 | `handle_parsing_errors=True` 自动处理工具调用解析错误 |
-| 超时控制 | `max_execution_time=120` 防止单次审计超时 |
-| 最大迭代 | `max_iterations=15` 防止无限循环 |
+| 模型 Fallback | 准备备用模型（如 `anthropic:claude-sonnet-4-6`），主模型不可用时切换 |
+| 成本追踪 | 通过 LangSmith 查看每次审计的 Token 消耗分布 |
+| Middleware | 使用内置 middleware 添加错误重试、防护栏、路由等 |
+| 超时控制 | 在调用层设置超时，防止单次审计卡死 |
 | 沙箱执行 | 审计不可信代码时，使用 Docker 沙箱隔离 |
+| 检查点 | `create_agent` 底层自动支持 checkpointing，可恢复中断的审计 |
 
 ### 6.4 从 LangChain 到 LangGraph
 
-LangChain 的 `AgentExecutor` 是**单 Agent 串行执行**。当你需要：
+LangChain 的 `create_agent` 是**单 Agent**（底层是 LangGraph 运行时）。当你需要：
 - 多个 Agent 并行扫描不同目录
 - Supervisor 统一调度专业 Agent
 - 审计中途暂停等待人工确认
 
-——就需要 **LangGraph** 来编排。
+——就需要直接使用 **LangGraph** 的 `StateGraph` 来编排。
 
 [下一篇](/blog/2026/07/langgraph-quick-intro/)将用 LangGraph 构建一个**多 Agent 代码审计系统**：Supervisor + Searcher + Auditor + Reporter，支持 Human-in-the-Loop 和状态持久化。
 
 ---
 
 > **选型总结**：
-> - **单文件审计**（工具调用 + RAG）→ LangChain 足够
+> - **单文件审计**（工具调用 + RAG）→ LangChain `create_agent` 足够
 > - **多目录并行审计**（多 Agent 编排）→ LangGraph
-> - **完整项目审计**（预装一切）→ DeepAgents
+> - **完整项目审计**（预装一切）→ [DeepAgents](https://docs.langchain.com/oss/python/deepagents/overview/)
