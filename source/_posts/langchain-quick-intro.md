@@ -43,14 +43,14 @@ LangChain 把这些全部抽象成了**统一接口**，每个环节都是可插
 └──────────────────────────────────────────────────────┘
 ```
 
-> LangChain 的 `create_agent` 底层就是 LangGraph 运行时，自动获得持久化、流式输出、Human-in-the-Loop 等能力。
+> LangChain 的 `create_agent` 底层就是 LangGraph 运行时，传入 `checkpointer` 即可获得持久化、流式输出、Human-in-the-Loop 等能力。
 
 | 层 | 职责 | 覆盖文章 |
 |----|------|--------|
 | LangChain | `create_agent` 高层 API + LLM/Prompt/Tool 标准组件 | 本篇 |
 | LangGraph | 用状态图编排 Agent Loop 和多 Agent 协作 | 下一篇 |
 | LangSmith | Trace、评估、监控 | 第六章 |
-| [DeepAgents](/oss/python/deepagents/overview/) | 预装文件系统、子 Agent、上下文压缩的 batteries-included 底盘 | 再下一篇 |
+| [DeepAgents](https://docs.langchain.com/oss/python/deepagents/overview/) | 预装文件系统、子 Agent、上下文压缩的 batteries-included 底盘 | 再下一篇 |
 
 ### 1.2 2026 年模块化架构
 
@@ -146,7 +146,7 @@ messages = audit_prompt.invoke({
 ### 2.3 @tool 装饰器：工具定义
 
 ```python
-from langchain_core.tools import tool
+from langchain.tools import tool
 
 @tool
 def check_sql_injection(code: str) -> str:
@@ -257,7 +257,7 @@ results = chain.batch([
 LangChain 的 Tool Calling 利用模型原生的 function calling 能力：
 
 ```python
-from langchain_core.tools import tool
+from langchain.tools import tool
 from langchain_openai import ChatOpenAI
 
 @tool
@@ -283,7 +283,8 @@ def check_hardcoded_secrets(code: str) -> str:
             findings.append(f"发现硬编码凭据：{matches[0][:30]}...")
     return "\n".join(findings) if findings else "未发现硬编码凭据"
 
-# 绑定工具到模型
+# 绑定工具到模型——适合精细控制工具调用过程（如自定义 ReAct 循环、调试工具选择逻辑）
+# 日常开发中，直接使用 create_agent 即可，它会自动完成工具绑定和循环管理
 llm = ChatOpenAI(model="gpt-4o")
 llm_with_tools = llm.bind_tools([read_file, check_hardcoded_secrets, check_sql_injection])
 
@@ -310,19 +311,24 @@ def read_file(path: str) -> str:
 
 # create_agent：一行创建 Agent
 # model 使用 "provider:model" 格式，自动初始化模型
+# checkpointer=InMemorySaver() 启用对话记忆，同一 thread_id 的调用自动恢复上下文
+from langgraph.checkpoint.memory import InMemorySaver
+
 agent = create_agent(
     model="openai:gpt-4o",
-    tools=[read_file, check_sql_injection, check_hardcoded_secrets, check_xss],
+    tools=[read_file, check_sql_injection, check_hardcoded_secrets],  # check_xss 将在第四章定义
     system_prompt="""你是代码安全审计专家。
 使用工具读取代码文件，检测安全漏洞（SQL 注入、硬编码凭据、XSS）。
 对每个发现，给出漏洞名称、CWE 编号、严重等级和修复建议。""",
+    checkpointer=InMemorySaver(),
 )
 
 # 运行审计（create_agent 底层是 LangGraph，自动获得持久化和流式能力）
-result = agent.invoke({
-    "messages": [{"role": "user", "content": "审计 ./src/api/auth.py 的安全性，找出所有漏洞"}]
-})
-print(result["messages"][-1].content_blocks)
+result = agent.invoke(
+    {"messages": [{"role": "user", "content": "审计 ./src/api/auth.py 的安全性，找出所有漏洞"}]},
+    config={"configurable": {"thread_id": "audit-session-1"}},
+)
+print(result["messages"][-1].content)
 ```
 
 **运行日志**（LangGraph 运行时自动打印每一步）：
@@ -357,20 +363,20 @@ print(result["messages"][-1].content_blocks)
 
 ### 3.4 错误处理：Middleware 与 Fallback
 
-`create_agent` 通过 **middleware** 机制扩展 Agent 行为（错误重试、防护栏、路由等）：
+`create_agent` 通过 **middleware** 机制扩展 Agent 行为。LangChain 提供了多个内置 middleware：
 
 ```python
-from langchain.agents import create_agent
+from deepagents.middleware import FilesystemMiddleware, SummarizationMiddleware
+from deepagents.backends import StateBackend
 
-# 通过 middleware 添加错误重试、防护栏等
+backend = StateBackend()
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[read_file, check_sql_injection],
     system_prompt="你是代码安全审计专家。",
     middleware=[
-        # 伪码：内置 middleware 示例
-        # RetryMiddleware(max_retries=3)   → 工具调用失败自动重试
-        # GuardrailMiddleware(...)         → 输入/输出安全检查
+        FilesystemMiddleware(backend=backend),              # 文件系统访问
+        SummarizationMiddleware(model="openai:gpt-4o", backend=backend),  # 上下文压缩
     ],
 )
 
@@ -400,7 +406,7 @@ agent_fallback = create_agent(
 ### 4.2 定义审计工具
 
 ```python
-from langchain_core.tools import tool
+from langchain.tools import tool
 import re
 import os
 
@@ -488,6 +494,8 @@ class AuditReport(BaseModel):
     summary: str = Field(description="审计摘要")
 ```
 
+> 在 `create_agent` 中，可以通过 `response_format=AuditReport` 让模型直接返回结构化对象（通过 `result["structured_response"]` 访问），省去手动解析步骤。
+
 ### 4.4 构建审计 Agent
 
 ```python
@@ -517,7 +525,7 @@ audit_agent = create_agent(
 result = audit_agent.invoke({
     "messages": [{"role": "user", "content": "审计 ./src/api/auth.py 的安全性，生成完整审计报告"}]
 })
-print(result["messages"][-1].content_blocks)
+print(result["messages"][-1].content)
 ```
 
 **运行日志**：
@@ -671,19 +679,18 @@ except Exception as e:
 `create_agent` 底层是 LangGraph 运行时，支持三种流式模式：
 
 ```python
-# stream_mode="updates"：每步输出状态增量
-for event in audit_agent.stream(
+# stream_events：实时输出 Agent 执行过程（推荐方式）
+stream = audit_agent.stream_events(
     {"messages": [{"role": "user", "content": "审计 ./src/api/auth.py"}]},
-    stream_mode="updates"
-):
-    print(event)  # {"agent": {...}, "tools": {...}}
-
-# stream_mode="messages"：逐 Token 流式输出 LLM 生成
-for event in audit_agent.stream(
-    {"messages": [{"role": "user", "content": "审计 ./src/api/auth.py"}]},
-    stream_mode="messages"
-):
-    print(event)  # (AIMessageChunk, metadata)
+    version="v3",
+)
+for snapshot in stream.values:
+    # 每个 snapshot 包含当前状态的完整信息
+    latest_message = snapshot["messages"][-1]
+    if latest_message.content:
+        print(latest_message.content[:100])  # 截断显示
+    elif latest_message.tool_calls:
+        print(f"调用工具: {[tc['name'] for tc in latest_message.tool_calls]}")
 ```
 
 ### 5.2 批处理：审计多个文件
@@ -707,7 +714,7 @@ results = audit_agent.batch(audit_tasks)
 for f, result in zip(py_files, results):
     print(f"\n{'='*50}")
     print(f"文件：{f}")
-    print(result["messages"][-1].content_blocks)
+    print(result["messages"][-1].content)
 ```
 
 ### 5.3 异步并发审计
