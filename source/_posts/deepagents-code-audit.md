@@ -12,6 +12,8 @@ tags:
   - Skills
 ---
 
+> 本文是 Agent 开发系列的第五篇。前序阅读：[Agent 概念入门](/blog/2026/06/agent-quick-intro/) → [纯 Python 从零实现 Agent](/blog/2026/06/agent-dev-quick-intro/) → [LangChain 快速入门](/blog/2026/06/langchain-quick-intro/) → [LangGraph 快速入门](/blog/2026/06/langgraph-quick-intro/)。本文基于 DeepAgents 构建代码审计 Agent，是前面所学知识的工程化落地。
+
 2026 年，Agent 开发已经不需要从零手写 Agent Loop、上下文压缩、子 Agent 委派了。LangChain 团队推出的 **DeepAgents** 把这些全部预装好了——拿来就能跑，跑起来就能用。
 
 这篇文章用 DeepAgents 带你从零构建一个**代码审计 Agent**——自动发现 SQL 注入、越权漏洞、硬编码凭据，生成专业审计报告，严重漏洞人工确认后才放行。

@@ -1,11 +1,16 @@
 ---
 title: MITRE ATT&CK Enterprise STIX 数据详解
 date: 2026-07-15 20:00:00
-tags: [MITRE, ATT&CK, STIX, 威胁情报, 网络安全]
-categories: [技术, 网络安全]
+categories:
+  - 技术
+  - 网络安全
+tags:
+  - MITRE ATT&CK
+  - STIX
+  - 威胁情报
 ---
 
-> 基于 MITRE 官方仓库 `mitre-attack/attack-stix-data`（master 分支 `enterprise-attack/enterprise-attack.json`）的结构化解析。
+> 本文系统讲解 MITRE ATT&CK Enterprise STIX 2.1 数据的内容、概念、对象类型、字段结构与关联关系，并给出可运行的解析示例。
 
 ---
 
@@ -32,8 +37,6 @@ ATT&CK 框架分为三个域：
 | 对象类型数（distinct type） | 16 |
 | 关系对象数（relationship） | 21,025 |
 
-**文件本质**：一个 STIX `Bundle`，顶层只有 `type` / `id` / `objects` 三个键，`objects` 是对象数组。
-
 **数据用途**：作为机器可读的"单一事实源"，供安全产品（SIEM、EDR、威胁情报平台）导入、检索与可视化，也适合用脚本批量提取（如生成中文对照表、构建攻击图谱）。
 
 ---
@@ -46,7 +49,7 @@ STIX（Structured Threat Information Expression）是一种结构化网络威胁
 |------|------|------|
 | **SDO** | STIX Domain Object（域对象） | 描述"事物"本身，如攻击模式（`attack-pattern`）、恶意软件（`malware`）、威胁组织（`intrusion-set`）、身份（`identity`）等 |
 | **SRO** | STIX Relationship Object（关系对象） | 描述"事物之间的联系"，即 `relationship` 类型，用 `source_ref` / `target_ref` 指向两个对象的 ID |
-| **Bundle** | STIX 包 | 把一批 SDO/SRO 打包成一个 JSON 文档，即本文件的形态 |
+
 
 ### 2.1 公共属性
 
