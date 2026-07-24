@@ -1,24 +1,23 @@
 ---
 title: LangChain 快速入门
-date: 2026-06-24 12:00:00
+date: 2026-06-30 12:00:00
 categories:
   - 技术
   - AI
 tags:
   - Agent开发
   - LangChain
+  - 代码审计
   - RAG
   - Python
   - LangSmith
 ---
 
-> 本文是 Agent 开发系列的第三篇。前两篇分别讲了 [Agent 概念入门](/blog/2026/06/agent-quick-intro/) 和 [纯 Python 从零实现 Agent](/blog/2026/06/agent-dev-quick-intro/)。本篇切换到框架视角，介绍 LangChain 如何把 LLM 调用、工具、检索、输出解析统一为可组合的组件。下一篇 [LangGraph 快速入门](/blog/2026/06/langgraph-quick-intro/) 将在此基础上引入图编排。
+> 本文是 Agent 开发系列的第三篇。前两篇分别讲了 [Agent 概念入门](/blog/2026/06/agent-quick-intro/) 和 [纯 Python 从零实现 Agent](/blog/2026/06/agent-dev-quick-intro/)。本篇切换到框架视角，用 LangChain 构建一个**代码安全审计 Agent**——自动检测 SQL 注入、XSS、硬编码凭据，并结合 RAG 注入漏洞知识库提升审计准确性。下一篇 [LangGraph 快速入门](/blog/2026/07/langgraph-quick-intro/) 将在此基础上引入多 Agent 图编排。
 
 ---
 
 ## 一、LangChain 是什么
-
-### 1.1 一句话定位
 
 **LangChain 是 LLM 应用的"标准库"**——把大模型调用、Prompt 模板、工具定义、文档检索、输出解析统一为可组合的组件，让你不用每次都从零写胶水代码。
 
@@ -31,20 +30,20 @@ tags:
 
 LangChain 把这些全部抽象成了**统一接口**，每个环节都是可插拔的组件。
 
-### 1.2 LangChain 在 Agent 生态中的位置
+### 1.1 LangChain 在 Agent 生态中的位置
 
 ```
 LangChain（组件层）→ LangGraph（编排层）→ LangSmith（可观测层）→ DeepAgents（电池全装好的底盘）
 ```
 
-| 层 | 职责 | 本文覆盖 |
+| 层 | 职责 | 覆盖文章 |
 |----|------|---------|
 | LangChain | LLM 调用、Prompt、Tool、Retriever 等标准组件 | 本篇 |
 | LangGraph | 用状态图编排 Agent Loop 和多 Agent 协作 | 下一篇 |
-| LangSmith | Trace、评估、监控 | 第六章速查 |
+| LangSmith | Trace、评估、监控 | 第六章 |
 | DeepAgents | 预装文件系统、子 Agent、上下文压缩 | 再下一篇 |
 
-### 1.3 2026 年架构变化
+### 1.2 2026 年模块化架构
 
 LangChain 已经从"大一统包"拆分为模块化架构：
 
@@ -56,25 +55,19 @@ LangChain 已经从"大一统包"拆分为模块化架构：
 | `langchain-anthropic` | Anthropic 模型适配（Claude 等） |
 | `langchain-community` | 社区贡献的集成（向量库、Loader 等） |
 
-### 1.4 安装
+### 1.3 安装
 
 ```bash
 pip install langchain langchain-openai langchain-community
-# 可选：向量库
-pip install faiss-cpu chromadb
+# 可选：向量库（第五章 RAG 需要）
+pip install faiss-cpu
 ```
 
 当前版本：`langchain` v0.3.x（2026 年 6 月）。
 
----
+### 1.4 核心设计哲学：Runnable 接口
 
-## 二、核心抽象层（langchain-core）
-
-LangChain 的一切组件都实现了 **Runnable 接口**，这是整个框架的基石。
-
-### 2.1 Runnable 接口
-
-每个 LangChain 组件（LLM、Prompt、Parser、Retriever、Tool）都实现了四个方法：
+LangChain 的一切组件（LLM、Prompt、Parser、Retriever、Tool）都实现了 **Runnable 接口**：
 
 | 方法 | 说明 |
 |------|------|
@@ -83,27 +76,33 @@ LangChain 的一切组件都实现了 **Runnable 接口**，这是整个框架�
 | `batch(inputs)` | 批量调用 |
 | `stream(input)` | 流式输出 |
 
-这意味着：写一个组件，自动获得同步/异步/批量/流式四种运行模式——不需要手动实现。
+写一个组件，自动获得四种运行模式——不需要手动实现。
 
-### 2.2 ChatModel：LLM 调用标准接口
+---
+
+## 二、核心组件
+
+### 2.1 ChatModel：LLM 调用标准接口
 
 ```python
 from langchain_openai import ChatOpenAI
 
-# 创建模型（替代直接调 openai SDK）
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
 
 # invoke：最简单的调用
-response = llm.invoke("什么是 Agent？")
-print(response.content)  # "Agent 是一个能感知环境并自主行动的智能体..."
+response = llm.invoke("什么是 SQL 注入？")
+print(response.content)
 
 # stream：流式输出
-for chunk in llm.stream("用三句话解释 Agent"):
+for chunk in llm.stream("用三句话解释 XSS"):
     print(chunk.content, end="", flush=True)
 
-# ainvoke：异步调用（适合并发场景）
-import asyncio
-response = await llm.ainvoke("什么是 ReAct？")
+# batch：批量调用
+results = llm.batch([
+    "什么是 SQL 注入？",
+    "什么是硬编码凭据？",
+    "什么是 CSRF？"
+])
 ```
 
 **与纯 Python 调 OpenAI 的对比**：
@@ -111,76 +110,53 @@ response = await llm.ainvoke("什么是 ReAct？")
 | 维度 | 纯 Python（openai SDK） | LangChain ChatModel |
 |------|------------------------|---------------------|
 | 切换模型 | 改代码（不同 SDK） | 换实例（`ChatOpenAI` → `ChatAnthropic`） |
-| 流式输出 | 手动处理 `stream` 响应 | `.stream()` 一行搞定 |
-| 异步 | 用 `AsyncOpenAI` | `.ainvoke()` |
+| 流式输出 | 手动处理 stream 响应 | `.stream()` 一行搞定 |
 | 批量 | 手动循环 | `.batch()` 自动并发 |
+| 重试 | 手动 try/except | 内置 `.with_retry()` |
 
-### 2.3 PromptTemplate：参数化提示词
+### 2.2 PromptTemplate：参数化提示词
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
 
 # 创建模板
-prompt = ChatPromptTemplate.from_messages([
-    ("system", "你是一个{role}，请用{style}的风格回答问题。"),
-    ("human", "{question}")
+audit_prompt = ChatPromptTemplate.from_messages([
+    ("system", "你是代码安全审计专家。按 OWASP Top 10 标准审计代码。"),
+    ("human", "审计以下代码，找出安全漏洞：\n\n{code}")
 ])
 
 # invoke：传入参数，生成完整 Prompt
-messages = prompt.invoke({
-    "role": "安全专家",
-    "style": "简洁专业",
-    "question": "什么是 SQL 注入？"
+messages = audit_prompt.invoke({
+    "code": "query = f\"SELECT * FROM users WHERE name='{username}'\""
 })
-print(messages)  # [SystemMessage(...), HumanMessage(...)]
 ```
 
-### 2.4 OutputParser：结构化输出
-
-```python
-from langchain_core.output_parsers import PydanticOutputParser
-from pydantic import BaseModel, Field
-
-class SecurityIssue(BaseModel):
-    severity: str = Field(description="严重程度：高/中/低")
-    description: str = Field(description="问题描述")
-    fix: str = Field(description="修复建议")
-
-parser = PydanticOutputParser(pydantic_object=SecurityIssue)
-
-# 将解析指令注入 Prompt
-prompt_with_parser = ChatPromptTemplate.from_messages([
-    ("system", "你是代码安全专家。{format_instructions}"),
-    ("human", "审计这段代码：{code}")
-])
-
-messages = prompt_with_parser.invoke({
-    "code": "query = f'SELECT * FROM users WHERE id={user_input}'",
-    "format_instructions": parser.get_format_instructions()
-})
-
-# LLM 返回 JSON → 自动解析为 Pydantic 对象
-response = llm.invoke(messages)
-issue = parser.parse(response.content)
-print(issue.severity)   # "高"
-print(issue.fix)        # "使用参数化查询..."
-```
-
-### 2.5 Tool / @tool 装饰器
+### 2.3 @tool 装饰器：工具定义
 
 ```python
 from langchain_core.tools import tool
 
 @tool
-def search_code(keyword: str) -> str:
-    """在代码库中搜索包含关键词的文件"""
-    # 实际实现
-    return f"找到 3 个文件包含 '{keyword}': auth.py, db.py, api.py"
+def check_sql_injection(code: str) -> str:
+    """检测代码中是否存在 SQL 注入漏洞。
+    检查 f-string、字符串拼接、format() 等不安全的 SQL 构建方式。"""
+    import re
+    patterns = [
+        r'f".*SELECT.*\{',      # f-string 拼接 SQL
+        r'".*SELECT.*".*\+',    # 字符串拼接 SQL
+        r'\.format\(.*SELECT',  # format() 拼接 SQL
+    ]
+    findings = []
+    for pattern in patterns:
+        matches = re.findall(pattern, code, re.IGNORECASE)
+        if matches:
+            findings.append(f"发现 {len(matches)} 处疑似 SQL 注入：{matches[0][:50]}...")
+    return "\n".join(findings) if findings else "未发现 SQL 注入风险"
 
 # Tool 对象自动生成 JSON Schema
-print(search_code.name)          # "search_code"
-print(search_code.description)   # "在代码库中搜索包含关键词的文件"
-print(search_code.args_schema)   # Pydantic schema
+print(check_sql_injection.name)          # "check_sql_injection"
+print(check_sql_injection.description)   # "检测代码中是否存在 SQL 注入漏洞..."
+print(check_sql_injection.args_schema)   # Pydantic schema
 ```
 
 **与纯 Python 版 JSON Schema 对比**：
@@ -191,23 +167,53 @@ print(search_code.args_schema)   # Pydantic schema
 | 参数校验 | 手动 | Pydantic 自动校验 |
 | 错误处理 | 手动 try/except | 框架包装 |
 
----
-
-## 三、链（Chain）与 LCEL
-
-**LCEL（LangChain Expression Language）** 是 LangChain 的组合语言——用 `|` 管道符把 Runnable 组件串联成链。
-
-### 3.1 最简单的链
+### 2.4 OutputParser：结构化输出
 
 ```python
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import PydanticOutputParser
+from pydantic import BaseModel, Field
+
+class AuditFinding(BaseModel):
+    """审计发现"""
+    vulnerability: str = Field(description="漏洞名称")
+    cwe_id: str = Field(description="CWE 编号，如 CWE-89")
+    severity: str = Field(description="严重等级：严重/高危/中危/低危")
+    location: str = Field(description="文件位置，如 auth.py:47")
+    description: str = Field(description="漏洞描述和攻击场景")
+    fix: str = Field(description="修复建议，包含修复代码")
+
+parser = PydanticOutputParser(pydantic_object=AuditFinding)
+
+# 将解析指令注入 Prompt
+audit_prompt_with_parser = ChatPromptTemplate.from_messages([
+    ("system", "你是代码安全审计专家。{format_instructions}"),
+    ("human", "审计这段代码：\n{code}")
+])
+
+messages = audit_prompt_with_parser.invoke({
+    "code": "query = f'SELECT * FROM users WHERE id={user_input}'",
+    "format_instructions": parser.get_format_instructions()
+})
+
+# LLM 返回 JSON → 自动解析为 Pydantic 对象
+response = llm.invoke(messages)
+finding = parser.parse(response.content)
+print(f"[{finding.severity}] {finding.vulnerability} ({finding.cwe_id})")
+print(f"位置：{finding.location}")
+print(f"修复：{finding.fix}")
+```
+
+### 2.5 LCEL 链：用 `|` 管道符组合组件
+
+**LCEL（LangChain Expression Language）** 是 LangChain 的组合语言：
+
+```python
 from langchain_core.output_parsers import StrOutputParser
 
 # 定义组件
 prompt = ChatPromptTemplate.from_messages([
-    ("system", "你是一个技术专家，用三句话解释概念。"),
-    ("human", "{topic}")
+    ("system", "你是代码安全专家，用三句话解释漏洞。"),
+    ("human", "{vulnerability}")
 ])
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
 parser = StrOutputParser()
@@ -216,78 +222,133 @@ parser = StrOutputParser()
 chain = prompt | llm | parser
 
 # 运行
-result = chain.invoke({"topic": "什么是 Agent？"})
-print(result)  # "Agent 是一个能感知环境并自主行动的智能体..."
+result = chain.invoke({"vulnerability": "SQL 注入"})
+print(result)
 
 # 同一个链，自动支持流式
-for chunk in chain.stream({"topic": "什么是 RAG？"}):
+for chunk in chain.stream({"vulnerability": "XSS"}):
     print(chunk, end="", flush=True)
 
 # 批量处理
 results = chain.batch([
-    {"topic": "什么是 Token？"},
-    {"topic": "什么是 MCP？"},
+    {"vulnerability": "CSRF"},
+    {"vulnerability": "目录遍历"},
 ])
 ```
 
-**链 vs 纯 Python 函数**：
+---
+
+## 三、工具调用与 Agent
+
+### 3.1 bind_tools()：绑定工具到模型
+
+LangChain 的 Tool Calling 利用模型原生的 function calling 能力：
 
 ```python
-# 纯 Python 写法（命令式）
-def explain(topic: str) -> str:
-    messages = [("system", "..."), ("human", topic)]
-    response = client.chat.completions.create(model="gpt-4o", messages=messages)
-    return response.choices[0].message.content
+from langchain_core.tools import tool
+from langchain_openai import ChatOpenAI
 
-# LCEL 写法（声明式）
-chain = prompt | llm | parser  # 一行定义，自动获得 stream/batch/async
+@tool
+def read_file(path: str) -> str:
+    """读取指定路径的文件内容"""
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
+
+@tool
+def check_hardcoded_secrets(code: str) -> str:
+    """检测代码中是否存在硬编码的密码、API Key 或 Token"""
+    import re
+    patterns = [
+        r'password\s*=\s*["\'][^"\']{8,}["\']',
+        r'api[_-]?key\s*=\s*["\'][^"\']{16,}["\']',
+        r'token\s*=\s*["\'][A-Za-z0-9_\-]{20,}["\']',
+        r'mysql://\w+:[^@]+@',  # 数据库连接串含密码
+    ]
+    findings = []
+    for pattern in patterns:
+        matches = re.findall(pattern, code, re.IGNORECASE)
+        if matches:
+            findings.append(f"发现硬编码凭据：{matches[0][:30]}...")
+    return "\n".join(findings) if findings else "未发现硬编码凭据"
+
+# 绑定工具到模型
+llm = ChatOpenAI(model="gpt-4o")
+llm_with_tools = llm.bind_tools([read_file, check_hardcoded_secrets, check_sql_injection])
+
+# 模型会根据用户问题决定是否调用工具
+response = llm_with_tools.invoke("审计 auth.py 中的硬编码凭据")
+print(response.tool_calls)
+# [{"name": "read_file", "args": {"path": "auth.py"}, "id": "call_xxx"}]
 ```
 
-### 3.2 高阶组件
-
-| 组件 | 用途 |
-|------|------|
-| `RunnableLambda` | 把普通 Python 函数包装为 Runnable |
-| `RunnablePassthrough` | 透传输入（常用于 `assign` 添加字段） |
-| `RunnableParallel` | 并行执行多个 Runnable，合并结果 |
-| `RunnableBranch` | 条件分支（类似 if/else） |
+### 3.2 构建完整 Agent
 
 ```python
-from langchain_core.runnables import RunnableParallel, RunnableLambda
-
-# RunnableParallel：并行执行
-parallel_chain = RunnableParallel(
-    summary=chain,  # 生成摘要
-    keywords=RunnableLambda(lambda x: extract_keywords(x["topic"]))
-)
-result = parallel_chain.invoke({"topic": "什么是 Agent？"})
-# result = {"summary": "Agent 是...", "keywords": ["Agent", "AI", ...]}
-```
-
-### 3.3 带检索的链（RAG 模式预览）
-
-```python
-from langchain_core.runnables import RunnablePassthrough
+from langchain_openai import ChatOpenAI
+from langchain_core.tools import tool
+from langchain.agents import create_tool_calling_agent, AgentExecutor
 from langchain_core.prompts import ChatPromptTemplate
 
-# 假设 retriever 已定义（第五章详解）
-rag_prompt = ChatPromptTemplate.from_messages([
-    ("system", "根据以下参考资料回答问题：\n{context}"),
-    ("human", "{question}")
+# 创建 Prompt
+prompt = ChatPromptTemplate.from_messages([
+    ("system", """你是代码安全审计专家。
+使用工具读取代码文件，检测安全漏洞（SQL 注入、硬编码凭据、XSS）。
+对每个发现，给出漏洞名称、CWE 编号、严重等级和修复建议。"""),
+    ("human", "{input}"),
+    ("placeholder", "{agent_scratchpad}")  # Agent 的思考过程
 ])
 
-# RAG 链：检索 → 注入上下文 → LLM 生成
-rag_chain = (
-    {"context": retriever, "question": RunnablePassthrough()}
-    | rag_prompt
-    | llm
-    | StrOutputParser()
+# 工具列表
+tools = [read_file, check_sql_injection, check_hardcoded_secrets, check_xss]
+
+# 创建 Agent
+llm = ChatOpenAI(model="gpt-4o", temperature=0)
+agent = create_tool_calling_agent(llm, tools, prompt)
+
+# 包装为 Executor（负责运行 Agent 循环）
+executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=True,  # 打印每一步执行日志
+    max_iterations=10  # 防止无限循环
 )
 
-answer = rag_chain.invoke("LangChain 的核心接口是什么？")
+# 运行审计
+result = executor.invoke({
+    "input": "审计 ./src/api/auth.py 的安全性，找出所有漏洞"
+})
+print(result["output"])
 ```
 
-### 3.4 错误处理与 Fallback
+**AgentExecutor 的 verbose 模式会打印每一步**：
+
+```
+> Entering new AgentExecutor chain...
+> Invoking: `read_file` with `{'path': './src/api/auth.py'}`
+> [文件内容返回]
+> Invoking: `check_sql_injection` with `{'code': '...'}`
+> 发现 1 处疑似 SQL 注入：f"SELECT * FROM users WHERE name='{username}'"...
+> Invoking: `check_hardcoded_secrets` with `{'code': '...'}`
+> 发现硬编码凭据：DATABASE_URL = "mysql://admin:MyP@ss...
+> 审计完成。发现 2 个漏洞：
+> 1. [严重] CWE-89 SQL 注入（auth.py:47）
+> 2. [严重] CWE-798 硬编码凭据（auth.py:12）
+```
+
+### 3.3 与纯 Python ReAct 循环对比
+
+| 维度 | 纯 Python ReAct | LangChain AgentExecutor |
+|------|----------------|------------------------|
+| 循环控制 | 手写 `while True` | 框架自动 |
+| Tool 结果注入 | 手动 append message | 自动 |
+| 上下文管理 | 手动截断 | 可配置 |
+| 错误恢复 | 手动 try/except | 内置重试 |
+| 最大迭代 | 手动计数器 | `max_iterations` 参数 |
+| 工具绑定 | 手动 JSON Schema | `bind_tools()` |
+
+**一句话总结**：LangChain 帮你省了"循环控制 + 上下文管理 + 错误处理"这些胶水代码，让你专注于工具定义和业务逻辑。
+
+### 3.4 错误处理：Fallback 机制
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -300,266 +361,436 @@ fallback_llm = ChatAnthropic(model="claude-sonnet-4-20250514")
 # with_fallbacks：主模型失败时自动切换到备用模型
 robust_llm = primary_llm.with_fallbacks([fallback_llm])
 
-chain = prompt | robust_llm | StrOutputParser()
-# 如果 OpenAI API 超时，自动使用 Anthropic
+# 工具也可以设置 fallback
+@tool
+def search_web_fallback(query: str) -> str:
+    """备用搜索工具"""
+    return "备用搜索结果..."
+
+# 在 AgentExecutor 中配置错误恢复
+executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    handle_parsing_errors=True,  # 自动处理工具调用解析错误
+    max_iterations=10
+)
 ```
 
 ---
 
-## 四、工具调用与 Agent
+## 四、实战——用 LangChain 构建代码审计 Agent
 
-### 4.1 Tool Calling 机制
+> 代码审计（Code Audit）是系统化地对源代码进行安全漏洞检测的过程。它不同于代码审查（Code Review）——审计是"专项安全体检"，审查是"日常健康检查"。
 
-LangChain 的 Tool Calling 利用模型原生的 function calling 能力：
+### 4.1 审计目标
+
+审计单个 Python 文件，发现三类常见漏洞：
+- **SQL 注入**（CWE-89）：用户输入直接拼接到 SQL 语句
+- **硬编码凭据**（CWE-798）：密码、API Key 明文写在代码中
+- **XSS**（CWE-79）：用户输入未经转义直接输出到 HTML
+
+### 4.2 定义审计工具
 
 ```python
 from langchain_core.tools import tool
-from langchain_openai import ChatOpenAI
+import re
+import os
 
 @tool
-def get_weather(city: str) -> str:
-    """获取指定城市的天气信息"""
-    # 实际调用天气 API
-    weather_data = {"北京": "晴 28°C", "上海": "多云 25°C"}
-    return weather_data.get(city, f"{city}：未知")
+def read_file(path: str) -> str:
+    """读取指定路径的文件内容"""
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return f"文件不存在：{path}"
 
 @tool
-def calculate(expression: str) -> str:
-    """计算数学表达式"""
-    return str(eval(expression))
+def check_sql_injection(code: str) -> str:
+    """检测代码中是否存在 SQL 注入漏洞（CWE-89）。
+    检查 f-string、字符串拼接、format() 等不安全的 SQL 构建方式。"""
+    patterns = [
+        (r'f["\'].*(?:SELECT|INSERT|UPDATE|DELETE).*\{', "f-string 拼接 SQL"),
+        (r'["\'].*(?:SELECT|INSERT|UPDATE|DELETE).*["\'].*\+', "字符串拼接 SQL"),
+        (r'\.format\(.*(?:SELECT|INSERT|UPDATE|DELETE)', "format() 拼接 SQL"),
+        (r'%s.*(?:SELECT|INSERT|UPDATE|DELETE)', "%s 格式化 SQL"),
+    ]
+    findings = []
+    for i, line in enumerate(code.split("\n"), 1):
+        for pattern, desc in patterns:
+            if re.search(pattern, line, re.IGNORECASE):
+                findings.append(f"行 {i}：{desc}\n  {line.strip()}")
+    return "\n".join(findings) if findings else "未发现 SQL 注入风险"
 
-# 绑定工具到模型
-llm = ChatOpenAI(model="gpt-4o")
-llm_with_tools = llm.bind_tools([get_weather, calculate])
+@tool
+def check_hardcoded_secrets(code: str) -> str:
+    """检测代码中是否存在硬编码的密码、API Key 或 Token（CWE-798）。"""
+    patterns = [
+        (r'(?:password|passwd|pwd)\s*=\s*["\'][^"\']{6,}["\']', "硬编码密码"),
+        (r'(?:api[_-]?key|apikey|secret[_-]?key)\s*=\s*["\'][^"\']{16,}["\']', "硬编码 API Key"),
+        (r'(?:mysql|postgresql|mongodb)://\w+:[^@\s]+@', "数据库连接串含明文密码"),
+        (r'(?:AKIA|sk-|ghp_)[A-Za-z0-9]{16,}', "云服务/平台 Token"),
+    ]
+    findings = []
+    for i, line in enumerate(code.split("\n"), 1):
+        for pattern, desc in patterns:
+            if re.search(pattern, line, re.IGNORECASE):
+                findings.append(f"行 {i}：{desc}\n  {line.strip()}")
+    return "\n".join(findings) if findings else "未发现硬编码凭据"
 
-# 模型会根据用户问题决定是否调用工具
-response = llm_with_tools.invoke("北京今天天气怎么样？")
-print(response.tool_calls)
-# [{"name": "get_weather", "args": {"city": "北京"}, "id": "call_xxx"}]
+@tool
+def check_xss(code: str) -> str:
+    """检测代码中是否存在 XSS 漏洞（CWE-79）。
+    检查用户输入未经转义直接输出到 HTML/模板的情况。"""
+    patterns = [
+        (r'render_template_string\(.*\+', "模板字符串拼接用户输入"),
+        (r'\.innerHTML\s*=', "直接设置 innerHTML"),
+        (r'document\.write\(', "document.write 未转义输出"),
+        (r'Markup\(.*\+', "Flask Markup 拼接"),
+    ]
+    findings = []
+    for i, line in enumerate(code.split("\n"), 1):
+        for pattern, desc in patterns:
+            if re.search(pattern, line, re.IGNORECASE):
+                findings.append(f"行 {i}：{desc}\n  {line.strip()}")
+    return "\n".join(findings) if findings else "未发现 XSS 风险"
 ```
 
-### 4.2 构建完整 Agent
+### 4.3 定义结构化输出
 
-LangChain 提供了 `create_tool_calling_agent()` 快速构建 Agent：
+```python
+from pydantic import BaseModel, Field
+
+class AuditFinding(BaseModel):
+    """单条审计发现"""
+    vulnerability: str = Field(description="漏洞名称")
+    cwe_id: str = Field(description="CWE 编号，如 CWE-89")
+    severity: str = Field(description="严重等级：严重/高危/中危/低危")
+    location: str = Field(description="文件:行号")
+    code_snippet: str = Field(description="问题代码片段")
+    attack_scenario: str = Field(description="攻击场景描述")
+    fix: str = Field(description="修复代码")
+
+class AuditReport(BaseModel):
+    """完整审计报告"""
+    file: str = Field(description="审计文件路径")
+    findings: list[AuditFinding] = Field(description="所有发现")
+    summary: str = Field(description="审计摘要")
+```
+
+### 4.4 构建审计 Agent
 
 ```python
 from langchain_openai import ChatOpenAI
-from langchain_core.tools import tool
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 from langchain_core.prompts import ChatPromptTemplate
 
-# 定义工具
-@tool
-def search_web(query: str) -> str:
-    """搜索互联网获取信息"""
-    return f"搜索结果：关于 '{query}' 的最新信息..."
+audit_prompt = ChatPromptTemplate.from_messages([
+    ("system", """你是资深代码安全审计专家，精通 OWASP Top 10 和 CWE 标准。
 
-@tool
-def calculate(expression: str) -> str:
-    """计算数学表达式"""
-    return str(eval(expression))
+审计流程：
+1. 使用 read_file 读取目标文件
+2. 依次使用 check_sql_injection、check_hardcoded_secrets、check_xss 检测漏洞
+3. 对每个发现，给出完整的审计报告
 
-# 创建 Prompt
-prompt = ChatPromptTemplate.from_messages([
-    ("system", "你是一个智能助手，可以使用工具来帮助用户。"),
+输出格式要求：
+- 每个漏洞包含：漏洞名称、CWE 编号、严重等级、文件位置、代码片段、攻击场景、修复代码
+- 按严重等级排序（严重 > 高危 > 中危 > 低危）
+- 最后给出审计摘要"""),
     ("human", "{input}"),
-    ("placeholder", "{agent_scratchpad}")  # Agent 的思考过程
+    ("placeholder", "{agent_scratchpad}")
 ])
 
-# 创建 Agent
-llm = ChatOpenAI(model="gpt-4o")
-agent = create_tool_calling_agent(llm, [search_web, calculate], prompt)
+tools = [read_file, check_sql_injection, check_hardcoded_secrets, check_xss]
+llm = ChatOpenAI(model="gpt-4o", temperature=0)
 
-# 包装为 Executor（负责运行 Agent 循环）
-executor = AgentExecutor(agent=agent, tools=[search_web, calculate], verbose=True)
+agent = create_tool_calling_agent(llm, tools, audit_prompt)
+audit_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=True,
+    max_iterations=15
+)
+```
 
-# 运行
-result = executor.invoke({"input": "帮我计算 123 * 456，然后搜索 Python 最新版本"})
+### 4.5 运行审计
+
+```python
+result = audit_executor.invoke({
+    "input": "审计 ./src/api/auth.py 的安全性，生成完整审计报告"
+})
 print(result["output"])
 ```
 
-**AgentExecutor 的 verbose 模式会打印每一步**：
+**运行日志**：
 
 ```
 > Entering new AgentExecutor chain...
-> Invoking: `calculate` with `{'expression': '123 * 456'}`
-> 56088
-> Invoking: `search_web` with `{'query': 'Python 最新版本'}`
-> 搜索结果：Python 3.13 已于 2024 年 10 月发布...
-> Python 3.13 是最新版本，123 * 456 = 56088。
+> Invoking: `read_file` with `{'path': './src/api/auth.py'}`
+> [返回文件内容]
+> Invoking: `check_sql_injection` with `{'code': '...'}`
+> 行 47：f-string 拼接 SQL
+>   query = f"SELECT * FROM users WHERE username='{username}'"
+> Invoking: `check_hardcoded_secrets` with `{'code': '...'}`
+> 行 12：数据库连接串含明文密码
+>   DATABASE_URL = "mysql://admin:MyP@ssw0rd123@localhost:3306/shopx"
+> Invoking: `check_xss` with `{'code': '...'}`
+> 未发现 XSS 风险
+
+审计报告生成完成：
 ```
 
-### 4.3 与纯 Python ReAct 循环对比
+### 4.6 RAG 增强：注入漏洞知识库
 
-| 维度 | 纯 Python ReAct | LangChain AgentExecutor |
-|------|----------------|------------------------|
-| 循环控制 | 手写 `while True` | 框架自动 |
-| Tool 结果注入 | 手动 append message | 自动 |
-| 上下文管理 | 手动截断 | 可配置 |
-| 错误恢复 | 手动 try/except | 内置重试 |
-| 工具绑定 | 手动 JSON Schema | `bind_tools()` |
-
-**一句话总结**：LangChain 帮你省了"循环控制 + 上下文管理 + 错误处理"这些胶水代码，让你专注于工具定义和业务逻辑。
-
----
-
-## 五、RAG（检索增强生成）实战
-
-RAG 是 LangChain 最经典的应用场景之一。完整流程：**Load → Split+Embed → Retrieve → Generate**。
-
-### 5.1 Document Loader
+单纯靠工具检测可能漏掉一些复杂场景。通过 RAG 加载 OWASP/CWE 知识库，让 Agent 在审计时参考权威漏洞模式：
 
 ```python
-from langchain_community.document_loaders import TextLoader, PyPDFLoader, WebBaseLoader
-
-# 加载 Markdown 文件
-loader = TextLoader("./docs/guide.md", encoding="utf-8")
-docs = loader.load()  # 返回 List[Document]
-
-# 加载 PDF
-pdf_loader = PyPDFLoader("./docs/manual.pdf")
-pdf_docs = pdf_loader.load()
-
-# 加载网页
-web_loader = WebBaseLoader("https://python.langchain.com/docs/")
-web_docs = web_loader.load()
-```
-
-### 5.2 Text Splitter：分块
-
-```python
+from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-
-splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,      # 每块最大字符数
-    chunk_overlap=200,    # 块之间的重叠（保持上下文）
-    separators=["\n\n", "\n", "。", " ", ""]  # 按优先级分割
-)
-
-chunks = splitter.split_documents(docs)
-print(f"原始文档数: {len(docs)}, 分块后: {len(chunks)}")
-```
-
-### 5.3 Embedding + Vector Store
-
-```python
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 
-# 创建 Embedding 模型
+# 1. 加载知识库（假设已有 owasp-top10.md 和 cwe-database.md）
+loaders = [
+    TextLoader("./knowledge/owasp-top10.md", encoding="utf-8"),
+    TextLoader("./knowledge/cwe-database.md", encoding="utf-8"),
+]
+docs = []
+for loader in loaders:
+    docs.extend(loader.load())
+
+# 2. 分块
+splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+chunks = splitter.split_documents(docs)
+
+# 3. 向量化 + 存储
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-
-# 创建向量库（FAISS 是本地内存向量库）
 vectorstore = FAISS.from_documents(chunks, embeddings)
+retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
-# 创建 Retriever
-retriever = vectorstore.as_retriever(
-    search_type="mmr",    # MMR：最大边际相关性，减少重复结果
-    search_kwargs={"k": 4}  # 返回最相关的 4 个文档块
-)
-
-# 测试检索
-results = retriever.invoke("LangChain 的核心接口是什么？")
-for doc in results:
-    print(doc.page_content[:100] + "...")
-```
-
-### 5.4 完整 RAG 链
-
-```python
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
+# 4. 构建 RAG 增强的审计链
 from langchain_core.runnables import RunnablePassthrough
 
-# Prompt：注入检索结果
-rag_prompt = ChatPromptTemplate.from_messages([
-    ("system", "你是一个知识库助手。根据以下参考资料回答问题，如果资料不足请说明。\n\n参考资料：\n{context}"),
+rag_audit_prompt = ChatPromptTemplate.from_messages([
+    ("system", """你是代码安全审计专家。参考以下漏洞知识库进行审计：
+
+{context}
+
+审计要求：
+1. 对照知识库中的漏洞模式检测代码
+2. 对每个发现给出 CWE 编号和修复建议"""),
     ("human", "{question}")
 ])
 
-# 格式化检索结果
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
-# RAG 链
-rag_chain = (
+rag_audit_chain = (
     {
         "context": retriever | format_docs,
         "question": RunnablePassthrough()
     }
-    | rag_prompt
-    | ChatOpenAI(model="gpt-4o", temperature=0)
+    | rag_audit_prompt
+    | llm
     | StrOutputParser()
 )
 
-# 提问
-answer = rag_chain.invoke("LangChain 的 Runnable 接口有哪些方法？")
-print(answer)
+# 运行 RAG 增强的审计
+answer = rag_audit_chain.invoke(
+    "审计以下代码：\n" + open("./src/api/auth.py").read()
+)
 ```
 
-### 5.5 生产考量
+### 4.7 审计报告示例
 
-| 维度 | 建议 |
-|------|------|
-| 分块大小 | 500-1500 字符，根据文档类型调整 |
-| 重叠 | 10-20%，保持上下文连贯 |
-| Embedding 模型 | `text-embedding-3-small`（便宜）或 `text-embedding-3-large`（更准） |
-| 检索数量 | 3-6 个块，太多会稀释上下文 |
-| 向量库 | FAISS（本地）/ Chroma（轻量持久化）/ Pinecone/Weaviate（生产级） |
+```markdown
+# 代码安全审计报告
+
+文件：./src/api/auth.py | 审计时间：2026-06-30 | 代码行数：156
+
+## 审计摘要
+
+| 严重等级 | 数量 |
+|---------|------|
+| 严重 | 2 |
+| 高危 | 1 |
+| 中危 | 0 |
+| 低危 | 0 |
+
+## 漏洞详情
+
+### [严重] CWE-89 SQL 注入
+
+**位置**：auth.py:47
+**代码**：
+```python
+query = f"SELECT * FROM users WHERE username='{username}'"
+```
+**攻击场景**：攻击者输入 `' OR '1'='1` 可绕过认证，或输入 `' UNION SELECT * FROM admin--` 获取管理员数据。
+**修复**：
+```python
+cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+```
+
+### [严重] CWE-798 硬编码凭据
+
+**位置**：auth.py:12
+**代码**：
+```python
+DATABASE_URL = "mysql://admin:MyP@ssw0rd123@localhost:3306/shopx"
+```
+**攻击场景**：代码泄露（如 Git 仓库公开）直接暴露数据库凭据，攻击者可接管数据库。
+**修复**：
+```python
+DATABASE_URL = os.getenv("DATABASE_URL")
+```
+
+### [高危] CWE-791 信息泄露
+
+**位置**：auth.py:89
+**代码**：
+```python
+except Exception as e:
+    return {"error": str(e)}  # 直接返回异常信息
+```
+**攻击场景**：攻击者通过构造异常输入获取系统内部信息（数据库结构、路径等）。
+**修复**：
+```python
+except Exception as e:
+    logger.error(f"认证失败：{e}")
+    return {"error": "认证失败，请检查用户名和密码"}
+```
+```
 
 ---
 
-## 六、LangSmith 可观测性（速查）
+## 五、流式输出与批处理
 
-### 6.1 LangSmith 是什么
+### 5.1 流式输出：实时显示审计进度
 
-**LangSmith 是 LLM 应用的"调试器 + 日志系统 + 评估平台"**。
+```python
+# stream：逐 Token 输出审计结果
+for chunk in audit_executor.stream({
+    "input": "审计 ./src/api/auth.py"
+}):
+    # chunk 包含每个节点的输出
+    if "agent" in chunk:
+        print(chunk["agent"]["messages"][-1].content, end="", flush=True)
+```
 
-当你的 Chain/Agent 出了问题，LangSmith 可以帮你：
-- **Trace**：查看每次 LLM 调用的完整链路（输入、输出、耗时、Token 消耗）
-- **Dataset**：建立评估数据集，自动化测试
-- **Evaluation**：对比不同 Prompt/模型的效果
+### 5.2 批处理：审计多个文件
 
-### 6.2 零代码集成
+```python
+import glob
+
+# 获取目录下所有 Python 文件
+py_files = glob.glob("./src/api/**/*.py", recursive=True)
+
+# 批量审计
+audit_tasks = [
+    {"input": f"审计 {f} 的安全性，列出所有漏洞"}
+    for f in py_files
+]
+
+# batch：并发审计多个文件
+results = audit_executor.batch(audit_tasks)
+
+# 汇总结果
+for task, result in zip(audit_tasks, results):
+    print(f"\n{'='*50}")
+    print(f"文件：{task['input']}")
+    print(result["output"])
+```
+
+### 5.3 异步并发审计
+
+```python
+import asyncio
+
+async def audit_all_files():
+    # 异步批量审计
+    results = await audit_executor.abatch(audit_tasks)
+    return results
+
+# 运行
+results = asyncio.run(audit_all_files())
+```
+
+**性能对比**（审计 20 个 Python 文件）：
+
+| 模式 | 耗时 | 说明 |
+|------|------|------|
+| 串行 `invoke` | ~120s | 一个接一个 |
+| 批量 `batch` | ~30s | 框架自动并发 |
+| 异步 `abatch` | ~30s | 协程并发 |
+
+---
+
+## 六、LangSmith 可观测性与生产部署
+
+### 6.1 零代码集成 Trace
 
 只需设置环境变量，LangChain 自动上报 Trace：
 
-```bash
-export LANGCHAIN_TRACING_V2=true
-export LANGCHAIN_API_KEY="your-api-key"
-export LANGCHAIN_PROJECT="my-agent-project"
+```python
+import os
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_API_KEY"] = "your-api-key"
+os.environ["LANGCHAIN_PROJECT"] = "code-audit-agent"
+
+# 代码完全不用改——LangChain 自动检测环境变量并上报
+audit_executor.invoke({"input": "审计 auth.py"})
 ```
 
-Python 代码**完全不用改**——LangChain 的组件会自动检测环境变量并上报。
+### 6.2 Trace 示例
 
-### 6.3 Trace 示例
-
-一次 Agent 调用的 Trace 会展示：
+一次审计调用的 Trace 会展示完整链路：
 
 ```
-📊 Trace: "帮我计算 123 * 456，然后搜索 Python 最新版本"
-├── 🤖 LLM Call (gpt-4o)        | 1.2s | 150 tokens
-│   └── 决定调用 calculate 工具
-├── 🔧 Tool: calculate("123*456") | 0.01s
-│   └── 返回 "56088"
-├── 🤖 LLM Call (gpt-4o)        | 0.8s | 120 tokens
-│   └── 决定调用 search_web 工具
-├── 🔧 Tool: search_web(...)      | 2.1s
-│   └── 返回 "Python 3.13..."
-└── 🤖 LLM Call (gpt-4o)        | 0.5s | 80 tokens
-    └── 生成最终回答
+📊 Trace: "审计 ./src/api/auth.py"
+├── 🤖 LLM Call (gpt-4o)        | 1.2s | 180 tokens
+│   └── 决定调用 read_file
+├── 🔧 Tool: read_file("auth.py")  | 0.02s
+│   └── 返回 156 行代码
+├── 🤖 LLM Call (gpt-4o)        | 0.8s | 200 tokens
+│   └── 决定调用 check_sql_injection
+├── 🔧 Tool: check_sql_injection   | 0.05s
+│   └── 发现 1 处 SQL 注入
+├── 🤖 LLM Call (gpt-4o)        | 0.6s | 150 tokens
+│   └── 决定调用 check_hardcoded_secrets
+├── 🔧 Tool: check_hardcoded_secrets | 0.03s
+│   └── 发现 1 处硬编码凭据
+└── 🤖 LLM Call (gpt-4o)        | 1.5s | 400 tokens
+    └── 生成审计报告
 ```
 
-### 6.4 生产价值
+LangSmith 帮你看到：每次审计的完整调用链、每个工具的耗时、Token 消耗分布、审计结果的准确率。
 
-| 场景 | LangSmith 价值 |
-|------|---------------|
-| 故障定位 | 快速定位是哪个 Tool 调用失败或超时 |
-| 成本分析 | 统计每个 Chain 的 Token 消耗和 API 调用次数 |
-| 回归测试 | 建立 Dataset，每次改 Prompt 后自动评估 |
-| 性能优化 | 发现慢节点，针对性优化 |
+### 6.3 生产 Checklist
+
+| 维度 | 建议 |
+|------|------|
+| Fallback 模型 | `primary_llm.with_fallbacks([fallback_llm])` 防止单点故障 |
+| 成本追踪 | 在 AgentExecutor 外层包装 CostTracker（参考 DeepAgents 文章） |
+| 错误重试 | `handle_parsing_errors=True` 自动处理工具调用解析错误 |
+| 超时控制 | `max_execution_time=120` 防止单次审计超时 |
+| 最大迭代 | `max_iterations=15` 防止无限循环 |
+| 沙箱执行 | 审计不可信代码时，使用 Docker 沙箱隔离 |
+
+### 6.4 从 LangChain 到 LangGraph
+
+LangChain 的 `AgentExecutor` 是**单 Agent 串行执行**。当你需要：
+- 多个 Agent 并行扫描不同目录
+- Supervisor 统一调度专业 Agent
+- 审计中途暂停等待人工确认
+
+——就需要 **LangGraph** 来编排。
+
+[下一篇](/blog/2026/07/langgraph-quick-intro/)将用 LangGraph 构建一个**多 Agent 代码审计系统**：Supervisor + Searcher + Auditor + Reporter，支持 Human-in-the-Loop 和状态持久化。
 
 ---
 
-> **下一篇**：[LangGraph 快速入门](/blog/2026/06/langgraph-quick-intro/) 将介绍如何用"状态图"编排 Agent——把 Agent Loop 表达为节点 + 边 + 状态，支持循环、分支、多 Agent 协作。
+> **选型总结**：
+> - **单文件审计**（工具调用 + RAG）→ LangChain 足够
+> - **多目录并行审计**（多 Agent 编排）→ LangGraph
+> - **完整项目审计**（预装一切）→ DeepAgents
