@@ -14,7 +14,7 @@ tags:
 
 ---
 
-## 一、概述与数据来源
+## 一、概述与数据来源z
 
 **MITRE ATT&CK**（Adversarial Tactics, Techniques, and Common Knowledge）是基于真实世界观察的全球可访问对抗战术和技术知识库，被安全社区广泛用于威胁检测、威胁狩猎、红蓝队演练和安全控制验证。
 
