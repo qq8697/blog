@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh-CN">
 
 <meta property="og:image" content="/blog/css/images/avatar.jpg">
-<meta property="og:updated_time" content="2026-07-24T06:01:46.608Z">
+<meta property="og:updated_time" content="2026-07-26T09:08:37.224Z">
 
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DeepAgents 快速入门 | TA圣堂米拉娜">
@@ -155,11 +155,11 @@ var _hmt = _hmt || [];
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                18
+                19
                 <span>posts</span>
             </div>
             <div class="article-info-block">
-                50
+                73
                 <span>tag</span>
             </div>
         </div>
@@ -224,77 +224,64 @@ var _hmt = _hmt || [];
                 </div>
             </header>
             <div class="article-entry" itemprop="articleBody">
-                <p>2026 年，Agent 开发已经不需要从零手写 Agent Loop、上下文压缩、子 Agent 委派了。LangChain 团队推出的 <strong>DeepAgents</strong> 把这些全部预装好了——拿来就能跑，跑起来就能用。</p>
+                <p>在 LangChain 篇中，我们用 <code>create_agent</code> 构建了单文件审计 Agent——但 <code>read_file</code> 工具需要手动注册，上下文长了需要手动压缩。<br>在 LangGraph 篇中，我们用 <code>StateGraph</code> 编排了多 Agent 审计系统——但文件系统、子 Agent 生命周期、上下文管理仍需自己实现。</p>
+<p><strong>DeepAgents</strong> 把这些全部预装好了——如何构建能够自主规划、调用工具、管理上下文、委派子任务并持续执行复杂任务的 Agent 系统。</p>
 <p>这篇文章用 DeepAgents 带你从零构建一个<strong>代码审计 Agent</strong>——自动发现 SQL 注入、越权漏洞、硬编码凭据，生成专业审计报告，严重漏洞人工确认后才放行。</p>
 <hr>
-<h2 id="一、DeepAgents-是什么"><a href="#一、DeepAgents-是什么" class="headerlink" title="一、DeepAgents 是什么"></a>一、DeepAgents 是什么</h2><p><strong>DeepAgents</strong> 是 LangChain 团队推出的”电池全装好的 Agent 底盘”（batteries-included agent harness）。</p>
+<h2 id="一、DeepAgents-是什么"><a href="#一、DeepAgents-是什么" class="headerlink" title="一、DeepAgents 是什么"></a>一、DeepAgents 是什么</h2><p><strong>DeepAgents</strong> 是 LangChain 生态推出的”电池全装好的 Agent 底盘”（batteries-included agent harness）。</p>
 <p>它在 LangChain 生态中的位置：</p>
 <p><img src="/blog/images/Gemini_Generated_Image_ao4zb3ao4zb3ao4z.png" alt="LangChain 生态示意图"></p>
-<p><strong>一句话定位</strong>：如果你用纯 Python 写 Agent，需要自己实现文件系统、子 Agent、上下文压缩、持久记忆——DeepAgents 把这些全部预装好了，你只需要关注业务逻辑。</p>
-<p><strong>核心特性</strong>：</p>
+<h3 id="1-1-Agent-Harness：DeepAgents-的核心思想"><a href="#1-1-Agent-Harness：DeepAgents-的核心思想" class="headerlink" title="1.1 Agent Harness：DeepAgents 的核心思想"></a>1.1 Agent Harness：DeepAgents 的核心思想</h3><p>传统 Agent 开发，你需要自己组装每个零件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LLM → Tool → Prompt → Loop → 上下文管理 → 文件系统 → ...</span><br></pre></td></tr></table></figure>
+
+<p>Agent Harness 把这些全部封装为一个预装好的运行框架：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">      DeepAgent（Agent Harness）</span><br><span class="line">┌─────────────────────────────────┐</span><br><span class="line">│  Planning    Filesystem    HITL │</span><br><span class="line">│  SubAgent    Memory    Context  │</span><br><span class="line">│  Middleware  Shell     Skills   │</span><br><span class="line">└─────────────────────────────────┘</span><br><span class="line">          ↓ 调用</span><br><span class="line">        Tools</span><br><span class="line">          ↓ 运行</span><br><span class="line">     LangGraph Runtime</span><br><span class="line">          ↓ 基础</span><br><span class="line">       LangChain</span><br></pre></td></tr></table></figure>
+
+<p>你只需要关注业务逻辑——文件系统、子 Agent、上下文压缩、持久记忆全部预装好了。</p>
+<h3 id="1-2-LangGraph-之后还有哪些问题"><a href="#1-2-LangGraph-之后还有哪些问题" class="headerlink" title="1.2 LangGraph 之后还有哪些问题"></a>1.2 LangGraph 之后还有哪些问题</h3><p>即使使用 LangGraph，开发者仍然需要自己实现很多能力：</p>
 <table>
 <thead>
 <tr>
-<th>特性</th>
-<th>说明</th>
+<th>能力</th>
+<th>LangGraph</th>
+<th>DeepAgents</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>子 Agent 委派</td>
-<td>主 Agent 通过 <code>task</code> 工具委派任务给子 Agent，每个有独立上下文窗口</td>
+<td>状态管理</td>
+<td>需要定义 State</td>
+<td>内置管理</td>
 </tr>
 <tr>
-<td>文件系统</td>
-<td>可插拔的本地&#x2F;沙箱&#x2F;远程存储，Agent 能读、写、搜索文件</td>
+<td>任务拆解</td>
+<td>需要设计节点</td>
+<td>内置 Planning</td>
 </tr>
 <tr>
-<td>上下文管理</td>
-<td>内置 Middleware 自动压缩长对话，工具输出可卸载到磁盘</td>
+<td>文件读写</td>
+<td>自己实现 Tool</td>
+<td>内置 Filesystem</td>
 </tr>
 <tr>
-<td>Shell 访问</td>
-<td>在沙箱中执行命令</td>
+<td>上下文压缩</td>
+<td>自己处理</td>
+<td>内置 Middleware</td>
 </tr>
 <tr>
-<td>持久记忆</td>
-<td>跨会话的状态和存储后端</td>
+<td>子 Agent 生命周期</td>
+<td>自己设计</td>
+<td>内置</td>
 </tr>
 <tr>
-<td>人工介入（HITL）</td>
-<td>通过 <code>interrupt_on</code> 参数配置工具调用审批</td>
-</tr>
-<tr>
-<td>Skills</td>
-<td>通过 <code>skills</code> 参数按需加载可复用行为</td>
-</tr>
-<tr>
-<td>工具&#x2F;MCP</td>
-<td>自带函数 + 通过 MCP 适配器接入任意 MCP Server</td>
+<td>长期任务恢复</td>
+<td>需要组合多个能力</td>
+<td>内置支持</td>
 </tr>
 </tbody></table>
-<p><strong>2026 年最新特性</strong>（v0.5.0，2026年4月）：</p>
-<table>
-<thead>
-<tr>
-<th>特性</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>异步子 Agent</td>
-<td>非阻塞后台任务，多个子 Agent 可并行工作</td>
-</tr>
-<tr>
-<td>动态子 Agent</td>
-<td>Agent 可编写脚本批量驱动子 Agent</td>
-</tr>
-<tr>
-<td>多模态文件</td>
-<td><code>read_file</code> 支持 PDF、音频、视频等格式</td>
-</tr>
-</tbody></table>
-<p><strong>DeepAgents vs 其他方案</strong>：</p>
-<table>
+<blockquote>
+<p>DeepAgents 基于 LangGraph 构建，为 LangGraph 提供了一套面向长任务 Agent 的高级抽象。</p>
+</blockquote>
+<h3 id="1-3-与其他方案比较"><a href="#1-3-与其他方案比较" class="headerlink" title="1.3 与其他方案比较"></a>1.3 与其他方案比较</h3><table>
 <thead>
 <tr>
 <th>方案</th>
@@ -321,7 +308,7 @@ var _hmt = _hmt || [];
 <hr>
 <h2 id="二、5-分钟跑通第一个-Agent"><a href="#二、5-分钟跑通第一个-Agent" class="headerlink" title="二、5 分钟跑通第一个 Agent"></a>二、5 分钟跑通第一个 Agent</h2><h3 id="2-1-安装"><a href="#2-1-安装" class="headerlink" title="2.1 安装"></a>2.1 安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install deepagents</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-2-让-Agent-审计本地代码"><a href="#2-2-让-Agent-审计本地代码" class="headerlink" title="2.2 让 Agent 审计本地代码"></a>2.2 让 Agent 审计本地代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepagents <span class="keyword">import</span> create_deep_agent</span><br><span class="line"><span class="keyword">from</span> deepagents.backends <span class="keyword">import</span> FilesystemBackend</span><br><span class="line"></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    system_prompt=<span class="string">&quot;你是一个代码安全审计专家。&quot;</span>,</span><br><span class="line">    backend=FilesystemBackend(root_dir=<span class="string">&quot;./src&quot;</span>),  <span class="comment"># 挂载文件系统</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 让 Agent 读取本地文件并审计</span></span><br><span class="line">result = agent.invoke(&#123;</span><br><span class="line">    <span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;审计 ./src/api/auth.py 的安全性&quot;</span>&#125;]</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment"># Agent 会自动调用 read_file 读取文件，然后分析安全问题</span></span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-让-Agent-审计本地代码"><a href="#2-2-让-Agent-审计本地代码" class="headerlink" title="2.2 让 Agent 审计本地代码"></a>2.2 让 Agent 审计本地代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepagents <span class="keyword">import</span> create_deep_agent</span><br><span class="line"><span class="keyword">from</span> deepagents.backends <span class="keyword">import</span> FilesystemBackend</span><br><span class="line"></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    system_prompt=<span class="string">&quot;你是一个代码安全审计专家。&quot;</span>,</span><br><span class="line">    backend=FilesystemBackend(root_dir=<span class="string">&quot;./src&quot;</span>),  <span class="comment"># 挂载文件系统</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 让 Agent 读取本地文件并审计</span></span><br><span class="line">result = agent.invoke(&#123;</span><br><span class="line">    <span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;审计 ./src/api/auth.py 的安全性&quot;</span>&#125;]</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment"># 当你发送审计请求后，Agent 会自主决定调用 read_file 读取目标文件，然后分析安全问题</span></span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
 
 <p><strong>输出</strong>：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">⚠️ 发现 SQL 注入风险</span><br><span class="line"></span><br><span class="line">文件：src/api/auth.py:47</span><br><span class="line">query = f&quot;SELECT * FROM users WHERE name=&#x27;&#123;user_input&#125;&#x27;&quot;</span><br><span class="line">攻击者可输入 `&#x27; OR &#x27;1&#x27;=&#x27;1` 绕过认证。</span><br><span class="line"></span><br><span class="line">修复方案：使用参数化查询</span><br><span class="line">cursor.execute(&quot;SELECT * FROM users WHERE name=?&quot;, (user_input,))</span><br></pre></td></tr></table></figure>
@@ -334,9 +321,64 @@ var _hmt = _hmt || [];
 <li>启用了规划能力（复杂任务自动拆解）</li>
 </ol>
 <p>这些都是可以按需关闭或替换的——但默认就给你了。</p>
-<hr>
-<h2 id="三、核心特性逐一上手"><a href="#三、核心特性逐一上手" class="headerlink" title="三、核心特性逐一上手"></a>三、核心特性逐一上手</h2><h3 id="3-1-子-Agent-委派"><a href="#3-1-子-Agent-委派" class="headerlink" title="3.1 子 Agent 委派"></a>3.1 子 Agent 委派</h3><p>DeepAgents 内置了子 Agent 机制——主 Agent 通过 <code>task</code> 工具把复杂子任务委派给专门的子 Agent。子 Agent 需要<strong>定义为字典</strong>传入：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepagents <span class="keyword">import</span> create_deep_agent</span><br><span class="line"><span class="keyword">from</span> deepagents.backends <span class="keyword">import</span> FilesystemBackend</span><br><span class="line"></span><br><span class="line"><span class="comment"># 子 Agent 定义为字典</span></span><br><span class="line">searcher = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;searcher&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;代码搜索与上下文提取专家。负责扫描目标代码库，提取可疑代码片段。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;你是代码侦查专家。扫描代码库，提取所有可能存在安全风险的代码片段。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [search_code, read_file, list_dependencies],  <span class="comment"># 工具对象，非字符串</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">auditor = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;security_auditor&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;安全漏洞检测专家。对代码片段进行深度安全分析。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;你是资深安全审计师。对每个可疑代码片段进行安全漏洞检测，覆盖 OWASP Top 10。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [check_sql_injection, check_xss, check_auth],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建主 Agent，传入子 Agent 列表</span></span><br><span class="line">main_agent = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    system_prompt=<span class="string">&quot;你是审计任务总调度。根据子 Agent 的 description 自主决定调用哪个。&quot;</span>,</span><br><span class="line">    subagents=[searcher, auditor],</span><br><span class="line">    backend=FilesystemBackend(root_dir=<span class="string">&quot;./src&quot;</span>),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">result = main_agent.invoke(&#123;</span><br><span class="line">    <span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;审计 src/api/ 的安全性&quot;</span>&#125;]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="三、核心能力逐一上手"><a href="#三、核心能力逐一上手" class="headerlink" title="三、核心能力逐一上手"></a>三、核心能力逐一上手</h2><h3 id="3-1-Middleware：DeepAgents-运行机制"><a href="#3-1-Middleware：DeepAgents-运行机制" class="headerlink" title="3.1 Middleware：DeepAgents 运行机制"></a>3.1 Middleware：DeepAgents 运行机制</h3><p>DeepAgents 的核心是一套 Middleware 栈，每个 Middleware 负责一项能力，按固定顺序执行。默认中间件执行顺序：</p>
+<table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>中间件</th>
+<th>能力</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>TodoListMiddleware</td>
+<td>任务规划与跟踪</td>
+</tr>
+<tr>
+<td>2</td>
+<td>SkillsMiddleware</td>
+<td>技能加载（SKILL.md）</td>
+</tr>
+<tr>
+<td>3</td>
+<td>FilesystemMiddleware</td>
+<td>文件系统（<code>read_file</code>, <code>write_file</code>, <code>edit_file</code>, <code>grep</code> 等）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>SubAgentMiddleware</td>
+<td>子 Agent 委派（<code>task</code> 工具）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>SummarizationMiddleware</td>
+<td>上下文压缩</td>
+</tr>
+<tr>
+<td>6</td>
+<td>PatchToolCallsMiddleware</td>
+<td>工具调用修复（中断后恢复）</td>
+</tr>
+<tr>
+<td>7</td>
+<td>HumanInTheLoopMiddleware</td>
+<td>人工介入（<code>interrupt_on</code>）</td>
+</tr>
+</tbody></table>
+<p>开发者可以通过 <code>middleware</code> 参数追加自定义 Middleware，或通过 <code>excluded_middleware</code> 禁用部分默认项。</p>
+<p>长对话是 Agent 的”记忆杀手”。DeepAgents 通过内置 Middleware 自动处理：当工具输出超过 20,000 tokens 时自动卸载到文件系统，当上下文超过窗口 85% 时自动压缩。你不需要自己写压缩逻辑。</p>
+<h3 id="3-2-Planning：复杂任务管理"><a href="#3-2-Planning：复杂任务管理" class="headerlink" title="3.2 Planning：复杂任务管理"></a>3.2 Planning：复杂任务管理</h3><p>DeepAgents 内置任务规划能力，帮助 Agent 创建和维护任务清单，用于复杂任务的执行跟踪。这不是简单的 LLM 推理——而是有结构化的 Todo 列表来跟踪进度。</p>
+<h3 id="3-3-Filesystem：Agent-操作世界"><a href="#3-3-Filesystem：Agent-操作世界" class="headerlink" title="3.3 Filesystem：Agent 操作世界"></a>3.3 Filesystem：Agent 操作世界</h3><p>DeepAgents 通过 <code>FilesystemBackend</code> 挂载文件系统，Agent 可以像人一样读文件、写文件、搜索代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepagents <span class="keyword">import</span> create_deep_agent</span><br><span class="line"><span class="keyword">from</span> deepagents.backends <span class="keyword">import</span> FilesystemBackend</span><br><span class="line"></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    system_prompt=<span class="string">&quot;你是代码审计专家。&quot;</span>,</span><br><span class="line">    backend=FilesystemBackend(root_dir=<span class="string">&quot;./src&quot;</span>),  <span class="comment"># 本地文件系统</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>Agent 会自动调用 <code>read_file</code>、<code>search_code</code> 等工具，你不需要手动注册。</p>
+<blockquote>
+<p>⚠️ <strong>安全警告</strong>：<code>FilesystemBackend</code> 直接访问真实磁盘，Agent 可以读写 <code>root_dir</code> 下的任意文件。生产环境（尤其是 Web 服务）应使用沙箱后端或权限控制，防止路径穿越攻击。</p>
+<p>DeepAgents 提供多种后端：<code>StateBackend</code>（内存隔离，适合快速原型）、<code>FilesystemBackend</code>（直接磁盘访问，适合本地 CLI）、<code>StoreBackend</code>（持久化，适合生产记忆）、沙箱后端（如 <code>LangSmithSandbox</code>，适合 Web 服务）。</p>
+</blockquote>
+<h3 id="3-4-SubAgent：任务分解与委派"><a href="#3-4-SubAgent：任务分解与委派" class="headerlink" title="3.4 SubAgent：任务分解与委派"></a>3.4 SubAgent：任务分解与委派</h3><p>DeepAgents 支持通过配置方式定义子 Agent，通常包括 <code>name</code>、<code>description</code>、<code>system_prompt</code>、<code>tools</code> 等字段：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 子 Agent 配置示例（具体 API 以官方文档为准）</span></span><br><span class="line"><span class="comment"># 子 Agent 默认继承主 Agent 的所有内置工具，这里只传入额外的自定义工具（如有）</span></span><br><span class="line">searcher = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;searcher&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;代码搜索专家。扫描目标代码库，提取可疑代码片段。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;你是代码侦查专家。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [],  <span class="comment"># 内置工具（read_file 等）自动继承，无需显式传入</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建主 Agent，传入子 Agent 列表</span></span><br><span class="line">main_agent = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    system_prompt=<span class="string">&quot;你是审计任务总调度。根据子 Agent 的 description 自主决定调用哪个。&quot;</span>,</span><br><span class="line">    subagents=[searcher],</span><br><span class="line">    backend=FilesystemBackend(root_dir=<span class="string">&quot;./src&quot;</span>),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
 <p><strong>为什么用子 Agent 而不是一个 Agent 干所有事？</strong></p>
 <table>
@@ -359,237 +401,23 @@ var _hmt = _hmt || [];
 <td>可并行执行</td>
 </tr>
 </tbody></table>
-<p><strong>子 Agent vs Skills 选择指南</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>场景</th>
-<th>用 Subagent</th>
-<th>用 Skills</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>需要上下文隔离</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>需要专门的工具集</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>复用流程&#x2F;指令</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>跨 Agent 共享能力</td>
-<td>❌</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>避免 Token 膨胀</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>两者不是二选一——<strong>子 Agent 也可以使用 Skills</strong> 来管理自己的上下文。</p>
-</blockquote>
-<h3 id="3-2-文件系统"><a href="#3-2-文件系统" class="headerlink" title="3.2 文件系统"></a>3.2 文件系统</h3><p>DeepAgents 通过 <code>FilesystemBackend</code> 挂载文件系统，Agent 可以像人一样读文件、写文件、搜索代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepagents.backends <span class="keyword">import</span> FilesystemBackend</span><br><span class="line"></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    system_prompt=<span class="string">&quot;你是代码审计专家。&quot;</span>,</span><br><span class="line">    backend=FilesystemBackend(root_dir=<span class="string">&quot;./src&quot;</span>),  <span class="comment"># 本地文件系统</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>Agent 会自动调用 <code>read_file</code>、<code>search_code</code> 等工具，你不需要手动注册。</p>
-<h3 id="3-3-上下文管理"><a href="#3-3-上下文管理" class="headerlink" title="3.3 上下文管理"></a>3.3 上下文管理</h3><p>长对话是 Agent 的”记忆杀手”。DeepAgents 通过内置 Middleware 自动处理，无需手动配置：</p>
-<p><strong>默认 Middleware 栈</strong>（按执行顺序，来源：<a target="_blank" rel="noopener" href="https://docs.langchain.com/oss/python/deepagents/customization#default-stack-main-agent">官方文档</a>）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">TodoListMiddleware         → 任务规划与跟踪</span><br><span class="line">SkillsMiddleware           → Skills 注入（仅当传 skills 时）</span><br><span class="line">FilesystemMiddleware       → 文件系统操作</span><br><span class="line">SubAgentMiddleware         → 子 Agent 委派</span><br><span class="line">SummarizationMiddleware    → 上下文压缩</span><br><span class="line">PatchToolCallsMiddleware   → 修复悬空/孤儿工具调用</span><br><span class="line">AsyncSubAgentMiddleware    → 异步子 Agent（仅当配置时）</span><br><span class="line">你的自定义 Middleware      → 通过 middleware 参数传入</span><br><span class="line">Harness profile extras     → 模型 profile 的 provider 特定中间件</span><br><span class="line">Excluded-tool filtering    → 排除工具过滤</span><br><span class="line">Prompt caching             → Anthropic / Bedrock 缓存</span><br><span class="line">MemoryMiddleware           → 长期记忆（仅当传 memory 时）</span><br><span class="line">HumanInTheLoopMiddleware   → HITL（仅当传 interrupt_on 时）</span><br></pre></td></tr></table></figure>
-
-<p><strong>三种压缩策略</strong>（自动触发）：</p>
-<table>
-<thead>
-<tr>
-<th>策略</th>
-<th>触发条件</th>
-<th>行为</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Offloading 大输出</td>
-<td>工具输出超过 20,000 tokens</td>
-<td>自动卸载到文件系统</td>
-</tr>
-<tr>
-<td>Offloading 大输入</td>
-<td>上下文超过 85% 窗口</td>
-<td>截断旧的 write&#x2F;edit 调用</td>
-</tr>
-<tr>
-<td>Summarization</td>
-<td>前两种策略不够</td>
-<td>LLM 生成结构化摘要</td>
-</tr>
-</tbody></table>
-<p>你不需要自己写 <code>_compact_if_needed()</code> 方法——DeepAgents 帮你做了。</p>
-<h3 id="3-4-Skills"><a href="#3-4-Skills" class="headerlink" title="3.4 Skills"></a>3.4 Skills</h3><p>Skills 是”可复用的知识模块”。在 DeepAgents 中，Skills 存放在 <code>skills/</code> 目录下，每个 Skill 是一个文件夹，内含 <code>SKILL.md</code>。创建 Agent 时通过 <code>skills</code> 参数注入：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 目录结构</span></span><br><span class="line"><span class="comment"># skills/</span></span><br><span class="line"><span class="comment">#   owasp-top10/</span></span><br><span class="line"><span class="comment">#     SKILL.md</span></span><br><span class="line"></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    system_prompt=<span class="string">&quot;你是代码安全审计专家。&quot;</span>,</span><br><span class="line">    skills=[<span class="string">&quot;./skills/owasp-top10&quot;</span>],  <span class="comment"># 注入 Skills 目录</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="3-5-Skills：知识能力扩展"><a href="#3-5-Skills：知识能力扩展" class="headerlink" title="3.5 Skills：知识能力扩展"></a>3.5 Skills：知识能力扩展</h3><p>Skills 是”告诉 Agent 怎么做事情”的可复用知识模块——<strong>Tool 是”做事情”，Skill 是”知道怎么做”</strong>。在 DeepAgents 中，Skills 存放在 <code>skills/</code> 目录下，每个 Skill 是一个文件夹，内含 <code>SKILL.md</code>。创建 Agent 时通过 <code>skills</code> 参数注入：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">agent = create_deep_agent(</span><br><span class="line">    system_prompt=<span class="string">&quot;你是代码安全审计专家。&quot;</span>,</span><br><span class="line">    skills=[<span class="string">&quot;./skills/owasp-top10&quot;</span>],  <span class="comment"># 注入 Skills 目录</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
 <p><strong>SKILL.md 示例</strong>：</p>
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Skill: OWASP Top 10 安全审计</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 触发条件</span></span><br><span class="line">当用户请求代码安全审计时自动激活。</span><br><span class="line"></span><br><span class="line"><span class="section">## 审计清单</span></span><br><span class="line"></span><br><span class="line"><span class="section">### A01: 访问控制失效</span></span><br><span class="line"><span class="bullet">-</span> 检查每个 API 端点是否有权限校验</span><br><span class="line"><span class="bullet">-</span> 检查是否存在直接对象引用（IDOR）</span><br><span class="line"></span><br><span class="line"><span class="section">### A03: 注入</span></span><br><span class="line"><span class="bullet">-</span> SQL 注入：是否使用参数化查询</span><br><span class="line"><span class="bullet">-</span> 命令注入：是否使用 shell=True</span><br><span class="line"></span><br><span class="line"><span class="section">## 输出格式</span></span><br><span class="line">[等级] [CWE-XXX] 漏洞名称</span><br><span class="line">文件：路径:行号</span><br><span class="line">风险：攻击场景</span><br><span class="line">修复：修复代码</span><br></pre></td></tr></table></figure>
 
-<h3 id="3-5-人工介入（HITL）"><a href="#3-5-人工介入（HITL）" class="headerlink" title="3.5 人工介入（HITL）"></a>3.5 人工介入（HITL）</h3><p>关键操作不能让 Agent 自己决定。DeepAgents 通过 <code>interrupt_on</code> 参数配置审批：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">agent = create_deep_agent(</span><br><span class="line">    interrupt_on=&#123;</span><br><span class="line">        <span class="string">&quot;Bash&quot;</span>: <span class="literal">True</span>,           <span class="comment"># 所有 Bash 调用都需要审批</span></span><br><span class="line">        <span class="string">&quot;submit_report&quot;</span>: <span class="literal">True</span>,  <span class="comment"># 提交报告前需要审批</span></span><br><span class="line">        <span class="string">&quot;create_pr&quot;</span>: <span class="literal">True</span>,      <span class="comment"># 创建 PR 前需要审批</span></span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行时会自动暂停，等待人工确认</span></span><br><span class="line"><span class="comment"># 恢复执行：agent.invoke(Command(resume=True))</span></span><br></pre></td></tr></table></figure>
-
-<p>当 Agent 遇到需要审批的操作时，会暂停执行，等待人工确认后再继续。</p>
-<h3 id="3-6-MCP-集成"><a href="#3-6-MCP-集成" class="headerlink" title="3.6 MCP 集成"></a>3.6 MCP 集成</h3><p>DeepAgents 通过 LangChain 的 MCP 适配器接入 MCP Server：</p>
+<h3 id="3-6-MCP：外部工具接入"><a href="#3-6-MCP：外部工具接入" class="headerlink" title="3.6 MCP：外部工具接入"></a>3.6 MCP：外部工具接入</h3><p>DeepAgents 通过 LangChain 的 MCP 适配器接入 MCP Server——MCP 解决”工具连接”问题，DeepAgents 负责”工具调用和任务执行”：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain_mcp_adapters.client <span class="keyword">import</span> MultiServerMCPClient</span><br><span class="line"><span class="keyword">from</span> deepagents <span class="keyword">import</span> create_deep_agent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建 MCP 客户端</span></span><br><span class="line">client = MultiServerMCPClient(&#123;</span><br><span class="line">    <span class="string">&quot;github&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;command&quot;</span>: <span class="string">&quot;npx&quot;</span>,</span><br><span class="line">        <span class="string">&quot;args&quot;</span>: [<span class="string">&quot;-y&quot;</span>, <span class="string">&quot;@modelcontextprotocol/server-github&quot;</span>],</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">tools = <span class="keyword">await</span> client.get_tools()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将 MCP 工具注入 Agent</span></span><br><span class="line">agent = create_deep_agent(tools=tools)</span><br></pre></td></tr></table></figure>
 
+<h3 id="3-7-HITL：人工控制"><a href="#3-7-HITL：人工控制" class="headerlink" title="3.7 HITL：人工控制"></a>3.7 HITL：人工控制</h3><p>关键操作不能让 Agent 自己决定。DeepAgents 通过 <code>interrupt_on</code> 参数配置审批：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver</span><br><span class="line"></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    interrupt_on=&#123;</span><br><span class="line">        <span class="string">&quot;write_file&quot;</span>: <span class="literal">True</span>,      <span class="comment"># 写文件前需要审批</span></span><br><span class="line">        <span class="string">&quot;submit_report&quot;</span>: <span class="literal">True</span>,   <span class="comment"># 提交报告前需要审批</span></span><br><span class="line">    &#125;,</span><br><span class="line">    checkpointer=MemorySaver(),  <span class="comment"># interrupt_on 必须配合 checkpointer 才能暂停和恢复</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行时会自动暂停，等待人工确认</span></span><br></pre></td></tr></table></figure>
+
+<p>人工审批后恢复执行：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langgraph.types <span class="keyword">import</span> Command</span><br><span class="line"></span><br><span class="line"><span class="comment"># 恢复执行（config 包含 thread_id 用于匹配暂停点）</span></span><br><span class="line">result = agent.invoke(Command(resume=<span class="literal">True</span>), config=config)</span><br></pre></td></tr></table></figure>
+
 <hr>
-<h2 id="四、实战：构建一个代码审计-Agent"><a href="#四、实战：构建一个代码审计-Agent" class="headerlink" title="四、实战：构建一个代码审计 Agent"></a>四、实战：构建一个代码审计 Agent</h2><blockquote>
-<p>代码审计（Code Audit）是系统化地对源代码进行安全漏洞检测、合规性检查、风险分析的过程。它不同于代码审查（Code Review）——审计是”专项安全体检”，审查是”日常健康检查”。</p>
-</blockquote>
-<h3 id="4-1-代码审计是什么"><a href="#4-1-代码审计是什么" class="headerlink" title="4.1 代码审计是什么"></a>4.1 代码审计是什么</h3><table>
-<thead>
-<tr>
-<th>维度</th>
-<th>代码审计（Code Audit）</th>
-<th>代码审查（Code Review）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>执行者</strong></td>
-<td>专业安全团队&#x2F;自动化工具</td>
-<td>同侪开发者</td>
-</tr>
-<tr>
-<td><strong>时间点</strong></td>
-<td>上线前&#x2F;定期专项</td>
-<td>每次 PR&#x2F;合并</td>
-</tr>
-<tr>
-<td><strong>深度</strong></td>
-<td>系统性、全面性</td>
-<td>增量式、聚焦变更</td>
-</tr>
-<tr>
-<td><strong>标准</strong></td>
-<td>OWASP&#x2F;CWE&#x2F;合规标准</td>
-<td>团队编码规范</td>
-</tr>
-<tr>
-<td><strong>输出</strong></td>
-<td>正式审计报告</td>
-<td>Review Comments</td>
-</tr>
-</tbody></table>
-<p><strong>核心目标</strong>：</p>
-<ol>
-<li><strong>发现安全漏洞</strong>：SQL 注入、XSS、命令注入、越权访问、反序列化漏洞等</li>
-<li><strong>确保合规性</strong>：检查是否满足等保 2.0、GDPR、SOC2、PCI-DSS 等合规要求</li>
-<li><strong>降低安全风险</strong>：在代码上线前识别并修复安全隐患</li>
-<li><strong>建立安全基线</strong>：沉淀安全模式，形成团队可复用的安全编码规范</li>
-</ol>
-<h3 id="4-2-代码审计的工作内容"><a href="#4-2-代码审计的工作内容" class="headerlink" title="4.2 代码审计的工作内容"></a>4.2 代码审计的工作内容</h3><p>一次完整的代码审计覆盖 <strong>七大维度</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>维度</th>
-<th>检查要点</th>
-<th>常见漏洞</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>注入漏洞</strong></td>
-<td>用户输入是否直接拼接到 SQL&#x2F;命令&#x2F;路径中？</td>
-<td>SQL 注入、命令注入、LDAP 注入</td>
-</tr>
-<tr>
-<td><strong>认证授权</strong></td>
-<td>认证逻辑是否有绕过风险？权限校验是否完整？</td>
-<td>越权访问、会话固定、JWT 伪造</td>
-</tr>
-<tr>
-<td><strong>敏感数据</strong></td>
-<td>密码、密钥、Token 是否硬编码？日志中是否打印了敏感信息？</td>
-<td>硬编码凭据、日志泄露、明文存储</td>
-</tr>
-<tr>
-<td><strong>加密安全</strong></td>
-<td>是否使用过时算法（MD5&#x2F;SHA1&#x2F;DES）？密钥是否硬编码？</td>
-<td>弱加密算法、不安全随机数</td>
-</tr>
-<tr>
-<td><strong>依赖安全</strong></td>
-<td>第三方库是否存在已知 CVE？是否使用已停止维护的库？</td>
-<td>供应链攻击、已知漏洞利用</td>
-</tr>
-<tr>
-<td><strong>配置安全</strong></td>
-<td>调试模式是否关闭？CORS 是否过于宽松？</td>
-<td>信息泄露、Debug 端点暴露</td>
-</tr>
-<tr>
-<td><strong>日志安全</strong></td>
-<td>是否记录了安全操作？日志是否包含敏感信息？</td>
-<td>日志注入、操作不可追溯</td>
-</tr>
-</tbody></table>
-<h3 id="4-3-为什么用-Agent-做代码审计"><a href="#4-3-为什么用-Agent-做代码审计" class="headerlink" title="4.3 为什么用 Agent 做代码审计"></a>4.3 为什么用 Agent 做代码审计</h3><p><strong>人工审计的三大瓶颈</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>瓶颈</th>
-<th>具体表现</th>
-<th>量化影响</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>效率低下</strong></td>
-<td>一个安全工程师一天只能审计 500-1000 行代码</td>
-<td>中型项目（5 万行）需要 2-3 人月</td>
-</tr>
-<tr>
-<td><strong>知识盲区</strong></td>
-<td>单个工程师不可能精通所有语言、所有漏洞类型</td>
-<td>熟悉的领域容易发现，陌生的容易漏掉</td>
-</tr>
-<tr>
-<td><strong>一致性差</strong></td>
-<td>不同审计人员标准不一，精力状态波动导致覆盖率不稳定</td>
-<td>周二和周五的审计结果可能差异巨大</td>
-</tr>
-</tbody></table>
-<p><strong>Agent 的五大优势</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>优势</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>理解上下文</strong></td>
-<td>不只是模式匹配——能理解代码的业务逻辑</td>
-</tr>
-<tr>
-<td><strong>多维度并行</strong></td>
-<td>多个子 Agent 同时从注入、认证、加密等维度并行审计</td>
-</tr>
-<tr>
-<td><strong>知识持续更新</strong></td>
-<td>通过 Skill 机制，随时加载最新的漏洞模式</td>
-</tr>
-<tr>
-<td><strong>生成可执行修复</strong></td>
-<td>不仅指出问题，还能生成具体的修复代码</td>
-</tr>
-<tr>
-<td><strong>自适应学习</strong></td>
-<td>对同一项目的重复审计，Agent 能记住项目特有的安全模式</td>
-</tr>
-</tbody></table>
-<p><strong>关键原则</strong>：Agent 负责”发现”和”建议”，人负责”判断”和”决策”。严重漏洞必须经过人工确认（HITL）。</p>
-<h3 id="4-4-架构设计：四个子-Agent-协作"><a href="#4-4-架构设计：四个子-Agent-协作" class="headerlink" title="4.4 架构设计：四个子 Agent 协作"></a>4.4 架构设计：四个子 Agent 协作</h3><p>采用 Supervisor 编排模式：</p>
+<h2 id="四、实战：构建一个代码审计-Agent"><a href="#四、实战：构建一个代码审计-Agent" class="headerlink" title="四、实战：构建一个代码审计 Agent"></a>四、实战：构建一个代码审计 Agent</h2><h3 id="4-1-场景与架构"><a href="#4-1-场景与架构" class="headerlink" title="4.1 场景与架构"></a>4.1 场景与架构</h3><p>用 DeepAgents 构建一个多子 Agent 协作的代码安全审计系统，覆盖 OWASP Top 10 常见漏洞。采用 DeepAgents 自主任务分解模式——主 Agent 根据任务自主调度子 Agent：</p>
 <p><img src="/blog/images/Gemini_Generated_Image_cn5x69cn5x69cn5x.png" alt="Supervisor 编排模式"></p>
 <p><strong>各子 Agent 职责</strong>：</p>
 <table>
@@ -603,22 +431,22 @@ var _hmt = _hmt || [];
 <tbody><tr>
 <td><strong>Searcher</strong></td>
 <td>代码侦查员——扫描目标代码库，提取可疑代码片段</td>
-<td><code>search_code</code>, <code>read_file</code>, <code>list_dependencies</code></td>
+<td>内置 <code>read_file</code> + 自定义 <code>search_code</code></td>
 </tr>
 <tr>
 <td><strong>SecurityAuditor</strong></td>
 <td>安全审计师——对提取的代码进行安全漏洞检测</td>
-<td><code>check_sql_injection</code>, <code>check_xss</code>, <code>check_auth</code>, <code>check_crypto</code></td>
+<td><code>check_sql_injection</code>, <code>check_xss</code>（上文已定义）</td>
 </tr>
 <tr>
 <td><strong>ComplianceChecker</strong></td>
 <td>合规检查员——按合规标准逐项检查</td>
-<td><code>check_data_privacy</code>, <code>check_logging</code>, <code>check_access_control</code></td>
+<td>自定义工具（需自己实现）</td>
 </tr>
 <tr>
 <td><strong>ReportGenerator</strong></td>
 <td>报告撰写员——汇总所有发现，生成结构化报告</td>
-<td><code>format_report</code>, <code>calculate_risk</code>, <code>generate_fix</code></td>
+<td>自定义工具（需自己实现）</td>
 </tr>
 </tbody></table>
 <blockquote>
@@ -649,26 +477,60 @@ var _hmt = _hmt || [];
 <td>两个 Agent 独立审计，一致才报告</td>
 </tr>
 </tbody></table>
-<h3 id="4-5-代码实现"><a href="#4-5-代码实现" class="headerlink" title="4.5 代码实现"></a>4.5 代码实现</h3><p><strong>4.5.1 创建 Supervisor</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepagents <span class="keyword">import</span> create_deep_agent</span><br><span class="line"><span class="keyword">from</span> deepagents.backends <span class="keyword">import</span> FilesystemBackend</span><br><span class="line"></span><br><span class="line">supervisor = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    system_prompt=<span class="string">&quot;&quot;&quot;你是代码安全审计任务的总调度专家。</span></span><br><span class="line"><span class="string">根据子 Agent 的 description 自主决定调用哪个子 Agent 完成审计任务。</span></span><br><span class="line"><span class="string">严重和高危漏洞需要触发 HITL 审批流程。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>,</span><br><span class="line">    backend=FilesystemBackend(root_dir=<span class="string">&quot;./src&quot;</span>),</span><br><span class="line">    subagents=[searcher, security_auditor, compliance_checker, report_generator],</span><br><span class="line">    skills=[<span class="string">&quot;./skills/owasp-top10&quot;</span>],</span><br><span class="line">    interrupt_on=&#123;</span><br><span class="line">        <span class="string">&quot;submit_report&quot;</span>: <span class="literal">True</span>,  <span class="comment"># 提交审计报告前需要审批</span></span><br><span class="line">    &#125;,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-代码实现"><a href="#4-2-代码实现" class="headerlink" title="4.2 代码实现"></a>4.2 代码实现</h3><p><strong>先定义子 Agent，再创建主 Agent</strong>（示例基于 DeepAgents 当前版本 API，实际使用请以官方文档为准）</p>
+<blockquote>
+<p><strong>安全免责声明</strong>：本文示例中的 <code>FilesystemBackend</code> 直接访问真实文件系统，生产环境应使用沙箱后端或权限控制。自定义审计工具（如 <code>check_sql_injection</code>）的正则仅用于演示，生产环境建议使用 Semgrep、Bandit、CodeQL 等专业静态分析工具。</p>
+</blockquote>
+<p><strong>定义结构化输出模型</strong>（与 LangChain 篇对齐）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AuditFinding</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;单条审计发现&quot;&quot;&quot;</span></span><br><span class="line">    vulnerability: <span class="built_in">str</span> = Field(description=<span class="string">&quot;漏洞名称&quot;</span>)</span><br><span class="line">    cwe_id: <span class="built_in">str</span> = Field(description=<span class="string">&quot;CWE 编号&quot;</span>)</span><br><span class="line">    severity: <span class="built_in">str</span> = Field(description=<span class="string">&quot;严重等级：严重/高危/中危/低危&quot;</span>)</span><br><span class="line">    location: <span class="built_in">str</span> = Field(description=<span class="string">&quot;文件:行号&quot;</span>)</span><br><span class="line">    fix: <span class="built_in">str</span> = Field(description=<span class="string">&quot;修复代码&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AuditReport</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;完整审计报告&quot;&quot;&quot;</span></span><br><span class="line">    file: <span class="built_in">str</span> = Field(description=<span class="string">&quot;审计文件路径&quot;</span>)</span><br><span class="line">    findings: <span class="built_in">list</span>[AuditFinding] = Field(description=<span class="string">&quot;所有发现&quot;</span>)</span><br><span class="line">    summary: <span class="built_in">str</span> = Field(description=<span class="string">&quot;审计摘要&quot;</span>)</span><br></pre></td></tr></table></figure>
 
-<p><strong>4.5.2 配置子 Agent</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 子 Agent 定义为字典</span></span><br><span class="line"></span><br><span class="line">searcher = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;searcher&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;代码搜索与上下文提取专家。扫描目标代码库，提取可疑代码片段及上下文。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;&quot;&quot;你是代码侦查专家。扫描目标代码库，提取所有可能存在安全风险的代码片段。</span></span><br><span class="line"><span class="string">对每个可疑片段，提取：文件路径、行号、完整上下文（前后各 5 行）、功能描述、初步风险标记。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [search_code, read_file, list_dependencies],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">security_auditor = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;security_auditor&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;安全漏洞检测专家。对代码片段进行深度安全分析，覆盖 OWASP Top 10。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;&quot;&quot;你是资深安全审计师，拥有 10 年渗透测试经验。</span></span><br><span class="line"><span class="string">对每个可疑代码片段进行深度安全分析，覆盖：</span></span><br><span class="line"><span class="string">- SQL 注入、命令注入、代码注入</span></span><br><span class="line"><span class="string">- XSS（存储型/反射型/DOM 型）</span></span><br><span class="line"><span class="string">- 认证绕过与会话管理缺陷</span></span><br><span class="line"><span class="string">- 越权访问（水平越权/垂直越权）</span></span><br><span class="line"><span class="string">- 敏感数据泄露（硬编码凭据、日志泄露、明文存储）</span></span><br><span class="line"><span class="string">- 加密算法误用（弱算法、硬编码密钥、不安全随机数）</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">对每个发现，必须给出：漏洞名称和 CWE 编号、风险等级、攻击场景、修复代码。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [check_sql_injection, check_xss, check_auth, check_crypto],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">compliance_checker = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;compliance_checker&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;合规检查专家。按等保 2.0/GDPR/SOC2 标准检查代码。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;&quot;&quot;你是合规检查专家，精通等保 2.0、GDPR、SOC2 等标准。</span></span><br><span class="line"><span class="string">等保 2.0 检查要点：身份鉴别、访问控制、安全审计、数据保密性。</span></span><br><span class="line"><span class="string">GDPR 检查要点：数据最小化、存储限制、用户权利。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [check_data_privacy, check_logging, check_access_control],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">report_generator = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;report_generator&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;报告撰写专家。汇总所有审计发现，生成结构化审计报告。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;&quot;&quot;你是安全审计报告撰写专家。按风险等级排序，每个漏洞包含标题、CWE 编号、</span></span><br><span class="line"><span class="string">风险等级、文件位置、代码片段、攻击场景、修复方案。提供合规检查结果和风险统计。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [format_report, calculate_risk_score, generate_fix],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>定义自定义工具</strong>（简化示例，生产环境用专业工具）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">check_sql_injection</span>(<span class="params">code: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;检测 SQL 注入——检查是否存在字符串拼接 SQL 的模式&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">import</span> re</span><br><span class="line">    <span class="keyword">if</span> re.search(<span class="string">r&quot;[&#x27;\&quot;].*SELECT.*\&#123;&quot;</span>, code, re.IGNORECASE):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;发现 SQL 注入风险：字符串拼接 SQL 查询&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;未发现风险&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">check_xss</span>(<span class="params">code: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;检测 XSS 漏洞&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;未发现 XSS 风险&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p><strong>4.5.3 运行审计</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">result = supervisor.invoke(&#123;</span><br><span class="line">    <span class="string">&quot;messages&quot;</span>: [&#123;</span><br><span class="line">        <span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">        <span class="string">&quot;content&quot;</span>: <span class="string">&quot;审计 src/api 目录下所有代码，按等保 2.0 标准，生成完整审计报告&quot;</span></span><br><span class="line">    &#125;],</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
+<p><strong>配置子 Agent</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepagents <span class="keyword">import</span> create_deep_agent</span><br><span class="line"><span class="keyword">from</span> deepagents.backends <span class="keyword">import</span> FilesystemBackend</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 定义子 Agent（内置工具自动继承，这里只传入自定义工具）</span></span><br><span class="line">searcher = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;searcher&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;代码搜索与上下文提取专家。扫描目标代码库，提取可疑代码片段及上下文。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;你是代码侦查专家。扫描目标代码库，提取所有可能存在安全风险的代码片段。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [],  <span class="comment"># read_file 等内置工具自动继承</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">security_auditor = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;security_auditor&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;安全漏洞检测专家。对代码片段进行深度安全分析，覆盖 OWASP Top 10。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;&quot;&quot;你是资深安全审计师。对每个可疑代码片段进行深度安全分析。</span></span><br><span class="line"><span class="string">对每个发现，必须给出：漏洞名称和 CWE 编号、风险等级、攻击场景、修复代码。&quot;&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [check_sql_injection, check_xss],  <span class="comment"># 自定义安全检测工具（上文已定义）</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">compliance_checker = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;compliance_checker&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;合规检查专家。按等保 2.0/GDPR/SOC2 标准检查代码。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;你是合规检查专家，精通等保 2.0、GDPR、SOC2 等标准。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [],  <span class="comment"># 自定义工具需在此定义（参见 LangChain 篇 4.2 节）</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">report_generator = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;report_generator&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;报告撰写专家。汇总所有审计发现，生成结构化审计报告。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;你是安全审计报告撰写专家。按风险等级排序，生成完整审计报告。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [],  <span class="comment"># 自定义工具需在此定义（参见 LangChain 篇 4.2 节）</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 创建主 Agent（子 Agent 必须先定义）</span></span><br><span class="line">audit_agent = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    system_prompt=<span class="string">&quot;&quot;&quot;你是代码安全审计任务的总调度专家。</span></span><br><span class="line"><span class="string">根据子 Agent 的 description 自主决定调用哪个子 Agent 完成审计任务。</span></span><br><span class="line"><span class="string">严重和高危漏洞需要触发 HITL 审批流程。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>,</span><br><span class="line">    backend=FilesystemBackend(root_dir=<span class="string">&quot;./src&quot;</span>),</span><br><span class="line">    subagents=[searcher, security_auditor, compliance_checker, report_generator],</span><br><span class="line">    skills=[<span class="string">&quot;./skills/owasp-top10&quot;</span>],</span><br><span class="line">    interrupt_on=&#123;</span><br><span class="line">        <span class="string">&quot;submit_report&quot;</span>: <span class="literal">True</span>,  <span class="comment"># 提交审计报告前需要审批</span></span><br><span class="line">    &#125;,</span><br><span class="line">    checkpointer=MemorySaver(),</span><br><span class="line">    <span class="comment"># response_format=AuditReport,  # 伪码：结构化审计报告，具体 API 以官方文档为准</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>运行审计</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">result = audit_agent.invoke(&#123;</span><br><span class="line">    <span class="string">&quot;messages&quot;</span>: [&#123;</span><br><span class="line">        <span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">        <span class="string">&quot;content&quot;</span>: <span class="string">&quot;审计 src/api 目录下所有代码，按等保 2.0 标准，生成完整审计报告&quot;</span></span><br><span class="line">    &#125;],</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
 
 <p><strong>运行日志示例</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Supervisor] 任务拆解完成，委派 Searcher 开始扫描...</span><br><span class="line">[Searcher] 发现 247 个文件，提取 83 个可疑代码片段</span><br><span class="line">[Supervisor] 委派 SecurityAuditor 和 ComplianceChecker 并行分析...</span><br><span class="line">[SecurityAuditor] 发现 12 个漏洞：严重 3 / 高危 5 / 中危 3 / 低危 1</span><br><span class="line">[ComplianceChecker] 合规检查：2 项不合规</span><br><span class="line"></span><br><span class="line">[HITL] 检测到严重漏洞，提交审计报告前等待审批...</span><br><span class="line">[用户] APPROVE</span><br><span class="line"></span><br><span class="line">[ReportGenerator] 生成最终报告...</span><br><span class="line">审计完成。共发现 12 个漏洞，2 项不合规。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Main Agent] 任务拆解完成，委派 Searcher 开始扫描...</span><br><span class="line">[Searcher] 发现 247 个文件，提取 83 个可疑代码片段</span><br><span class="line">[Main Agent] 委派 SecurityAuditor 和 ComplianceChecker 并行分析...</span><br><span class="line">[SecurityAuditor] 发现 12 个漏洞：严重 3 / 高危 5 / 中危 3 / 低危 1</span><br><span class="line">[ComplianceChecker] 合规检查：2 项不合规</span><br><span class="line"></span><br><span class="line">[HITL] 检测到严重漏洞，提交审计报告前等待审批...</span><br><span class="line">[用户] APPROVE</span><br><span class="line"></span><br><span class="line">[ReportGenerator] 生成最终报告...</span><br><span class="line">审计完成。共发现 12 个漏洞，2 项不合规。</span><br></pre></td></tr></table></figure>
 
-<h3 id="4-6-审计报告格式（精简版）"><a href="#4-6-审计报告格式（精简版）" class="headerlink" title="4.6 审计报告格式（精简版）"></a>4.6 审计报告格式（精简版）</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 代码安全审计报告</span></span><br><span class="line"></span><br><span class="line">项目：ShopX 电商平台 | 日期：2026-06-30 | 范围：src/api/ (247 文件)</span><br><span class="line"></span><br><span class="line"><span class="section">## 审计摘要</span></span><br><span class="line"></span><br><span class="line">| 维度 | 扫描 | 通过 | 不合规 |</span><br><span class="line">|------|------|------|--------|</span><br><span class="line">| 注入漏洞 | 47 | 44 | 3 |</span><br><span class="line">| 认证授权 | 23 | 21 | 2 |</span><br><span class="line">| 敏感数据 | 31 | 29 | 2 |</span><br><span class="line">| 合计 | 155 | 143 | 12 |</span><br><span class="line"></span><br><span class="line"><span class="section">## 严重漏洞</span></span><br><span class="line"></span><br><span class="line"><span class="section">### [严重] CWE-89 SQL 注入 - `src/api/auth.py:47`</span></span><br><span class="line"><span class="code">`query = f&quot;SELECT * FROM users WHERE username=&#x27;&#123;username&#125;&#x27;&quot;`</span></span><br><span class="line">→ 修复：<span class="code">`cursor.execute(&quot;SELECT * FROM users WHERE username=?&quot;, (username,))`</span></span><br><span class="line"></span><br><span class="line"><span class="section">### [严重] CWE-284 水平越权 - `src/api/order.py:112`</span></span><br><span class="line"><span class="code">`return Order.query.get(order_id)`</span>  // 未校验所有权</span><br><span class="line">→ 修复：添加 <span class="code">`if order.user_id != current_user.id: raise Forbidden`</span></span><br><span class="line"></span><br><span class="line"><span class="section">### [严重] CWE-798 硬编码凭据 - `src/config/database.py:12`</span></span><br><span class="line"><span class="code">`DATABASE_URL = &quot;mysql://admin:MyP@ssw0rd123@localhost:3306/shopx&quot;`</span></span><br><span class="line">→ 修复：<span class="code">`DATABASE_URL = os.getenv(&quot;DATABASE_URL&quot;)`</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 合规检查</span></span><br><span class="line"></span><br><span class="line">| 等保 2.0 要求 | 状态 |</span><br><span class="line">|-------------|------|</span><br><span class="line">| 身份鉴别 | 不合规 |</span><br><span class="line">| 访问控制 | 不合规 |</span><br><span class="line">| 数据保密性 | 不合规 |</span><br><span class="line">| 通信保密性 | 合规 |</span><br><span class="line"></span><br><span class="line"><span class="section">## 风险统计</span></span><br><span class="line"></span><br><span class="line">严重 3 个（24h 内修复）| 高危 5 个（本次迭代）| 中危 3 个（下一迭代）| 低危 1 个（跟踪）</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-审计报告示例"><a href="#4-3-审计报告示例" class="headerlink" title="4.3 审计报告示例"></a>4.3 审计报告示例</h3><p>Agent 生成的完整审计报告格式：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 代码安全审计报告</span></span><br><span class="line"></span><br><span class="line">项目：ShopX 电商平台 | 日期：2026-07-02 | 范围：src/api/ (247 文件)</span><br><span class="line"></span><br><span class="line"><span class="section">## 审计摘要</span></span><br><span class="line"></span><br><span class="line">| 严重等级 | 数量 |</span><br><span class="line">|---------|------|</span><br><span class="line">| 严重 | 3 |</span><br><span class="line">| 高危 | 5 |</span><br><span class="line">| 中危 | 3 |</span><br><span class="line">| 低危 | 1 |</span><br><span class="line"></span><br><span class="line"><span class="section">## 严重漏洞</span></span><br><span class="line"></span><br><span class="line"><span class="section">### [严重] CWE-89 SQL 注入 - `src/api/auth.py:47`</span></span><br><span class="line"><span class="strong">**代码**</span>：</span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">query = f&quot;SELECT * FROM users WHERE username=&#x27;&#123;username&#125;&#x27;&quot;</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"><span class="strong">**攻击场景**</span>：攻击者输入 <span class="code">`&#x27; OR &#x27;1&#x27;=&#x27;1`</span> 可绕过认证，获取所有用户数据。</span><br><span class="line"><span class="strong">**修复**</span>：</span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">cursor.execute(&quot;SELECT * FROM users WHERE username=?&quot;, (username,))</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"></span><br><span class="line"><span class="section">### [严重] CWE-284 水平越权 - `src/api/order.py:112`</span></span><br><span class="line"><span class="strong">**代码**</span>：</span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">return Order.query.get(order_id)</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"><span class="strong">**攻击场景**</span>：修改 URL 中的 <span class="code">`order_id`</span> 参数可访问其他用户的订单。</span><br><span class="line"><span class="strong">**修复**</span>：</span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">if order.user_id != current_user.id:</span></span><br><span class="line"><span class="code">    raise PermissionDenied</span></span><br><span class="line"><span class="code">return order</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"></span><br><span class="line"><span class="section">### [严重] CWE-798 硬编码凭据 - `src/config/database.py:12`</span></span><br><span class="line"><span class="strong">**代码**</span>：</span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">DATABASE_URL = &quot;mysql://admin:MyP@ssw0rd123@localhost:3306/shopx&quot;</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"><span class="strong">**攻击场景**</span>：凭据泄露后数据库被完全控制。</span><br><span class="line"><span class="strong">**修复**</span>：</span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">DATABASE_URL = os.getenv(&quot;DATABASE_URL&quot;)</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 风险统计</span></span><br><span class="line"></span><br><span class="line">严重 3 个（24h 内修复）| 高危 5 个（本次迭代）| 中危 3 个（下一迭代）| 低危 1 个（跟踪）</span><br></pre></td></tr></table></figure>
 
 <hr>
-<h2 id="五、生产部署"><a href="#五、生产部署" class="headerlink" title="五、生产部署"></a>五、生产部署</h2><h3 id="5-1-与-LangSmith-集成"><a href="#5-1-与-LangSmith-集成" class="headerlink" title="5.1 与 LangSmith 集成"></a>5.1 与 LangSmith 集成</h3><p>DeepAgents 天然集成了 LangSmith，用于追踪、评估和监控：</p>
+<h2 id="五、生产部署"><a href="#五、生产部署" class="headerlink" title="五、生产部署"></a>五、生产部署</h2><h3 id="生产-Agent-三原则"><a href="#生产-Agent-三原则" class="headerlink" title="生产 Agent 三原则"></a>生产 Agent 三原则</h3><table>
+<thead>
+<tr>
+<th>原则</th>
+<th>对应能力</th>
+<th>实现方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>可观察</strong></td>
+<td>追踪每次调用、每个 Token 消耗</td>
+<td>LangSmith</td>
+</tr>
+<tr>
+<td><strong>可恢复</strong></td>
+<td>中断后从检查点恢复</td>
+<td>Checkpoint</td>
+</tr>
+<tr>
+<td><strong>可控制</strong></td>
+<td>关键操作人工确认、权限隔离</td>
+<td>HITL &#x2F; 权限控制</td>
+</tr>
+</tbody></table>
+<h3 id="5-1-流式输出"><a href="#5-1-流式输出" class="headerlink" title="5.1 流式输出"></a>5.1 流式输出</h3><p>DeepAgents 底层基于 LangGraph 运行时，因此完全继承其流式能力——<code>stream(stream_mode=&quot;values&quot;)</code>、<code>stream(stream_mode=&quot;updates&quot;)</code>、<code>stream(stream_mode=&quot;messages&quot;)</code> 三种模式与 LangGraph 用法一致，详见 LangGraph 篇 6.1 节。</p>
+<p>与 LangGraph 不同的是，DeepAgents 的流式输出还能观察到<strong>子 Agent 级别的执行状态</strong>——你可以实时看到 <code>Searcher</code> 完成了扫描、<code>SecurityAuditor</code> 正在分析第 3 个文件，而不仅仅是节点级别的状态更新。</p>
+<h3 id="5-2-与-LangSmith-集成"><a href="#5-2-与-LangSmith-集成" class="headerlink" title="5.2 与 LangSmith 集成"></a>5.2 与 LangSmith 集成</h3><p>DeepAgents 天然集成了 LangSmith，用于追踪、评估和监控：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.environ[<span class="string">&quot;LANGCHAIN_TRACING_V2&quot;</span>] = <span class="string">&quot;true&quot;</span></span><br><span class="line">os.environ[<span class="string">&quot;LANGCHAIN_API_KEY&quot;</span>] = <span class="string">&quot;your-langsmith-api-key&quot;</span></span><br><span class="line"></span><br><span class="line">agent = create_deep_agent(model=<span class="string">&quot;openai:gpt-4o&quot;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>LangSmith 能帮你看到：每次审计的完整调用链、每个子 Agent 的 Token 消耗、漏洞发现的准确率和召回率、审计耗时分布。</p>
-<h3 id="5-2-LangSmith-Deployment-Agent-Server"><a href="#5-2-LangSmith-Deployment-Agent-Server" class="headerlink" title="5.2 LangSmith Deployment Agent Server"></a>5.2 LangSmith Deployment Agent Server</h3><p>DeepAgents 的生产部署通过 LangSmith Deployment 的 <strong>Agent Server</strong> 实现：</p>
+<h3 id="5-3-生产部署"><a href="#5-3-生产部署" class="headerlink" title="5.3 生产部署"></a>5.3 生产部署</h3><p>DeepAgents 的生产部署可通过托管运行时（Managed Deep Agents，目前 private beta）实现，支持持久化执行、HITL 暂停和多租户隔离：</p>
 <table>
 <thead>
 <tr>
@@ -693,11 +555,44 @@ var _hmt = _hmt || [];
 <td>支持 cron 调度</td>
 </tr>
 </tbody></table>
-<h3 id="5-3-沙箱安全配置"><a href="#5-3-沙箱安全配置" class="headerlink" title="5.3 沙箱安全配置"></a>5.3 沙箱安全配置</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepagents.backends <span class="keyword">import</span> SandboxBackend</span><br><span class="line"></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    backend=SandboxBackend(</span><br><span class="line">        allowed_commands=[<span class="string">&quot;ls&quot;</span>, <span class="string">&quot;cat&quot;</span>, <span class="string">&quot;grep&quot;</span>, <span class="string">&quot;find&quot;</span>],</span><br><span class="line">        network=<span class="string">&quot;blocked&quot;</span>,</span><br><span class="line">        filesystem=<span class="string">&quot;readonly&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="5-4-安全与权限控制"><a href="#5-4-安全与权限控制" class="headerlink" title="5.4 安全与权限控制"></a>5.4 安全与权限控制</h3><p>DeepAgents 支持通过权限配置限制 Agent 的文件系统操作（伪码，具体 API 以官方文档为准）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 示例：只允许读取 /workspace 目录，禁止写入</span></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    permissions=[</span><br><span class="line">        &#123;<span class="string">&quot;operations&quot;</span>: [<span class="string">&quot;read&quot;</span>], <span class="string">&quot;paths&quot;</span>: [<span class="string">&quot;/workspace/**&quot;</span>], <span class="string">&quot;mode&quot;</span>: <span class="string">&quot;allow&quot;</span>&#125;,</span><br><span class="line">        &#123;<span class="string">&quot;operations&quot;</span>: [<span class="string">&quot;write&quot;</span>], <span class="string">&quot;paths&quot;</span>: [<span class="string">&quot;/**&quot;</span>], <span class="string">&quot;mode&quot;</span>: <span class="string">&quot;deny&quot;</span>&#125;,</span><br><span class="line">    ],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
-<h3 id="5-4-成本控制"><a href="#5-4-成本控制" class="headerlink" title="5.4 成本控制"></a>5.4 成本控制</h3><p>成本控制需在调用层实现，而非 DeepAgents 内置参数：</p>
+<h3 id="5-5-成本控制"><a href="#5-5-成本控制" class="headerlink" title="5.5 成本控制"></a>5.5 成本控制</h3><p>成本控制需在调用层实现，而非 DeepAgents 内置参数：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CostTracker</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, budget=<span class="number">10.0</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.budget = budget</span><br><span class="line">        <span class="variable language_">self</span>.spent = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">track</span>(<span class="params">self, response</span>):</span><br><span class="line">        usage = response.get(<span class="string">&quot;usage&quot;</span>, &#123;&#125;)</span><br><span class="line">        cost = (usage.get(<span class="string">&quot;input_tokens&quot;</span>, <span class="number">0</span>) * <span class="number">0.0025</span> +</span><br><span class="line">                usage.get(<span class="string">&quot;output_tokens&quot;</span>, <span class="number">0</span>) * <span class="number">0.01</span>) / <span class="number">1000</span></span><br><span class="line">        <span class="variable language_">self</span>.spent += cost</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.spent &gt; <span class="variable language_">self</span>.budget * <span class="number">0.8</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;⚠️ 预算警告：<span class="subst">&#123;self.spent:<span class="number">.2</span>f&#125;</span>/<span class="subst">&#123;self.budget:<span class="number">.2</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
 
+<h3 id="5-6-生产-Checklist"><a href="#5-6-生产-Checklist" class="headerlink" title="5.6 生产 Checklist"></a>5.6 生产 Checklist</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>权限控制</td>
+<td>使用沙箱后端或 <code>permissions</code> 限制文件操作范围</td>
+</tr>
+<tr>
+<td>HITL 配置</td>
+<td>对 <code>write_file</code>、<code>submit_report</code> 等关键操作启用审批</td>
+</tr>
+<tr>
+<td>成本追踪</td>
+<td>通过 LangSmith 监控每个子 Agent 的 Token 消耗</td>
+</tr>
+<tr>
+<td>检查点</td>
+<td>传入 <code>checkpointer</code> 启用持久化，支持中断恢复</td>
+</tr>
+<tr>
+<td>并发限制</td>
+<td>子 Agent 并行时控制并发数，避免 API 限流</td>
+</tr>
+<tr>
+<td>工具安全</td>
+<td>自定义审计工具限制正则复杂度，防止 ReDoS</td>
+</tr>
+</tbody></table>
 <hr>
 <h2 id="六、选型建议"><a href="#六、选型建议" class="headerlink" title="六、选型建议"></a>六、选型建议</h2><table>
 <thead>
@@ -728,13 +623,34 @@ var _hmt = _hmt || [];
 <td>可视化配置，无需编程</td>
 </tr>
 <tr>
+<td>已有 LangGraph 工作流，想加文件系统</td>
+<td><strong>DeepAgents</strong></td>
+<td>无需重写，直接挂载 backend</td>
+</tr>
+<tr>
+<td>需要 Agent 自主规划多步任务</td>
+<td><strong>DeepAgents</strong></td>
+<td>内置 Planning 与 TodoListMiddleware</td>
+</tr>
+<tr>
+<td>需要长时间运行 + 中断恢复</td>
+<td><strong>DeepAgents + Managed Deep Agents</strong></td>
+<td>持久化 + HITL 原生支持</td>
+</tr>
+<tr>
 <td>企业级合规审计</td>
 <td><strong>DeepAgents + LangSmith</strong></td>
 <td>可追溯、可评估、可审计</td>
 </tr>
 </tbody></table>
 <blockquote>
-<p><strong>小结</strong>：DeepAgents 是 2026 年 Agent 开发”快速落地”的最佳选择。它把 Agent 开发中最繁琐的部分——文件系统、子 Agent 委派、上下文管理、HITL——全部通过内置 Middleware 预装好了。你用几十行代码就能搭建一个专业级的代码安全审计系统，而不用从零写几百行基础设施代码。</p>
+<p><strong>小结</strong>：</p>
+<ul>
+<li><strong>LangChain</strong> 解决”Agent 的组件和接口”——如何构建一个 Agent</li>
+<li><strong>LangGraph</strong> 解决”Agent 的工作流编排”——如何编排一或多个 Agent</li>
+<li><strong>DeepAgents</strong> 解决”Agent 的预装能力平台”——如何运行自主 Agent</li>
+</ul>
+<p>DeepAgents 把 Agent 开发中最繁琐的部分——文件系统、子 Agent 委派、上下文管理、HITL——全部通过内置 Middleware 预装好了。你用几十行代码就能搭建一个专业级的代码安全审计系统，而不用从零写几百行基础设施代码。</p>
 </blockquote>
 
             </div>
@@ -853,6 +769,18 @@ var _hmt = _hmt || [];
                 
                     <li>
                         <div class="item-thumbnail">
+                            <a href="/blog/2026/07/Agent-Architecture.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/07/Agent-Architecture.html" class="title">1 个故事讲清楚 Agent 开发</a></p>
+                            <p class="item-date"><time datetime="2026-07-06T02:00:00.000Z">2026-07-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
                             <a href="/blog/2026/07/ai-coding-best-practices.html" class="thumbnail">
                                 <span class="thumbnail-image thumbnail-none"></span>
                             </a>
@@ -875,18 +803,6 @@ var _hmt = _hmt || [];
                         </div>
                     </li>
                 
-                    <li>
-                        <div class="item-thumbnail">
-                            <a href="/blog/2026/07/langgraph-quick-intro.html" class="thumbnail">
-                                <span class="thumbnail-image thumbnail-none"></span>
-                            </a>
-                        </div>
-                        <div class="item-inner">
-                            <p class="item-title"><a href="/blog/2026/07/langgraph-quick-intro.html" class="title">LangGraph 快速入门</a></p>
-                            <p class="item-date"><time datetime="2026-07-01T02:00:00.000Z">2026-07-01</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -895,7 +811,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/">博客</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><span class="category-list-count">13</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/">骑行</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/%E8%A3%85%E5%A4%87/">装备</a><span class="category-list-count">1</span></li></ul></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/">博客</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><span class="category-list-count">14</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Agent/">Agent</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/">系统架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/">骑行</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/%E8%A3%85%E5%A4%87/">装备</a><span class="category-list-count">1</span></li></ul></li></ul>
         </div>
     </div>
 
@@ -903,7 +819,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/07/">七月 2026</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/06/">六月 2026</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/05/">五月 2026</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/07/">七月 2026</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/06/">六月 2026</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/05/">五月 2026</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2019/12/">十二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -911,7 +827,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">标签</h3>
         <div class="widget">
-            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/A2A/" rel="tag">A2A</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/AI-Coding/" rel="tag">AI Coding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ATT-CK/" rel="tag">ATT&amp;CK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent/" rel="tag">Agent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" rel="tag">Agent开发</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" rel="tag">C2框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DeepAgents/" rel="tag">DeepAgents</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub/" rel="tag">GitHub</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub-Pages/" rel="tag">GitHub Pages</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HTTP/" rel="tag">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LangChain/" rel="tag">LangChain</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LangGraph/" rel="tag">LangGraph</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LangSmith/" rel="tag">LangSmith</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" rel="tag">Loop工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCP/" rel="tag">MCP</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MITRE-ATT-CK/" rel="tag">MITRE ATT&amp;CK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Prompt/" rel="tag">Prompt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pull-Request/" rel="tag">Pull Request</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Python/" rel="tag">Python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/RAG/" rel="tag">RAG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ReAct/" rel="tag">ReAct</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/SRAM/" rel="tag">SRAM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/STIX/" rel="tag">STIX</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skill/" rel="tag">Skill</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skills/" rel="tag">Skills</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Superpowers/" rel="tag">Superpowers</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/TDD/" rel="tag">TDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Tool-Calling/" rel="tag">Tool Calling</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Workflow/" rel="tag">Workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" rel="tag">上下文工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" rel="tag">代码协作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">代码审计</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" rel="tag">公路车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%9D%8E%E6%99%AE/" rel="tag">坎普</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" rel="tag">威胁情报</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" rel="tag">安全运营</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="tag">应急响应</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" rel="tag">折叠车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="tag">漏洞挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" rel="tag">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%8A%B6%E6%80%81%E5%9B%BE/" rel="tag">状态图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" rel="tag">红蓝对抗</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" rel="tag">网安业务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E9%A3%8E%E8%A1%8C/" rel="tag">风行</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/A2A/" rel="tag">A2A</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/AI-Coding/" rel="tag">AI Coding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ATT-CK/" rel="tag">ATT&amp;CK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent/" rel="tag">Agent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent-%E5%BC%80%E5%8F%91/" rel="tag">Agent 开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" rel="tag">Agent开发</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" rel="tag">C2框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/CDN/" rel="tag">CDN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DeepAgents/" rel="tag">DeepAgents</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Elasticsearch/" rel="tag">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Evaluation/" rel="tag">Evaluation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Function-Calling/" rel="tag">Function Calling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub/" rel="tag">GitHub</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub-Pages/" rel="tag">GitHub Pages</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Guardrails/" rel="tag">Guardrails</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HTTP/" rel="tag">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Kubernetes/" rel="tag">Kubernetes</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LLM/" rel="tag">LLM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LangChain/" rel="tag">LangChain</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LangGraph/" rel="tag">LangGraph</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LangSmith/" rel="tag">LangSmith</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" rel="tag">Loop工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCP/" rel="tag">MCP</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MITRE-ATT-CK/" rel="tag">MITRE ATT&amp;CK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Memory/" rel="tag">Memory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Multi-Agent/" rel="tag">Multi-Agent</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Planning/" rel="tag">Planning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Prompt/" rel="tag">Prompt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pull-Request/" rel="tag">Pull Request</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/RAG/" rel="tag">RAG</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/RPC/" rel="tag">RPC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ReAct/" rel="tag">ReAct</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/SRAM/" rel="tag">SRAM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/STIX/" rel="tag">STIX</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skill/" rel="tag">Skill</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skills/" rel="tag">Skills</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Superpowers/" rel="tag">Superpowers</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/TDD/" rel="tag">TDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Tool-Calling/" rel="tag">Tool Calling</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Workflow/" rel="tag">Workflow</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" rel="tag">上下文工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="tag">云原生</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" rel="tag">代码协作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">代码审计</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" rel="tag">公路车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="tag">分库分表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%9D%8E%E6%99%AE/" rel="tag">坎普</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" rel="tag">威胁情报</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" rel="tag">安全运营</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="tag">应急响应</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" rel="tag">折叠车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/" rel="tag">服务治理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag">消息队列</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="tag">漏洞挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" rel="tag">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%8A%B6%E6%80%81%E5%9B%BE/" rel="tag">状态图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" rel="tag">红蓝对抗</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BC%93%E5%AD%98/" rel="tag">缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" rel="tag">网安业务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/" rel="tag">读写分离</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" rel="tag">负载均衡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E9%A3%8E%E8%A1%8C/" rel="tag">风行</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -919,7 +835,7 @@ var _hmt = _hmt || [];
     <div class="widget-wrap">
         <h3 class="widget-title">标签云</h3>
         <div class="widget tagcloud">
-            <a href="/blog/tags/A2A/" style="font-size: 13px;">A2A</a> <a href="/blog/tags/AI-Coding/" style="font-size: 13px;">AI Coding</a> <a href="/blog/tags/ATT-CK/" style="font-size: 13px;">ATT&CK</a> <a href="/blog/tags/Agent/" style="font-size: 14.75px;">Agent</a> <a href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" style="font-size: 20px;">Agent开发</a> <a href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">C2框架</a> <a href="/blog/tags/DeepAgents/" style="font-size: 13px;">DeepAgents</a> <a href="/blog/tags/Git/" style="font-size: 13px;">Git</a> <a href="/blog/tags/GitHub/" style="font-size: 13px;">GitHub</a> <a href="/blog/tags/GitHub-Pages/" style="font-size: 13px;">GitHub Pages</a> <a href="/blog/tags/HTTP/" style="font-size: 13px;">HTTP</a> <a href="/blog/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/blog/tags/LangChain/" style="font-size: 14.75px;">LangChain</a> <a href="/blog/tags/LangGraph/" style="font-size: 13px;">LangGraph</a> <a href="/blog/tags/LangSmith/" style="font-size: 13px;">LangSmith</a> <a href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">Loop工程</a> <a href="/blog/tags/MCP/" style="font-size: 18.25px;">MCP</a> <a href="/blog/tags/MITRE-ATT-CK/" style="font-size: 13px;">MITRE ATT&CK</a> <a href="/blog/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/blog/tags/Prompt/" style="font-size: 13px;">Prompt</a> <a href="/blog/tags/Pull-Request/" style="font-size: 13px;">Pull Request</a> <a href="/blog/tags/Python/" style="font-size: 14.75px;">Python</a> <a href="/blog/tags/RAG/" style="font-size: 14.75px;">RAG</a> <a href="/blog/tags/ReAct/" style="font-size: 14.75px;">ReAct</a> <a href="/blog/tags/SRAM/" style="font-size: 13px;">SRAM</a> <a href="/blog/tags/STIX/" style="font-size: 14.75px;">STIX</a> <a href="/blog/tags/Skill/" style="font-size: 13px;">Skill</a> <a href="/blog/tags/Skills/" style="font-size: 14.75px;">Skills</a> <a href="/blog/tags/Superpowers/" style="font-size: 13px;">Superpowers</a> <a href="/blog/tags/TDD/" style="font-size: 13px;">TDD</a> <a href="/blog/tags/Token/" style="font-size: 13px;">Token</a> <a href="/blog/tags/Tool-Calling/" style="font-size: 16.5px;">Tool Calling</a> <a href="/blog/tags/Workflow/" style="font-size: 13px;">Workflow</a> <a href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">上下文工程</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" style="font-size: 13px;">代码协作</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" style="font-size: 18.25px;">代码审计</a> <a href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" style="font-size: 13px;">公路车</a> <a href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 13px;">博客搭建</a> <a href="/blog/tags/%E5%9D%8E%E6%99%AE/" style="font-size: 13px;">坎普</a> <a href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" style="font-size: 16.5px;">威胁情报</a> <a href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" style="font-size: 14.75px;">安全运营</a> <a href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" style="font-size: 14.75px;">应急响应</a> <a href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" style="font-size: 13px;">折叠车</a> <a href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 14.75px;">渗透测试</a> <a href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" style="font-size: 14.75px;">漏洞挖掘</a> <a href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="font-size: 13px;">版本控制</a> <a href="/blog/tags/%E7%8A%B6%E6%80%81%E5%9B%BE/" style="font-size: 13px;">状态图</a> <a href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" style="font-size: 14.75px;">红蓝对抗</a> <a href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" style="font-size: 14.75px;">网安业务</a> <a href="/blog/tags/%E9%A3%8E%E8%A1%8C/" style="font-size: 13px;">风行</a>
+            <a href="/blog/tags/A2A/" style="font-size: 13px;">A2A</a> <a href="/blog/tags/AI-Coding/" style="font-size: 13px;">AI Coding</a> <a href="/blog/tags/ATT-CK/" style="font-size: 13px;">ATT&CK</a> <a href="/blog/tags/Agent/" style="font-size: 14.75px;">Agent</a> <a href="/blog/tags/Agent-%E5%BC%80%E5%8F%91/" style="font-size: 13px;">Agent 开发</a> <a href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" style="font-size: 20px;">Agent开发</a> <a href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">C2框架</a> <a href="/blog/tags/CDN/" style="font-size: 13px;">CDN</a> <a href="/blog/tags/DeepAgents/" style="font-size: 13px;">DeepAgents</a> <a href="/blog/tags/Docker/" style="font-size: 13px;">Docker</a> <a href="/blog/tags/Elasticsearch/" style="font-size: 13px;">Elasticsearch</a> <a href="/blog/tags/Evaluation/" style="font-size: 13px;">Evaluation</a> <a href="/blog/tags/Function-Calling/" style="font-size: 13px;">Function Calling</a> <a href="/blog/tags/Git/" style="font-size: 13px;">Git</a> <a href="/blog/tags/GitHub/" style="font-size: 13px;">GitHub</a> <a href="/blog/tags/GitHub-Pages/" style="font-size: 13px;">GitHub Pages</a> <a href="/blog/tags/Guardrails/" style="font-size: 13px;">Guardrails</a> <a href="/blog/tags/HTTP/" style="font-size: 13px;">HTTP</a> <a href="/blog/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/blog/tags/Kubernetes/" style="font-size: 13px;">Kubernetes</a> <a href="/blog/tags/LLM/" style="font-size: 13px;">LLM</a> <a href="/blog/tags/LangChain/" style="font-size: 13px;">LangChain</a> <a href="/blog/tags/LangGraph/" style="font-size: 13px;">LangGraph</a> <a href="/blog/tags/LangSmith/" style="font-size: 13px;">LangSmith</a> <a href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">Loop工程</a> <a href="/blog/tags/MCP/" style="font-size: 18.25px;">MCP</a> <a href="/blog/tags/MITRE-ATT-CK/" style="font-size: 13px;">MITRE ATT&CK</a> <a href="/blog/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/blog/tags/Memory/" style="font-size: 13px;">Memory</a> <a href="/blog/tags/Multi-Agent/" style="font-size: 13px;">Multi-Agent</a> <a href="/blog/tags/Planning/" style="font-size: 13px;">Planning</a> <a href="/blog/tags/Prompt/" style="font-size: 13px;">Prompt</a> <a href="/blog/tags/Pull-Request/" style="font-size: 13px;">Pull Request</a> <a href="/blog/tags/Python/" style="font-size: 13px;">Python</a> <a href="/blog/tags/RAG/" style="font-size: 16.5px;">RAG</a> <a href="/blog/tags/RPC/" style="font-size: 13px;">RPC</a> <a href="/blog/tags/ReAct/" style="font-size: 13px;">ReAct</a> <a href="/blog/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/blog/tags/SRAM/" style="font-size: 13px;">SRAM</a> <a href="/blog/tags/STIX/" style="font-size: 14.75px;">STIX</a> <a href="/blog/tags/Skill/" style="font-size: 13px;">Skill</a> <a href="/blog/tags/Skills/" style="font-size: 14.75px;">Skills</a> <a href="/blog/tags/Superpowers/" style="font-size: 13px;">Superpowers</a> <a href="/blog/tags/TDD/" style="font-size: 13px;">TDD</a> <a href="/blog/tags/Token/" style="font-size: 13px;">Token</a> <a href="/blog/tags/Tool-Calling/" style="font-size: 14.75px;">Tool Calling</a> <a href="/blog/tags/Workflow/" style="font-size: 14.75px;">Workflow</a> <a href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">上下文工程</a> <a href="/blog/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" style="font-size: 13px;">云原生</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" style="font-size: 13px;">代码协作</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" style="font-size: 20px;">代码审计</a> <a href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" style="font-size: 13px;">公路车</a> <a href="/blog/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" style="font-size: 13px;">分库分表</a> <a href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 13px;">博客搭建</a> <a href="/blog/tags/%E5%9D%8E%E6%99%AE/" style="font-size: 13px;">坎普</a> <a href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" style="font-size: 16.5px;">威胁情报</a> <a href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" style="font-size: 14.75px;">安全运营</a> <a href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" style="font-size: 14.75px;">应急响应</a> <a href="/blog/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 13px;">微服务</a> <a href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" style="font-size: 13px;">折叠车</a> <a href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/blog/tags/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/" style="font-size: 13px;">服务治理</a> <a href="/blog/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 13px;">消息队列</a> <a href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 14.75px;">渗透测试</a> <a href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" style="font-size: 14.75px;">漏洞挖掘</a> <a href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="font-size: 13px;">版本控制</a> <a href="/blog/tags/%E7%8A%B6%E6%80%81%E5%9B%BE/" style="font-size: 13px;">状态图</a> <a href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" style="font-size: 14.75px;">红蓝对抗</a> <a href="/blog/tags/%E7%BC%93%E5%AD%98/" style="font-size: 13px;">缓存</a> <a href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" style="font-size: 14.75px;">网安业务</a> <a href="/blog/tags/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/" style="font-size: 13px;">读写分离</a> <a href="/blog/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" style="font-size: 13px;">负载均衡</a> <a href="/blog/tags/%E9%A3%8E%E8%A1%8C/" style="font-size: 13px;">风行</a>
         </div>
     </div>
 

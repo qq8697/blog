@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+
+<title>1 个故事讲清楚系统架构 | TA圣堂米拉娜</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="description" content="前端 博客 圣堂">
+<meta name="keywords" content="前端 博客 圣堂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1 个故事讲清楚系统架构 | TA圣堂米拉娜">
+<meta property="og:url" content="https://qq8697.github.io/blog/2019/12/Software-Architecture.html">
+<meta property="og:site_name" content="TA圣堂米拉娜">
+<meta property="og:description" content="前端 博客 圣堂">
+<meta property="og:locale" content="zh-CN">
+
+<meta property="og:image" content="/blog/css/images/avatar.jpg">
+<meta property="og:updated_time" content="2026-07-27T09:08:14.169Z">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="1 个故事讲清楚系统架构 | TA圣堂米拉娜">
+<meta name="twitter:description" content="前端 博客 圣堂">
+
+<meta name="twitter:image" content="/blog/css/images/avatar.jpg">
+
+
+<link rel="icon" href="/blog/css/images/favicon.ico" />
+
+<link rel="stylesheet" href="/blog/libs/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/blog/libs/open-sans/styles.css">
+<link rel="stylesheet" href="/blog/libs/source-code-pro/styles.css">
+<link rel="stylesheet" href="/blog/css/style.css">
+<script src="/blog/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<!-- Code highlight -->
+<link rel="stylesheet" href="/blog/libs/highlight/github.css">
+<script src="/blog/libs/highlight/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- Light Gallery -->
+<link rel="stylesheet" href="/blog/libs/lightgallery/css/lightgallery.min.css">
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-127105097-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?fa59de63d3320a45f6aa672138d2e55c";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/blog/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">TA圣堂米拉娜</span>
+            </a>
+            <nav id="main-nav">
+                <a class="main-nav-link" href="/blog/">Home</a>
+                <a class="main-nav-link" href="/blog/archives">Archives</a>
+                <a class="main-nav-link" href="/blog/categories">Categories</a>
+                <a class="main-nav-link" href="/blog/tags">Tags</a>
+                <a class="main-nav-link" href="/blog/about">About</a>
+            </nav>
+            <nav id="sub-nav">
+                <div class="profile" id="profile-nav">
+                    <a id="profile-anchor" href="javascript:;">
+                        <img class="avatar" src="/blog/css/images/avatar.jpg" />
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                </div>
+            </nav>
+            <div id="search-form-wrap">
+                <form class="search-form">
+                    <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+                    <button type="submit" class="search-form-submit"></button>
+                </form>
+                <div class="ins-search">
+                    <div class="ins-search-mask"></div>
+                    <div class="ins-search-container">
+                        <div class="ins-input-wrapper">
+                            <input type="text" class="ins-search-input" placeholder="Type something..." />
+                            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+                        </div>
+                        <div class="ins-section-wrapper">
+                            <div class="ins-section-container"></div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                (function (window) {
+                    var INSIGHT_CONFIG = {
+                        TRANSLATION: {
+                            POSTS: 'Posts',
+                            PAGES: 'Pages',
+                            CATEGORIES: 'Categories',
+                            TAGS: 'Tags',
+                            UNTITLED: '(Untitled)',
+                        },
+                        ROOT_URL: '/blog/',
+                        CONTENT_URL: '/blog/content.json',
+                    };
+                    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+                })(window);
+                </script>
+                <script src="/blog/js/insight.js"></script>
+            </div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                <td><a class="main-nav-link" href="/blog/">Home</a></td>
+                <td><a class="main-nav-link" href="/blog/archives">Archives</a></td>
+                <td><a class="main-nav-link" href="/blog/categories">Categories</a></td>
+                <td><a class="main-nav-link" href="/blog/tags">Tags</a></td>
+                <td><a class="main-nav-link" href="/blog/about">About</a></td>
+                <td>
+                    <div class="search-form">
+                        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            <aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/blog/css/images/avatar.jpg" />
+            <h2 id="name">圣堂</h2>
+            <h3 id="title">前端攻城师</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>北京, 中国</span>
+            <a id="follow" target="_blank" href="https://gitee.com/qq8697">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                19
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                73
+                <span>tag</span>
+            </div>
+        </div>
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                        
+                        <td>
+                            <a href="https://steamcommunity.com/profiles/76561198386205036/" target="_blank" title="steam" class=tooltip>
+                                <i class="fa fa-steam"></i>
+                            </a>
+                        </td>
+                        
+                    
+                </tr>
+            </table>
+        </div>
+    </div>
+</aside>
+
+            <section id="main">
+    <article id="post-Software-Architecture" class="article article-type-post" itemscope itemprop="blogPost">
+        <div class="article-inner">
+            <header class="article-header">
+                <h1 class="article-title" itemprop="name">
+                    1 个故事讲清楚系统架构
+                </h1>
+                <div class="article-meta">
+                    <div class="article-date">
+                        <i class="fa fa-calendar"></i>
+                        <a href="/blog/2019/12/Software-Architecture.html">
+                            <time datetime="2019-12-12T02:00:00.000Z" itemprop="datePublished">2019-12-12</time>
+                        </a>
+                    </div>
+                    
+                    <div class="article-category">
+                        <i class="fa fa-folder"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><i class="fa fa-angle-right"></i>
+                        
+                            <a class="article-category-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/">系统架构</a>
+                        
+                    </div>
+                    
+                    
+                    <div class="article-tag">
+                        <i class="fa fa-tag"></i>
+                        
+                            <a class="tag-link" href="/blog/tags/%E7%BC%93%E5%AD%98/">缓存</a>
+                        
+                            <a class="tag-link" href="/blog/tags/Redis/">Redis</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">分库分表</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/">读写分离</a>
+                        
+                            <a class="tag-link" href="/blog/tags/CDN/">CDN</a>
+                        
+                            <a class="tag-link" href="/blog/tags/Elasticsearch/">Elasticsearch</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
+                        
+                            <a class="tag-link" href="/blog/tags/RPC/">RPC</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a>
+                        
+                            <a class="tag-link" href="/blog/tags/Docker/">Docker</a>
+                        
+                            <a class="tag-link" href="/blog/tags/Kubernetes/">Kubernetes</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">负载均衡</a>
+                        
+                            <a class="tag-link" href="/blog/tags/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/">服务治理</a>
+                        
+                    </div>
+                    
+                </div>
+            </header>
+            <div class="article-entry" itemprop="articleBody">
+                <h1 id="一、前言：你以为的”高大上”，都是被问题逼出来的"><a href="#一、前言：你以为的”高大上”，都是被问题逼出来的" class="headerlink" title="一、前言：你以为的”高大上”，都是被问题逼出来的"></a>一、前言：你以为的”高大上”，都是被问题逼出来的</h1><p>很多刚接触系统架构的人，会有一种错觉：</p>
+<blockquote>
+<p>大厂系统之所以复杂，是因为他们一开始就设计了一套复杂架构。</p>
+</blockquote>
+<p>于是我们看到 Kubernetes、微服务、分布式数据库、消息队列、云原生……这些名词组合起来，好像代表着”高级架构”。</p>
+<p>但真实世界里的架构演进，并不是这样的。没有哪个团队一开始立项，就坐下来设计：</p>
+<blockquote>
+<p>“未来我们需要 500 个微服务，需要 Kubernetes 集群，需要服务治理体系。”</p>
+</blockquote>
+<p>真实情况往往是：凌晨两点，服务器报警，数据库 CPU 100%，用户投诉 —— “为什么支付成功了，订单还显示处理中？”开发人员打开电脑：”看来，我们又需要改架构了。”</p>
+<h2 id="架构不是设计出来的，而是被问题逼出来的"><a href="#架构不是设计出来的，而是被问题逼出来的" class="headerlink" title="架构不是设计出来的，而是被问题逼出来的"></a>架构不是设计出来的，而是被问题逼出来的</h2><p>一个系统的发展过程，通常是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">用户少，一台服务器够用</span><br><span class="line">    ↓</span><br><span class="line">用户增加，服务器压力增加</span><br><span class="line">    ↓</span><br><span class="line">访问量继续增长，需要更多服务器</span><br><span class="line">    ↓</span><br><span class="line">数据越来越多，数据库成为瓶颈</span><br><span class="line">    ↓</span><br><span class="line">业务越来越复杂，代码越来越难维护</span><br><span class="line">    ↓</span><br><span class="line">团队越来越大，需要服务拆分</span><br><span class="line">    ↓</span><br><span class="line">服务越来越多，需要自动化管理</span><br><span class="line">    ↓</span><br><span class="line">机器越来越多，需要云原生</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>每一层架构，与其说是追求技术先进，不如说是为了解决当时最痛的问题。</strong></p>
+</blockquote>
+<p>本文通过一个电商项目，完整走一遍系统架构的演进过程。项目名字叫<strong>淘淘商城</strong>，它经历了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 台服务器 -&gt; 应用集群 -&gt; 数据库集群 -&gt; 分布式系统 -&gt; 微服务 -&gt; 容器化 -&gt; 云原生</span><br></pre></td></tr></table></figure>
+
+<p>看看那些看起来复杂的架构技术，到底是如何一步一步出现的。</p>
+<p>需要注意的是，真实企业不会严格按照这条路线演进，不同公司的技术选择取决于业务规模、团队能力和历史包袱。本文展示的是一种典型的互联网系统演进路径。</p>
+<hr>
+<h1 id="二、故事开始：小团队做了一家电商网站"><a href="#二、故事开始：小团队做了一家电商网站" class="headerlink" title="二、故事开始：小团队做了一家电商网站"></a>二、故事开始：小团队做了一家电商网站</h1><p>故事发生在某一天。领导要求你和两个同事做一个电商网站。功能很简单：用户注册登录、浏览商品、添加购物车、提交订单、在线支付。</p>
+<p>第一版系统非常简单：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">      用户</span><br><span class="line">       |</span><br><span class="line">       |</span><br><span class="line">  一台服务器</span><br><span class="line">┌─────────────┐</span><br><span class="line">│ Web 应用     │</span><br><span class="line">│ MySQL       │</span><br><span class="line">│ 图片文件     │</span><br><span class="line">└─────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>所有东西全部放在一台服务器：页面代码、后端程序、数据库、图片文件。</p>
+<hr>
+<h1 id="阶段-1：单机架构"><a href="#阶段-1：单机架构" class="headerlink" title="阶段 1：单机架构"></a>阶段 1：单机架构</h1><p>这个阶段最大的目标不是性能，而是：**快速验证产品是否有人使用。**技术非常简单：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Linux + Apache/Nginx + MySQL + PHP/Java</span><br></pre></td></tr></table></figure>
+
+<p>也就是经典的 LAMP：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>L</td>
+<td>Linux</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Apache</td>
+</tr>
+<tr>
+<td>M</td>
+<td>MySQL</td>
+</tr>
+<tr>
+<td>P</td>
+<td>PHP</td>
+</tr>
+</tbody></table>
+<p>当然，现在也可能使用 Java Spring Boot、Node.js、Go，但思想一样：一个应用，一个数据库，一台服务器。</p>
+<p>很多人认为”单机架构太简单，不算架构。”这是错误的。优秀架构的第一原则：</p>
+<blockquote>
+<p><strong>当前阶段够用，就是好架构。</strong></p>
+</blockquote>
+<p>如果每天只有几百个用户，部署 Kubernetes、微服务、消息队列、分布式数据库，不是先进，而是在制造复杂度。</p>
+<h2 id="单机架构的问题"><a href="#单机架构的问题" class="headerlink" title="单机架构的问题"></a>单机架构的问题</h2><p>随着用户增长，每天 100 个用户变成 10000 个用户，服务器开始出现问题：CPU 100%、内存不足、磁盘 IO 很高。</p>
+<p>原因在于应用程序和数据库抢同一台机器资源。用户访问商品时，应用需要 CPU 进行计算，数据库也需要 CPU 进行查询，两个系统互相影响。于是第一次架构升级出现。</p>
+<hr>
+<h1 id="阶段-2：应用与数据分离"><a href="#阶段-2：应用与数据分离" class="headerlink" title="阶段 2：应用与数据分离"></a>阶段 2：应用与数据分离</h1><h2 id="问题：应用和数据库抢资源"><a href="#问题：应用和数据库抢资源" class="headerlink" title="问题：应用和数据库抢资源"></a>问题：应用和数据库抢资源</h2><p>解决方案：拆成两台服务器。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">   用户</span><br><span class="line">    |</span><br><span class="line">    |</span><br><span class="line">应用服务器</span><br><span class="line">    |</span><br><span class="line">    |</span><br><span class="line">数据库服务器</span><br></pre></td></tr></table></figure>
+
+<p>应用负责接收请求和业务计算，数据库负责数据存储和查询，两者职责分开。应用和数据库拆分后，两者拥有独立的 CPU、内存和磁盘资源，不再互相争抢，同时也为后续独立扩展创造了条件。</p>
+<h2 id="单点故障（SPOF）"><a href="#单点故障（SPOF）" class="headerlink" title="单点故障（SPOF）"></a>单点故障（SPOF）</h2><p>但这里出现一个新问题——数据库仍然是<strong>单点故障</strong>。SPOF（Single Point of Failure）的意思是：一个组件出现故障，整个系统不可用。例如数据库挂了，虽然应用服务器还活着，但没有数据库，业务无法运行。</p>
+<p>下一步，我们需要解决单台服务器性能不足的问题。</p>
+<hr>
+<h1 id="阶段-3：应用服务器集群"><a href="#阶段-3：应用服务器集群" class="headerlink" title="阶段 3：应用服务器集群"></a>阶段 3：应用服务器集群</h1><h2 id="问题：一台应用服务器扛不住了"><a href="#问题：一台应用服务器扛不住了" class="headerlink" title="问题：一台应用服务器扛不住了"></a>问题：一台应用服务器扛不住了</h2><p>淘淘商城第一次搞双十一促销，活动开始 10 分钟，50 万人涌入首页。突然 10 万用户同时访问商品页面，应用服务器 CPU 直接 100%。</p>
+<p>最直接的方法是买更大的机器，这叫<strong>垂直扩展（Scale Up）</strong>——从 8 核 CPU 升到 32 核、64 核。但机器性能存在上限，不可能无限增加。</p>
+<h2 id="水平扩展（Scale-Out）"><a href="#水平扩展（Scale-Out）" class="headerlink" title="水平扩展（Scale Out）"></a>水平扩展（Scale Out）</h2><p>于是出现另一种思路：增加机器数量。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">         用户</span><br><span class="line">          |</span><br><span class="line">    负载均衡服务器</span><br><span class="line">    /     |      \</span><br><span class="line">应用A    应用B    应用C</span><br></pre></td></tr></table></figure>
+
+<h2 id="负载均衡（Load-Balancer）"><a href="#负载均衡（Load-Balancer）" class="headerlink" title="负载均衡（Load Balancer）"></a>负载均衡（Load Balancer）</h2><p>负载均衡的作用是把用户请求分发给不同服务器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">请求1 → 应用A</span><br><span class="line">请求2 → 应用B</span><br><span class="line">请求3 → 应用C</span><br><span class="line">请求4 → 应用A</span><br></pre></td></tr></table></figure>
+
+<p>常见技术有 Nginx、HAProxy、LVS、云负载均衡等。</p>
+<h2 id="Session-共享问题"><a href="#Session-共享问题" class="headerlink" title="Session 共享问题"></a>Session 共享问题</h2><p>集群化后出现一个重要问题。假设用户登录时请求被分到应用服务器 A，Session（保存用户 ID、登录状态、购物车信息的凭证）存在 A 上。第二次访问时负载均衡把请求分到了 B，但 B 不知道用户已经登录，因为 Session 在 A。</p>
+<h3 id="方法-1：Session-复制"><a href="#方法-1：Session-复制" class="headerlink" title="方法 1：Session 复制"></a>方法 1：Session 复制</h3><p>服务器之间互相同步 Session。问题是服务器越多，同步成本越高。</p>
+<h3 id="方法-2：集中存储-Session"><a href="#方法-2：集中存储-Session" class="headerlink" title="方法 2：集中存储 Session"></a>方法 2：集中存储 Session</h3><p>用 Redis 集中存储，所有应用服务器共享 Session：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">应用A</span><br><span class="line">应用B  →  Redis Session</span><br><span class="line">应用C</span><br></pre></td></tr></table></figure>
+
+<h3 id="方法-3：无状态设计（Stateless）"><a href="#方法-3：无状态设计（Stateless）" class="headerlink" title="方法 3：无状态设计（Stateless）"></a>方法 3：无状态设计（Stateless）</h3><p>这是更重要的架构思想——服务本身不保存用户状态。不用 Session，改成 Token：用户登录后服务器生成 Token，客户端保存 Token，以后每次请求携带 Token，任何服务器都可以处理请求。（Session是“服务端记住你”，Token是“你自己证明你是谁”。）</p>
+<p>一个服务越无状态，就越容易水平扩展。这也是后来微服务、云原生大量采用这种思想的原因。后面我们会看到，Kubernetes 中服务的自动扩缩容，本质上就依赖服务尽可能无状态——如果某个实例保存了用户状态，实例的增减都会变得复杂。</p>
+<hr>
+<h1 id="阶段-4：数据库缓存"><a href="#阶段-4：数据库缓存" class="headerlink" title="阶段 4：数据库缓存"></a>阶段 4：数据库缓存</h1><h2 id="问题：数据库快撑不住了"><a href="#问题：数据库快撑不住了" class="headerlink" title="问题：数据库快撑不住了"></a>问题：数据库快撑不住了</h2><p>双十一当天，首页爆款商品被用户疯狂刷新，数据库查询量飙升到每秒 10 万次。经过前几个阶段，系统已经变成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">         用户</span><br><span class="line">          |</span><br><span class="line">       负载均衡</span><br><span class="line">          |</span><br><span class="line">  -----------------</span><br><span class="line">  |       |       |</span><br><span class="line">应用A   应用B    应用C</span><br><span class="line">  \       |      / </span><br><span class="line">      MySQL数据库</span><br></pre></td></tr></table></figure>
+
+<p>应用服务器已经可以水平扩展，但新的瓶颈出现了——数据库压力越来越大。</p>
+<h3 id="为什么数据库容易成为瓶颈？"><a href="#为什么数据库容易成为瓶颈？" class="headerlink" title="为什么数据库容易成为瓶颈？"></a>为什么数据库容易成为瓶颈？</h3><p>数据库承担了太多事情。例如用户打开商品详情页，一个热门商品可能一天被访问 100 万次，但商品信息可能几个小时都不会变化（商品名称、价格、库存等）。这些数据大量用户重复读取，如果每次都查询数据库，数据库压力巨大。</p>
+<h2 id="缓存（Cache）"><a href="#缓存（Cache）" class="headerlink" title="缓存（Cache）"></a>缓存（Cache）</h2><p>缓存的核心思想是：把经常访问的数据，提前放到一个更快的位置。</p>
+<p>以前用户请求需要经过应用再到 MySQL 返回商品信息，现在加了 Redis 缓存后，应用先查缓存，有数据直接返回，没数据再查数据库并写入缓存。这个流程叫 <strong>Cache Aside Pattern（旁路缓存模式）</strong>：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">      用户请求</span><br><span class="line">         |</span><br><span class="line">         ▼</span><br><span class="line">      查询缓存</span><br><span class="line">         |</span><br><span class="line">   ----------------</span><br><span class="line">   |              |</span><br><span class="line"> 有数据          没数据</span><br><span class="line">   |              |</span><br><span class="line">   ▼              ▼</span><br><span class="line">返回数据       查询数据库</span><br><span class="line">                  |</span><br><span class="line">                  ▼</span><br><span class="line">              写入缓存</span><br><span class="line">                  |</span><br><span class="line">                  ▼</span><br><span class="line">              返回数据</span><br></pre></td></tr></table></figure>
+
+<p>缓存速度更快的原因在于：Redis 直接操作内存数据结构，避免了大量磁盘 IO 和复杂的查询优化过程，因此在简单 KV 访问场景下通常具有更低的延迟。</p>
+<p>常见缓存技术：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>技术</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>浏览器缓存</td>
+<td>HTTP Cache</td>
+</tr>
+<tr>
+<td>CDN缓存</td>
+<td>CDN</td>
+</tr>
+<tr>
+<td>本地缓存</td>
+<td>Caffeine</td>
+</tr>
+<tr>
+<td>分布式缓存</td>
+<td>Redis</td>
+</tr>
+</tbody></table>
+<p>实际生产环境通常采用多级缓存，而不是单独依赖 Redis。一次请求可能依次经过：浏览器缓存 → CDN 缓存 → Nginx 缓存 → 本地缓存（Caffeine） → 分布式缓存（Redis） → 数据库。每一层都在尝试拦截请求，减少对下一层的压力。</p>
+<h3 id="缓存带来的新问题"><a href="#缓存带来的新问题" class="headerlink" title="缓存带来的新问题"></a>缓存带来的新问题</h3><p>缓存不是简单加一个 Redis 就结束，真实系统会遇到以下问题：</p>
+<p><strong>缓存穿透（Cache Penetration）</strong>：查询一个不存在的数据，例如攻击者不断请求 <code>商品ID = 999999999</code>，Redis 没有、MySQL 也没有，每次请求都直接打到数据库。解决方式有两种：一是缓存空值（Redis 保存 NULL，下次直接返回），二是使用**布隆过滤器（Bloom Filter）**提前判断数据是否可能存在，不存在直接拒绝。</p>
+<p><strong>缓存击穿（Cache Breakdown）</strong>：某个热点数据突然过期，例如 iPhone X 的缓存在 10:00 过期，100 万用户同时访问，发现缓存不存在，同时访问数据库，数据库瞬间压力巨大。解决方式包括：热点数据永不过期、加锁控制、异步更新缓存。</p>
+<p><strong>缓存雪崩（Cache Avalanche）</strong>：大量缓存同时失效，例如所有商品缓存 30 分钟过期，到时间点后大量请求同时进入数据库导致崩溃。解决方式是缓存过期时间增加随机值（如 30 分钟 + 随机几分钟），让失效时间分散。</p>
+<hr>
+<h1 id="阶段-5：数据库读写分离"><a href="#阶段-5：数据库读写分离" class="headerlink" title="阶段 5：数据库读写分离"></a>阶段 5：数据库读写分离</h1><h2 id="数据库读写分离"><a href="#数据库读写分离" class="headerlink" title="数据库读写分离"></a>数据库读写分离</h2><p>虽然缓存解决了一部分读压力，但订单数据、支付数据必须写数据库，写入压力仍然存在。</p>
+<p>数据库既负责读（查询商品、订单、用户），又负责写（创建订单、支付、修改库存），读写互相影响。解决方案是拆成**主库（Master）**负责写操作，**从库（Slave）**负责读操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">        应用</span><br><span class="line">          |</span><br><span class="line">  ----------------</span><br><span class="line">  |              |</span><br><span class="line">写请求          读请求</span><br><span class="line">  |              |</span><br><span class="line">  ▼              ▼</span><br><span class="line">主数据库    从数据库1、从数据库2</span><br><span class="line">               </span><br></pre></td></tr></table></figure>
+
+<h3 id="主从复制与主从延迟"><a href="#主从复制与主从延迟" class="headerlink" title="主从复制与主从延迟"></a>主从复制与主从延迟</h3><p>主库数据会复制到从库。例如用户下单后订单写入主库，然后同步到从库。但复制不是瞬间完成的，这就产生了<strong>主从延迟（Replication Lag）</strong>。</p>
+<p>例如 10:00:00 用户支付成功，主库订单状态变为已支付，10:00:01 才复制到从库。如果此时用户刷新订单读取的是从库，可能看到”未支付”。</p>
+<blockquote>
+<p>读写分离的代价：用一定的数据一致性换取更高的读取能力。</p>
+</blockquote>
+<p>电商系统常见策略是：支付成功后立即查询走主库，普通商品浏览走从库。</p>
+<hr>
+<h1 id="阶段-6：分库分表"><a href="#阶段-6：分库分表" class="headerlink" title="阶段 6：分库分表"></a>阶段 6：分库分表</h1><h2 id="问题：数据越来越多，单个数据库装不下了"><a href="#问题：数据越来越多，单个数据库装不下了" class="headerlink" title="问题：数据越来越多，单个数据库装不下了"></a>问题：数据越来越多，单个数据库装不下了</h2><p>几年之后，淘淘商城数据增长，订单表从 100 万条变成 10 亿条，查询越来越慢，数据库磁盘越来越大，备份越来越慢。继续买更大的数据库服务器（垂直扩展）也有极限，于是进入分库分表。</p>
+<p>分库分表的核心思想是：把原来一个巨大的数据库，拆成多个更小的数据库和数据表。</p>
+<h2 id="垂直分库"><a href="#垂直分库" class="headerlink" title="垂直分库"></a>垂直分库</h2><p>按照业务拆分。以前一个数据库包含用户表、商品表、订单表、支付表、库存表，拆成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">用户数据库 → 用户表</span><br><span class="line">商品数据库 → 商品表</span><br><span class="line">订单数据库 → 订单表</span><br><span class="line">支付数据库 → 支付表</span><br></pre></td></tr></table></figure>
+
+<p>好处是不同业务压力隔离，商品查询很多不会影响支付系统。</p>
+<h2 id="水平分表"><a href="#水平分表" class="headerlink" title="水平分表"></a>水平分表</h2><p>垂直分库解决了业务隔离，但单张表仍然可能太大（如 10 亿订单）。水平分表是把一张大表拆成多张结构相同的小表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">order_0</span><br><span class="line">order_1</span><br><span class="line">order_2</span><br><span class="line">order_3</span><br></pre></td></tr></table></figure>
+
+<h3 id="分片键（Sharding-Key）"><a href="#分片键（Sharding-Key）" class="headerlink" title="分片键（Sharding Key）"></a>分片键（Sharding Key）</h3><p>拆分需要依据一个规则，这就是分片键。例如按照 <code>user_id</code> 分片，规则是 <code>user_id % 4</code>：</p>
+<ul>
+<li>用户 10001：<code>10001 % 4 = 1</code>，保存到 order_1</li>
+<li>用户 10002：<code>10002 % 4 = 2</code>，保存到 order_2</li>
+</ul>
+<h2 id="分库分表带来的新问题"><a href="#分库分表带来的新问题" class="headerlink" title="分库分表带来的新问题"></a>分库分表带来的新问题</h2><p>分库分表解决了性能问题，但带来了新的复杂度。以前一个 SQL 就能查到的数据，现在不知道数据在哪个表，可能需要查询所有分片。</p>
+<p><strong>跨库 Join</strong>：以前 <code>订单表 join 用户表</code> 很简单，现在两个表可能不在一个数据库。</p>
+<p><strong>分布式事务</strong>：下订单需要订单数据库、库存数据库、支付数据库三个数据库同时成功，如何保证一致性？这就是分布式事务问题。</p>
+<p><strong>数据倾斜（Data Skew）</strong>：按照用户 ID 分片，但某些大客户订单特别多，导致某个分片数据量远超其他分片（如 order_0 100 万、order_1 100 万、order_2 10 亿）。这种情况也叫”热点分片”——某个分片因为大客户（如大卖家）的存在而承载了远超其他分片的数据和流量。</p>
+<p>应用原本执行 <code>select * from order</code>，现在需要经过：<strong>SQL 解析 → 计算分片规则 → 定位目标数据库 → 合并结果</strong>。这个过程叫 <strong>SQL 路由</strong>，是分片中间件的核心能力。</p>
+<p>常见工具有 Apache ShardingSphere、MyCat，它们提供分片规则管理和 SQL 路由能力。</p>
+<hr>
+<h1 id="阶段-7：CDN-与反向代理"><a href="#阶段-7：CDN-与反向代理" class="headerlink" title="阶段 7：CDN 与反向代理"></a>阶段 7：CDN 与反向代理</h1><h2 id="问题：用户遍布全国，访问延迟不同"><a href="#问题：用户遍布全国，访问延迟不同" class="headerlink" title="问题：用户遍布全国，访问延迟不同"></a>问题：用户遍布全国，访问延迟不同</h2><p>随着业务增长，新的需求出现。</p>
+<h2 id="CDN（Content-Delivery-Network）"><a href="#CDN（Content-Delivery-Network）" class="headerlink" title="CDN（Content Delivery Network）"></a>CDN（Content Delivery Network）</h2><p>CDN 即内容分发网络。以前服务器在北京，上海、广州、成都、深圳的用户访问距离不同，导致延迟不同。CDN 把内容提前复制到边缘节点，用户访问附近的 CDN 节点获取图片等静态资源，速度大幅提升。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户 → 附近 CDN节点 → 返回图片</span><br></pre></td></tr></table></figure>
+
+<p>CDN 适合缓存图片、CSS、JS、视频、下载文件等静态资源。</p>
+<h2 id="反向代理（Reverse-Proxy）"><a href="#反向代理（Reverse-Proxy）" class="headerlink" title="反向代理（Reverse Proxy）"></a>反向代理（Reverse Proxy）</h2><p>CDN 后面通常还有反向代理（如 Nginx），客户端不知道真实服务器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户 → Nginx → 内部服务</span><br></pre></td></tr></table></figure>
+
+<p>反向代理可以提供：</p>
+<ul>
+<li><strong>SSL 卸载</strong>：HTTPS 加密由 Nginx 完成，而不是每个应用处理</li>
+<li><strong>请求转发</strong>：<code>/api/user</code> 转发到用户服务，<code>/api/order</code> 转发到订单服务</li>
+<li><strong>安全防护</strong>：限制异常请求、隐藏内部服务器</li>
+</ul>
+<hr>
+<h1 id="阶段-8：搜索引擎与专业存储"><a href="#阶段-8：搜索引擎与专业存储" class="headerlink" title="阶段 8：搜索引擎与专业存储"></a>阶段 8：搜索引擎与专业存储</h1><h2 id="问题：商品搜索和多模型存储"><a href="#问题：商品搜索和多模型存储" class="headerlink" title="问题：商品搜索和多模型存储"></a>问题：商品搜索和多模型存储</h2><h2 id="Elasticsearch-搜索引擎"><a href="#Elasticsearch-搜索引擎" class="headerlink" title="Elasticsearch 搜索引擎"></a>Elasticsearch 搜索引擎</h2><p>商品搜索越来越复杂。以前 MySQL 用 <code>like &#39;%手机%&#39;</code> 查询，数据少没问题，但商品达到千万级时，用户搜索”苹果 手机 256G 黑色”，关系数据库并不是为海量全文检索场景设计的。</p>
+<p>Elasticsearch 基于**倒排索引（Inverted Index）**实现近乎实时的全文检索。普通数据库像查字典逐条查找，倒排索引像字典目录——先查关键词，再找到对应商品 ID：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">手机 → 商品1、商品5、商品20</span><br></pre></td></tr></table></figure>
+
+<p>搜索速度大幅提升。</p>
+<h2 id="多模型存储"><a href="#多模型存储" class="headerlink" title="多模型存储"></a>多模型存储</h2><p>系统越来越复杂，不同数据有不同需求：用户行为（浏览记录、点击记录）适合文档存储，订单需要强一致事务，日志需要海量写入。不可能全部放 MySQL，于是出现多模型存储：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>技术</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>订单交易</td>
+<td>MySQL</td>
+</tr>
+<tr>
+<td>缓存</td>
+<td>Redis</td>
+</tr>
+<tr>
+<td>搜索</td>
+<td>Elasticsearch</td>
+</tr>
+<tr>
+<td>文档数据</td>
+<td>MongoDB</td>
+</tr>
+<tr>
+<td>海量日志</td>
+<td>大数据平台</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>不是某个数据库不够强，而是不同问题需要不同工具。</p>
+</blockquote>
+<p>到这里，淘淘商城已经从一台服务器演进到应用集群、缓存、数据库集群、分库分表、CDN + 搜索 + 多存储。但新的问题出现——<strong>代码越来越难维护</strong>。</p>
+<hr>
+<h1 id="阶段-9：服务化、微服务与微服务治理"><a href="#阶段-9：服务化、微服务与微服务治理" class="headerlink" title="阶段 9：服务化、微服务与微服务治理"></a>阶段 9：服务化、微服务与微服务治理</h1><h2 id="问题：代码越来越难维护"><a href="#问题：代码越来越难维护" class="headerlink" title="问题：代码越来越难维护"></a>问题：代码越来越难维护</h2><p>经过前面的演进，淘淘商城已经不是一个简单的网站，系统里面有用户系统、商品系统、订单系统、库存系统、支付系统、物流系统、营销系统。但最开始所有代码都写在一个项目里面，这就是<strong>单体应用（Monolithic Application）</strong>。</p>
+<h3 id="什么是单体应用？"><a href="#什么是单体应用？" class="headerlink" title="什么是单体应用？"></a>什么是单体应用？</h3><p>一个应用包含了所有业务功能，一个代码仓库、一个工程、一个部署包：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">taotao-shop 应用</span><br><span class="line">├── 用户模块</span><br><span class="line">├── 商品模块</span><br><span class="line">├── 订单模块</span><br><span class="line">├── 支付模块</span><br><span class="line">├── 库存模块</span><br><span class="line">└── 营销模块</span><br></pre></td></tr></table></figure>
+
+<p>启动时一个命令 <code>java -jar taotao-shop.jar</code> 即可运行整个系统。</p>
+<h3 id="单体应用的早期优势"><a href="#单体应用的早期优势" class="headerlink" title="单体应用的早期优势"></a>单体应用的早期优势</h3><p>很多优秀系统最初都是单体，原因是简单：开发简单（所有代码在一起，调用是直接方法调用）、部署简单（一个包直接发布）、调试简单（一个项目里面排查）。</p>
+<h3 id="单体应用的三个痛点"><a href="#单体应用的三个痛点" class="headerlink" title="单体应用的三个痛点"></a>单体应用的三个痛点</h3><p>随着业务增长，问题开始出现：</p>
+<p><strong>代码越来越复杂</strong>：几年后项目 100 万行代码、100 个开发人员，修改商品功能可能影响订单，修改支付可能影响库存。</p>
+<p><strong>发布越来越困难</strong>：只修改优惠券模块，但必须重新编译、重新打包、重新部署整个应用。</p>
+<p><strong>无法独立扩容</strong>：双十一期间商品浏览 100 倍增长，但订单系统压力正常，单体应用只能整体扩容（原来 2 台增加 20 台），真正需要扩容的是商品模块，造成资源浪费。</p>
+<h2 id="服务化（SOA）与微服务架构"><a href="#服务化（SOA）与微服务架构" class="headerlink" title="服务化（SOA）与微服务架构"></a>服务化（SOA）与微服务架构</h2><p><strong>SOA（Service Oriented Architecture）</strong> 是大型企业早期的服务化思想，强调将业务拆分为可复用的服务，通常依赖 ESB（企业服务总线）进行通信。微服务是 SOA 的进一步演进，更强调：小粒度、自治、独立部署、去中心化——每个服务可以有自己的数据库和技术栈，服务之间通过轻量级协议通信。不过 SOA 并未被淘汰，在企业内部系统集成（如银行、保险等行业的 ESB 场景）中仍然广泛使用，微服务则更偏向互联网高并发场景下的轻量级服务化。</p>
+<p>新的思想出现——按业务能力拆成多个独立服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">用户服务</span><br><span class="line">商品服务</span><br><span class="line">订单服务</span><br><span class="line">库存服务</span><br><span class="line">支付服务</span><br></pre></td></tr></table></figure>
+
+<p>每个服务独立开发、独立部署、独立扩容。例如商品访问量巨大时，只增加商品服务实例，而不是扩容整个商城。这就是<strong>微服务架构（Microservices Architecture）</strong>。</p>
+<h3 id="RPC（Remote-Procedure-Call）"><a href="#RPC（Remote-Procedure-Call）" class="headerlink" title="RPC（Remote Procedure Call）"></a>RPC（Remote Procedure Call）</h3><p>服务拆开后，订单服务调用库存服务，两个服务可能在不同机器，怎么办？RPC（远程过程调用）让你像调用本地方法一样调用远程服务器上的方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">订单服务（服务器A）</span><br><span class="line">    |</span><br><span class="line">    | RPC调用</span><br><span class="line">    |</span><br><span class="line">库存服务（服务器B）</span><br></pre></td></tr></table></figure>
+
+<p>常见 RPC 框架有 Dubbo、gRPC、Spring Cloud OpenFeign。初学者可能会问：为什么不用 HTTP？微服务内部调用通常采用 RPC 框架，因为 RPC 可以提供服务治理、接口定义、高效序列化等能力。当然，HTTP&#x2F;REST 在对外开放的接口场景中仍然大量使用。</p>
+<h3 id="服务发现（Service-Discovery）与注册中心"><a href="#服务发现（Service-Discovery）与注册中心" class="headerlink" title="服务发现（Service Discovery）与注册中心"></a>服务发现（Service Discovery）与注册中心</h3><p>服务越来越多，库存服务可能有多个实例（192.168.1.10、192.168.1.11、192.168.1.12），订单服务怎么知道调用哪个地址？</p>
+<p>服务发现引入<strong>注册中心</strong>（如 Nacos）。服务启动时主动注册地址，调用方查询注册中心获取可用实例列表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">         注册中心</span><br><span class="line">            |</span><br><span class="line">   ------------------</span><br><span class="line">   |        |        |</span><br><span class="line">用户服务 商品服务 库存服务</span><br></pre></td></tr></table></figure>
+
+<p>常见注册中心有 Nacos、Eureka、Zookeeper、Consul。</p>
+<p>此外，微服务拆分后带来的分布式事务问题，也有成熟的解决思路：<strong>Saga 模式</strong>将大事务拆分为多个本地事务，每一步都有对应的补偿操作；<strong>TCC（Try-Confirm-Cancel）</strong> 通过预留资源的方式保证最终一致性；阿里开源的 <strong>Seata</strong> 框架则提供了开箱即用的分布式事务解决方案。</p>
+<h2 id="配置中心（Configuration-Center）"><a href="#配置中心（Configuration-Center）" class="headerlink" title="配置中心（Configuration Center）"></a>配置中心（Configuration Center）</h2><p>服务越来越多后，每个服务都有数据库地址、开关配置、服务参数等配置项，逐个管理非常低效。配置中心统一管理所有服务的配置，修改配置无需重新部署。例如 Nacos 可以同时承担注册中心和配置中心两个角色。</p>
+<p>微服务数量继续增长（100 个服务、500 个实例），新的治理问题出现。</p>
+<h2 id="熔断（Circuit-Breaker）"><a href="#熔断（Circuit-Breaker）" class="headerlink" title="熔断（Circuit Breaker）"></a>熔断（Circuit Breaker）</h2><p>服务挂了怎么办？订单服务调用库存服务，库存服务故障，如果所有请求继续调用可能导致整个系统雪崩。熔断类似电路保险丝，当某个服务持续失败时暂时停止调用，返回默认结果（如购物车显示库存”不确定”，但网站仍然可以访问）。常见技术有 Sentinel、Hystrix。</p>
+<h2 id="降级（Fallback）"><a href="#降级（Fallback）" class="headerlink" title="降级（Fallback）"></a>降级（Fallback）</h2><p>系统压力过大时关闭非核心功能。电商系统核心功能是登录、下单、支付，非核心是”猜你喜欢”、商品推荐。压力过大时关闭推荐，保证交易流程。</p>
+<h2 id="限流（Rate-Limit）"><a href="#限流（Rate-Limit）" class="headerlink" title="限流（Rate Limit）"></a>限流（Rate Limit）</h2><p>限制请求数量，例如支付接口每秒最多 10000 请求，超过则排队或拒绝。</p>
+<h2 id="全链路追踪（Distributed-Tracing）"><a href="#全链路追踪（Distributed-Tracing）" class="headerlink" title="全链路追踪（Distributed Tracing）"></a>全链路追踪（Distributed Tracing）</h2><p>微服务时代一个请求可能经过几十个服务，出现慢问题时不知道哪个服务慢。链路追踪可以查看一次请求在各服务的耗时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">网关：20ms</span><br><span class="line">订单服务：50ms</span><br><span class="line">库存服务：500ms  ← 发现这里慢</span><br><span class="line">支付服务：40ms</span><br></pre></td></tr></table></figure>
+
+<p>常见技术有 SkyWalking、Jaeger、Zipkin。</p>
+<p>到这里，淘淘商城完成了从单体应用到服务化再到微服务的演进。此时公司已经扩张到 200 名开发人员，一个项目中多人修改频繁产生代码冲突，独立部署和独立扩容成为刚需。但服务越来越多，谁来管理这些服务？100 个服务每个需要安装环境、配置依赖、启动停止、扩容，人工已经无法管理。</p>
+<hr>
+<h1 id="阶段-10：消息队列和异步通信"><a href="#阶段-10：消息队列和异步通信" class="headerlink" title="阶段 10：消息队列和异步通信"></a>阶段 10：消息队列和异步通信</h1><h2 id="消息队列与异步通信"><a href="#消息队列与异步通信" class="headerlink" title="消息队列与异步通信"></a>消息队列与异步通信</h2><p>服务之间调用越来越复杂，一次用户下单需要调用订单服务、库存服务、支付服务、优惠券服务、物流服务，链路越来越长，任何一个服务慢都会影响整个请求。</p>
+<p>同步方式下，如果短信服务慢，整个下单变慢。消息队列把流程改成异步：订单服务只负责创建订单，其他事情（扣库存、加积分、发通知）通过消息队列异步处理。这叫<strong>异步解耦</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">用户 → 订单服务 → 消息队列</span><br><span class="line">                    |</span><br><span class="line">            -------------------</span><br><span class="line">            |        |        |</span><br><span class="line">          库存      积分      通知</span><br></pre></td></tr></table></figure>
+
+<p>消息队列还有<strong>削峰填谷</strong>的作用。秒杀活动 10 秒内 100 万请求，如果全部直接访问数据库会崩溃，消息队列像缓冲池，让系统慢慢处理。</p>
+<p>消息队列还经常用于实现分布式系统中的<strong>最终一致性（Eventual Consistency）</strong>。例如订单创建成功后，积分稍后到账——各服务之间不要求强一致，但保证最终数据一致。这在电商系统中非常常见。</p>
+<p>常见消息队列有 Kafka、RocketMQ、RabbitMQ。</p>
+<hr>
+<h1 id="阶段-11：容器化与自动化交付"><a href="#阶段-11：容器化与自动化交付" class="headerlink" title="阶段 11：容器化与自动化交付"></a>阶段 11：容器化与自动化交付</h1><h2 id="问题：我的电脑可以运行，服务器为什么不行？"><a href="#问题：我的电脑可以运行，服务器为什么不行？" class="headerlink" title="问题：我的电脑可以运行，服务器为什么不行？"></a>问题：我的电脑可以运行，服务器为什么不行？</h2><p>这是软件开发历史上的经典问题。开发环境 Java 、Tomcat、依赖包、配置文件都正常，但服务器上 Java 版本不同、环境不同、配置不同，启动失败。原因在于应用依赖运行环境。</p>
+<h2 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h2><p>Docker 解决了这个问题，核心思想是：把应用和运行环境一起打包。</p>
+<p>以前部署需要代码 + 服务器环境 + 各种配置，现在打包成<strong>镜像（Image）</strong>，包含 Java 环境、代码、依赖、配置。运行时成为<strong>容器（Container）</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Docker Image → Docker Container → 运行应用</span><br></pre></td></tr></table></figure>
+
+<p>优势是<strong>一次构建，到处运行</strong>——开发环境、测试环境、生产环境都可以运行。</p>
+<h2 id="Kubernetes"><a href="#Kubernetes" class="headerlink" title="Kubernetes"></a>Kubernetes</h2><p>但 Docker 只解决单个容器运行问题。如果现在有 1000 个容器，需要自动部署、自动扩容、自动恢复、自动调度，于是进入 Kubernetes。</p>
+<hr>
+<h1 id="阶段-12：云原生"><a href="#阶段-12：云原生" class="headerlink" title="阶段 12：云原生"></a>阶段 12：云原生</h1><h2 id="问题：机器越来越多，人工运维无法承受"><a href="#问题：机器越来越多，人工运维无法承受" class="headerlink" title="问题：机器越来越多，人工运维无法承受"></a>问题：机器越来越多，人工运维无法承受</h2><p>现在系统可能有 1000 个服务实例、100 台服务器，每天可能发生服务挂掉、流量增加、发布升级、机器故障，人工处理已经不现实。</p>
+<h2 id="Kubernetes（K8S）"><a href="#Kubernetes（K8S）" class="headerlink" title="Kubernetes（K8S）"></a>Kubernetes（K8S）</h2><p>很多人理解 Kubernetes 就是管理 Docker，不完整。更准确地说，Kubernetes 是一个自动化管理容器的控制系统。</p>
+<p>你告诉 Kubernetes”订单服务运行 5 个实例”，它负责创建 5 个容器、监控状态、发现挂掉自动重新创建、流量增加自动扩容。这叫<strong>声明式管理（Declarative Management）</strong>。</p>
+<p>传统方式是告诉机器第一步执行命令、第二步启动服务、第三步修改配置。Kubernetes 是告诉系统”我想要什么状态”，例如 <code>replicas: 5</code> 表示要 5 个订单服务实例，至于怎么创建、在哪里运行、失败怎么办，由 Kubernetes 负责。这就是<strong>自动化控制</strong>。</p>
+<h2 id="云原生最终形态"><a href="#云原生最终形态" class="headerlink" title="云原生最终形态"></a>云原生最终形态</h2><p>最终淘淘商城架构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">                用户</span><br><span class="line">                 |</span><br><span class="line">                CDN</span><br><span class="line">                 |</span><br><span class="line">             API网关</span><br><span class="line">                 |</span><br><span class="line">         Kubernetes集群</span><br><span class="line">       -------------------</span><br><span class="line">       |        |        |</span><br><span class="line">     用户服务 商品服务 订单服务</span><br><span class="line">       |</span><br><span class="line">  -------------------------</span><br><span class="line">  |        |        |       |</span><br><span class="line">Redis    MQ      MySQL    ES</span><br><span class="line">       |</span><br><span class="line"> 注册中心 / 配置中心 / 监控 / 链路追踪</span><br><span class="line">       |</span><br><span class="line">     CI/CD流水线</span><br></pre></td></tr></table></figure>
+
+<p>开发人员不再关心哪台机器运行服务、服务挂了怎么办、如何扩容，只需要提交代码，流水线自动完成：代码提交 → 自动测试 → 构建镜像 → 部署 Kubernetes → 上线。这就是<strong>云原生（Cloud Native）</strong>。</p>
+<h3 id="云原生-≠-上云"><a href="#云原生-≠-上云" class="headerlink" title="云原生 ≠ 上云"></a>云原生 ≠ 上云</h3><p>把服务器从机房搬到云服务器，这叫<strong>云上部署</strong>。真正云原生强调：容器化、自动化、弹性伸缩、服务治理、可观测性、DevOps。</p>
+<hr>
+<h1 id="最后的思考：架构演进没有终点"><a href="#最后的思考：架构演进没有终点" class="headerlink" title="最后的思考：架构演进没有终点"></a>最后的思考：架构演进没有终点</h1><p>回头看淘淘商城：一台服务器 → 应用集群 → 数据库集群 → 分布式系统 → 微服务 → 容器 → 云原生。</p>
+<p>很多人问：”那是不是云原生就是最终答案？”不是。因为未来还会出现新的问题——流量继续增长、业务继续复杂、全球化部署、AI 服务加入系统，新的问题会产生新的架构。</p>
+<h2 id="架构的本质是什么？"><a href="#架构的本质是什么？" class="headerlink" title="架构的本质是什么？"></a>架构的本质是什么？</h2><p>不是堆技术，不是追求最新名词，而是：</p>
+<blockquote>
+<p><strong>在业务目标、技术成本和系统复杂度之间找到平衡。</strong></p>
+</blockquote>
+<p>真正优秀的架构不是最复杂的架构，而是：</p>
+<blockquote>
+<p><strong>在当前阶段，用最简单的方式解决最大的问题。</strong></p>
+</blockquote>
+<p>所以，不要问”我要不要上微服务？”，应该问”我的问题，是否需要微服务解决？”不要问”我要不要 Kubernetes？”，应该问”我的系统复杂度，是否已经超过人工管理能力？”</p>
+<p>也需要警惕过度拆分。团队不到 20 人时，单体应用的开发效率往往更高；过早拆分微服务可能导致”分布式单体”的灾难——服务间耦合严重，每次发布仍需要协调多个服务同时上线。架构演进不是单向的，有时拆分后发现调用链过长，合并回单体反而是更好的选择。</p>
+<p>最后送给所有架构学习者几句话：</p>
+<blockquote>
+<p><strong>每一个架构组件，最初都不是为了炫技而存在。它们只是某个团队，在某个深夜，面对一个已经撑不住的问题时，找到的一种解决方案。</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>架构不是设计出来的，而是在一次次真实挑战中演进出来的，技术演进不是能力增强，而是复杂度转移</strong>。</p>
+</blockquote>
+<hr>
+
+            </div>
+            <footer class="article-footer">
+                <div class="share-container">
+                    <div class="bdsharebuttonbox" 
+                        data-url="https://qq8697.github.io/blog/2019/12/Software-Architecture.html"
+                        data-id="cms2xglcz0000p0vcg82y8zgp"
+                        data-title="1 个故事讲清楚系统架构"
+                        data-description="1 个故事讲清楚系统架构">
+                        <a data-cmd="more"><i class="fa fa-share" style="margin-right: 5px"></i>Share</a>
+                    </div>
+                    <script>
+                    if (window.location.protocol === 'https') {
+                        var bdshare = document.querySelector(".bdsharebuttonbox");
+                        var url = bdshare.getAttribute('data-url');
+                        var id = bdshare.getAttribute('data-id');
+                        var title = bdshare.getAttribute('data-title');
+                        var description = bdshare.getAttribute('data-description');
+                        window._bd_share_config = {
+                            "common":{
+                                "bdUrl": url,
+                                "bdDesc": description,
+                                "bdText": title,
+                                "bdPic":"",
+                                "bdSnsKey":{},
+                                "bdMini":"2",
+                                "bdMiniList":false,
+                                "bdStyle":"0",
+                                "bdSize":"16"
+                            },
+                            "share":{"bdSize":16}
+                        };
+                        with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                    } else {
+                        document.querySelector('.bdsharebuttonbox').style.display = 'none';
+                    }
+                    </script>
+                    <style>
+                        .bdshare-button-style0-16 a,
+                        .bdshare-button-style0-16 .bds_more {
+                            background-image: none;
+                        }
+                    </style>
+                </div>
+            </footer>
+        </div>
+        <nav id="article-nav">
+            
+                <a href="/blog/2026/05/hexo-blog-migration.html" id="article-nav-newer" class="article-nav-link-wrap">
+                    <strong class="article-nav-caption">Newer</strong>
+                    <div class="article-nav-title">将静态博客迁移到 Hexo — 从手写 HTML 到 Markdown 自动化</div>
+                </a>
+            
+            
+                <a href="/blog/2018/10/markdown-grammar-guide.html" id="article-nav-older" class="article-nav-link-wrap">
+                    <strong class="article-nav-caption">Older</strong>
+                    <div class="article-nav-title">Markdown 语法指南</div>
+                </a>
+            
+        </nav>
+    </article>
+
+    <!-- Valine Comments -->
+    
+    <section id="comments">
+        <div id="valine-thread"></div>
+        <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+        <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+        <script>
+            new Valine({
+                el: '#valine-thread',
+                notify: false,
+                verify: false,
+                app_id: 'xIUWTw3eV1WAotjbFwGrIKMe-gzGzoHsz',
+                app_key: 'xSc2rEN1LKKnuh9N60iOBNdU',
+                placeholder: '评论的时候，留下在Gravatar注册时所使用的邮箱即可显示头像',
+                visitor: true
+            });
+            document.querySelector("#valine-thread .info").style.display='none'
+        </script>
+    </section>
+    
+</section>
+
+            <aside id="sidebar">
+    <!-- Recent Posts -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/07/mitre-attack-stix-guide.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/07/mitre-attack-stix-guide.html" class="title">MITRE ATT&amp;CK Enterprise STIX 数据详解</a></p>
+                            <p class="item-date"><time datetime="2026-07-15T12:00:00.000Z">2026-07-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/07/red-blue-purple-agent-comm.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/07/red-blue-purple-agent-comm.html" class="title">网络安全红蓝紫队 Agent 通信快速入门</a></p>
+                            <p class="item-date"><time datetime="2026-07-13T02:00:00.000Z">2026-07-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/07/Agent-Architecture.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/07/Agent-Architecture.html" class="title">1 个故事讲清楚 Agent 开发</a></p>
+                            <p class="item-date"><time datetime="2026-07-06T02:00:00.000Z">2026-07-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/07/ai-coding-best-practices.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/07/ai-coding-best-practices.html" class="title">AI Coding 最佳实践快速入门</a></p>
+                            <p class="item-date"><time datetime="2026-07-03T06:00:00.000Z">2026-07-03</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="item-thumbnail">
+                            <a href="/blog/2026/07/deepagents-quick-intro.html" class="thumbnail">
+                                <span class="thumbnail-image thumbnail-none"></span>
+                            </a>
+                        </div>
+                        <div class="item-inner">
+                            <p class="item-title"><a href="/blog/2026/07/deepagents-quick-intro.html" class="title">DeepAgents 快速入门</a></p>
+                            <p class="item-date"><time datetime="2026-07-02T02:00:00.000Z">2026-07-02</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/">HTTP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/HTTP/GET-POST/">GET & POST</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/">博客</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E5%8D%9A%E5%AE%A2/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/">技术</a><span class="category-list-count">14</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Agent/">Agent</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/">系统架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E6%8A%80%E6%9C%AF/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/">骑行</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/%E9%AA%91%E8%A1%8C/%E8%A3%85%E5%A4%87/">装备</a><span class="category-list-count">1</span></li></ul></li></ul>
+        </div>
+    </div>
+
+    <!-- Archives -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/07/">七月 2026</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/06/">六月 2026</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2026/05/">五月 2026</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2019/12/">十二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/10/">十月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/A2A/" rel="tag">A2A</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/AI-Coding/" rel="tag">AI Coding</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ATT-CK/" rel="tag">ATT&amp;CK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent/" rel="tag">Agent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent-%E5%BC%80%E5%8F%91/" rel="tag">Agent 开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" rel="tag">Agent开发</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" rel="tag">C2框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/CDN/" rel="tag">CDN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DeepAgents/" rel="tag">DeepAgents</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Elasticsearch/" rel="tag">Elasticsearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Evaluation/" rel="tag">Evaluation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Function-Calling/" rel="tag">Function Calling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub/" rel="tag">GitHub</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/GitHub-Pages/" rel="tag">GitHub Pages</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Guardrails/" rel="tag">Guardrails</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HTTP/" rel="tag">HTTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Kubernetes/" rel="tag">Kubernetes</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LLM/" rel="tag">LLM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LangChain/" rel="tag">LangChain</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LangGraph/" rel="tag">LangGraph</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LangSmith/" rel="tag">LangSmith</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" rel="tag">Loop工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCP/" rel="tag">MCP</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MITRE-ATT-CK/" rel="tag">MITRE ATT&amp;CK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Memory/" rel="tag">Memory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Multi-Agent/" rel="tag">Multi-Agent</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Planning/" rel="tag">Planning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Prompt/" rel="tag">Prompt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pull-Request/" rel="tag">Pull Request</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/RAG/" rel="tag">RAG</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/RPC/" rel="tag">RPC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ReAct/" rel="tag">ReAct</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/SRAM/" rel="tag">SRAM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/STIX/" rel="tag">STIX</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skill/" rel="tag">Skill</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Skills/" rel="tag">Skills</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Superpowers/" rel="tag">Superpowers</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/TDD/" rel="tag">TDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Tool-Calling/" rel="tag">Tool Calling</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Workflow/" rel="tag">Workflow</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" rel="tag">上下文工程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="tag">云原生</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" rel="tag">代码协作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">代码审计</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" rel="tag">公路车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="tag">分库分表</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%9D%8E%E6%99%AE/" rel="tag">坎普</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" rel="tag">威胁情报</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" rel="tag">安全运营</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="tag">应急响应</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" rel="tag">折叠车</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/" rel="tag">服务治理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag">消息队列</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="tag">漏洞挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" rel="tag">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%8A%B6%E6%80%81%E5%9B%BE/" rel="tag">状态图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" rel="tag">红蓝对抗</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BC%93%E5%AD%98/" rel="tag">缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" rel="tag">网安业务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/" rel="tag">读写分离</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" rel="tag">负载均衡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/%E9%A3%8E%E8%A1%8C/" rel="tag">风行</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    <!-- Tag Cloud -->
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/blog/tags/A2A/" style="font-size: 13px;">A2A</a> <a href="/blog/tags/AI-Coding/" style="font-size: 13px;">AI Coding</a> <a href="/blog/tags/ATT-CK/" style="font-size: 13px;">ATT&CK</a> <a href="/blog/tags/Agent/" style="font-size: 14.75px;">Agent</a> <a href="/blog/tags/Agent-%E5%BC%80%E5%8F%91/" style="font-size: 13px;">Agent 开发</a> <a href="/blog/tags/Agent%E5%BC%80%E5%8F%91/" style="font-size: 20px;">Agent开发</a> <a href="/blog/tags/C2%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">C2框架</a> <a href="/blog/tags/CDN/" style="font-size: 13px;">CDN</a> <a href="/blog/tags/DeepAgents/" style="font-size: 13px;">DeepAgents</a> <a href="/blog/tags/Docker/" style="font-size: 13px;">Docker</a> <a href="/blog/tags/Elasticsearch/" style="font-size: 13px;">Elasticsearch</a> <a href="/blog/tags/Evaluation/" style="font-size: 13px;">Evaluation</a> <a href="/blog/tags/Function-Calling/" style="font-size: 13px;">Function Calling</a> <a href="/blog/tags/Git/" style="font-size: 13px;">Git</a> <a href="/blog/tags/GitHub/" style="font-size: 13px;">GitHub</a> <a href="/blog/tags/GitHub-Pages/" style="font-size: 13px;">GitHub Pages</a> <a href="/blog/tags/Guardrails/" style="font-size: 13px;">Guardrails</a> <a href="/blog/tags/HTTP/" style="font-size: 13px;">HTTP</a> <a href="/blog/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/blog/tags/Kubernetes/" style="font-size: 13px;">Kubernetes</a> <a href="/blog/tags/LLM/" style="font-size: 13px;">LLM</a> <a href="/blog/tags/LangChain/" style="font-size: 13px;">LangChain</a> <a href="/blog/tags/LangGraph/" style="font-size: 13px;">LangGraph</a> <a href="/blog/tags/LangSmith/" style="font-size: 13px;">LangSmith</a> <a href="/blog/tags/Loop%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">Loop工程</a> <a href="/blog/tags/MCP/" style="font-size: 18.25px;">MCP</a> <a href="/blog/tags/MITRE-ATT-CK/" style="font-size: 13px;">MITRE ATT&CK</a> <a href="/blog/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/blog/tags/Memory/" style="font-size: 13px;">Memory</a> <a href="/blog/tags/Multi-Agent/" style="font-size: 13px;">Multi-Agent</a> <a href="/blog/tags/Planning/" style="font-size: 13px;">Planning</a> <a href="/blog/tags/Prompt/" style="font-size: 13px;">Prompt</a> <a href="/blog/tags/Pull-Request/" style="font-size: 13px;">Pull Request</a> <a href="/blog/tags/Python/" style="font-size: 13px;">Python</a> <a href="/blog/tags/RAG/" style="font-size: 16.5px;">RAG</a> <a href="/blog/tags/RPC/" style="font-size: 13px;">RPC</a> <a href="/blog/tags/ReAct/" style="font-size: 13px;">ReAct</a> <a href="/blog/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/blog/tags/SRAM/" style="font-size: 13px;">SRAM</a> <a href="/blog/tags/STIX/" style="font-size: 14.75px;">STIX</a> <a href="/blog/tags/Skill/" style="font-size: 13px;">Skill</a> <a href="/blog/tags/Skills/" style="font-size: 14.75px;">Skills</a> <a href="/blog/tags/Superpowers/" style="font-size: 13px;">Superpowers</a> <a href="/blog/tags/TDD/" style="font-size: 13px;">TDD</a> <a href="/blog/tags/Token/" style="font-size: 13px;">Token</a> <a href="/blog/tags/Tool-Calling/" style="font-size: 14.75px;">Tool Calling</a> <a href="/blog/tags/Workflow/" style="font-size: 14.75px;">Workflow</a> <a href="/blog/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" style="font-size: 13px;">上下文工程</a> <a href="/blog/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" style="font-size: 13px;">云原生</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%8D%8F%E4%BD%9C/" style="font-size: 13px;">代码协作</a> <a href="/blog/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" style="font-size: 20px;">代码审计</a> <a href="/blog/tags/%E5%85%AC%E8%B7%AF%E8%BD%A6/" style="font-size: 13px;">公路车</a> <a href="/blog/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" style="font-size: 13px;">分库分表</a> <a href="/blog/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 13px;">博客搭建</a> <a href="/blog/tags/%E5%9D%8E%E6%99%AE/" style="font-size: 13px;">坎普</a> <a href="/blog/tags/%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5/" style="font-size: 16.5px;">威胁情报</a> <a href="/blog/tags/%E5%AE%89%E5%85%A8%E8%BF%90%E8%90%A5/" style="font-size: 14.75px;">安全运营</a> <a href="/blog/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" style="font-size: 14.75px;">应急响应</a> <a href="/blog/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 13px;">微服务</a> <a href="/blog/tags/%E6%8A%98%E5%8F%A0%E8%BD%A6/" style="font-size: 13px;">折叠车</a> <a href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 13px;">数据库</a> <a href="/blog/tags/%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86/" style="font-size: 13px;">服务治理</a> <a href="/blog/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 13px;">消息队列</a> <a href="/blog/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 14.75px;">渗透测试</a> <a href="/blog/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" style="font-size: 14.75px;">漏洞挖掘</a> <a href="/blog/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" style="font-size: 13px;">版本控制</a> <a href="/blog/tags/%E7%8A%B6%E6%80%81%E5%9B%BE/" style="font-size: 13px;">状态图</a> <a href="/blog/tags/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97/" style="font-size: 14.75px;">红蓝对抗</a> <a href="/blog/tags/%E7%BC%93%E5%AD%98/" style="font-size: 13px;">缓存</a> <a href="/blog/tags/%E7%BD%91%E5%AE%89%E4%B8%9A%E5%8A%A1/" style="font-size: 14.75px;">网安业务</a> <a href="/blog/tags/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/" style="font-size: 13px;">读写分离</a> <a href="/blog/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" style="font-size: 13px;">负载均衡</a> <a href="/blog/tags/%E9%A3%8E%E8%A1%8C/" style="font-size: 13px;">风行</a>
+        </div>
+    </div>
+
+    <!-- Links -->
+    
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://nav.wuhongbin.com">前端导航</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://code.wuhongbin.com">代码碎片</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    
+
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2026 TA圣堂米拉娜<br>
+            秘密已经泄露，战斗一触即发！
+        </div>
+    </div>
+</footer>
+
+    </div>
+
+    <!-- Light Gallery JS -->
+    <script src="/blog/libs/lightgallery/js/lightgallery.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-autoplay.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-video.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-pager.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-zoom.min.js"></script>
+    <script src="/blog/libs/lightgallery/js/lg-hash.min.js"></script>
+
+    <script src="/blog/js/main.js"></script>
+</body>
+</html>
